@@ -213,6 +213,10 @@ input:focus{outline:none;border-color:var(--accent);}
       <div class="metric"><div class="mval" id="m-meds" style="color:var(--purple)">—</div><div class="mlbl">💊 Medicamento</div><div class="msub" id="m-meds-s"></div></div>
     </div>
     <div class="card" style="margin-bottom:10px"><div class="stitle">Resumen</div><div id="dashSum"></div></div>
+    <div class="card" style="margin-bottom:10px" id="weightGoalsCard">
+      <div class="stitle" style="margin-bottom:10px">🎯 METAS DE PESO</div>
+      <div id="weightGoals"></div>
+    </div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">💧 AGUA</div><div class="ch"><canvas id="ch-agua"></canvas></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">⚖️ PESO</div><div class="ch" id="ch-peso-wrap"><canvas id="ch-peso"></canvas></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">🍽 PORCIONES %</div><div class="ch"><canvas id="ch-porc"></canvas></div></div>
@@ -268,6 +272,23 @@ input:focus{outline:none;border-color:var(--accent);}
     </div>
   </div>
   <div class="sec"><div class="stitle">✅ Checklist anti-reflujo</div><div class="card"><div id="day-checks"></div></div></div>
+  <div class="sec">
+    <div class="stitle">🏃 Ejercicio</div>
+    <div class="card">
+      <div style="text-align:center;padding:8px 0 14px">
+        <div id="ex-num" style="font-family:'Syne',sans-serif;font-size:2.6rem;font-weight:800;color:var(--good);line-height:1">0 min</div>
+        <div id="ex-meta" style="font-size:.8rem;color:var(--muted);margin-top:3px">sin ejercicio hoy</div>
+      </div>
+      <div style="height:8px;background:var(--border);border-radius:999px;overflow:hidden;margin-bottom:14px">
+        <div id="ex-bar" style="height:100%;width:0%;background:var(--good);border-radius:999px;transition:width .5s"></div>
+      </div>
+      <div style="display:flex;gap:7px">
+        <button class="wbtn" onclick="addExercise(-15)">-15</button>
+        <button class="wbtn main" style="background:var(--good);border-color:var(--good);color:#000" onclick="addExercise(15)">+ 15 min</button>
+        <button class="wbtn" onclick="addExercise(30)">+30</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- PAGE: MI PLAN -->
@@ -447,7 +468,7 @@ var WP={
   5:{d:'Licuado proteina + leche avena + platano + 2 reb pan integral + queso panela',c1:'Leche deslactosada + 20 almendras + fresa',co:'Pescado empapelado 180gr + aceite oliva + pimiento + jitomate + arroz',c2:'2 naranjas + yogurt + 30 cacahuates',ce:'Licuado proteina + leche almendra + 2 tostadas + 80gr panela'},
   6:{d:'Sandwich panela (2 reb masa madre + mayonesa + 160gr panela + pechuga pavo + espinaca) + pera',c1:'Yogurt griego + 30 pistaches + melon',co:'Carne asada 180gr arrachera + 4 tortillas + nopal + guacamole',c2:'20 almendras + frambuesa + yogurt',ce:'Licuado proteina + leche almendra + fresa + granola'}
 };
-var MO=[{k:'d',l:'Desayuno',t:'7-8am'},{k:'c1',l:'Colacion manana',t:'10-11am'},{k:'co',l:'Comida',t:'1:30-2:30pm'},{k:'c2',l:'Colacion tarde',t:'5-6pm'},{k:'ce',l:'Cena',t:'8-9pm'}];
+var MO=[{k:'d',l:'🌅 Desayuno',t:'7-8am'},{k:'c1',l:'🍎 Colacion manana',t:'10-11am'},{k:'co',l:'🍽 Comida',t:'1:30-2:30pm'},{k:'c2',l:'🥜 Colacion tarde',t:'5-6pm'},{k:'ce',l:'🌙 Cena',t:'8-9pm'}];
 var MKW={d:[6,9],c1:[9,12],co:[12,15],c2:[15,19],ce:[19,22]};
 var MG={d:{cereales:2,proteina:2,frutas:1,proteina_polvo:1},c1:{frutas:1,lacteos:1,grasas_con:2},co:{verduras:2,cereales:4,proteina:6,grasas_sin:2},c2:{frutas:1,lacteos:1,grasas_con:2},ce:{cereales:2,proteina:2,proteina_polvo:1}};
 var PT={verduras:{l:'Verduras',t:2,c:'#64f5b4'},frutas:{l:'Frutas',t:3,c:'#f5c864'},cereales:{l:'Cereales',t:8,c:'#c8f564'},proteina:{l:'Proteina',t:10,c:'#f564b4'},lacteos:{l:'Lacteos',t:2,c:'#64d4f5'},grasas_sin:{l:'Grasas s/p',t:2,c:'#f5a264'},grasas_con:{l:'Grasas c/p',t:4,c:'#a064f5'},proteina_polvo:{l:'Prot.polvo',t:2,c:'#f56464'}};
@@ -470,7 +491,7 @@ function todayKey(){return new Date().toISOString().split('T')[0];}
 function keyOf(d){return d.toISOString().split('T')[0];}
 function ls(){try{return JSON.parse(localStorage.getItem('nt4')||'{}');}catch(e){return {};}}
 function ss(s){localStorage.setItem('nt4',JSON.stringify(s));}
-function gd(k){var s=ls();if(!s[k])s[k]={water:0,mp:{},mc:[],sc:[],ch:[],foods:{}};if(!s[k].foods)s[k].foods={};return s[k];}
+function gd(k){var s=ls();if(!s[k])s[k]={water:0,mp:{},mc:[],sc:[],ch:[],foods:{},ex:0};if(!s[k].foods)s[k].foods={};if(s[k].ex===undefined)s[k].ex=0;return s[k];}
 function sd(k,d){var s=ls();s[k]=d;ss(s);}
 function gw(){try{return JSON.parse(localStorage.getItem('wts')||'[]');}catch(e){return [];}}
 function sw(w){localStorage.setItem('wts',JSON.stringify(w));}
@@ -737,6 +758,7 @@ function renderDash(){
   charts['ch-meds']=new Chart(document.getElementById('ch-meds').getContext('2d'),{type:'bar',data:{labels:labels,datasets:[{data:md,backgroundColor:md.map(function(v,i){var base=v>=100?'160,100,245':v>=50?'245,162,100':'245,100,100';return isToday[i]?'rgba('+base+',.95)':'rgba('+base+',.5)';}),borderRadius:6,borderSkipped:false}]},options:mopts});
 
   renderFoodStats(activeFoodGroup);
+  renderWeightGoals();
 }
 
 function exportReport(){
@@ -817,15 +839,23 @@ function renderDia(){
 
   renderWater(key,day);
 
-  // SUERO
+  // SUERO — solo mostrar el dia correspondiente, los otros como estado
   if(!day.sc)day.sc=[];var sh='';
-  SUEROS.forEach(function(s2){
-    var ok=day.sc.indexOf(s2.id)>=0;var isDay=dow===s2.day;
-    sh+='<div class="ci" onclick="toggleSuero(\''+s2.id+'\',\''+key+'\')">';
-    sh+='<div class="cbox" style="background:'+(ok?'var(--blue)':'transparent')+';border-color:'+(ok?'var(--blue)':'var(--border)')+'">'+( ok?'✓':'')+'</div>';
-    sh+='<span class="clbl '+(ok?'done':'')+'">';
-    sh+=s2.l+(isDay?' <span style="color:var(--blue);font-size:.7rem">(hoy)</span>':'')+'</span></div>';
-  });
+  var hasSueroToday=SUEROS.some(function(s2){return s2.day===dow;});
+  if(hasSueroToday){
+    SUEROS.forEach(function(s2){
+      if(s2.day!==dow)return;
+      var ok=day.sc.indexOf(s2.id)>=0;
+      sh+='<div class="ci" onclick="toggleSuero(\''+s2.id+'\',\''+key+'\')">';
+      sh+='<div class="cbox" style="background:'+(ok?'var(--blue)':'transparent')+';border-color:'+(ok?'var(--blue)':'var(--border)')+'">'+( ok?'✓':'')+'</div>';
+      sh+='<span class="clbl '+(ok?'done':'')+'">Suero / Electrolit de hoy</span></div>';
+    });
+  } else {
+    sh='<div style="font-size:.82rem;color:var(--muted);padding:8px 0">Hoy no toca suero — proximos dias: ';
+    var next=SUEROS.filter(function(s2){return s2.day>dow;});
+    if(next.length===0)next=SUEROS;
+    sh+=next[0].l+'</div>';
+  }
   document.getElementById('day-suero').innerHTML=sh;
 
   // PESO
@@ -846,6 +876,7 @@ function renderDia(){
     ckh+='<span class="clbl '+(ok?'done':'')+'">' +c+'</span></div>';
   });
   document.getElementById('day-checks').innerHTML=ckh;
+  renderExercise(day);
 }
 
 function toggleMeal(mk,key){
@@ -889,6 +920,49 @@ function addWater(d){var key=keyOf(viewDate);var day=gd(key);day.water=Math.max(
 function addWaterMl(){var ml=parseInt(document.getElementById('cw-ml').value)||0;if(ml<50){toast('Min 50ml');return;}var key=keyOf(viewDate);var day=gd(key);day.water=(day.water||0)+Math.round(ml/250);sd(key,day);renderWater(key,day);document.getElementById('cw-wrap').style.display='none';toast('💧 +'+ml+'ml');}
 function removeW(i,key){var day=gd(key);day.water=i;sd(key,day);renderWater(key,day);}
 function toggleCW(){var el=document.getElementById('cw-wrap');el.style.display=el.style.display==='none'?'block':'none';}
+
+function addExercise(delta){
+  var key=keyOf(viewDate);var day=gd(key);
+  day.ex=Math.max(0,(day.ex||0)+delta);
+  sd(key,day);renderExercise(day);
+  if(delta>0)toast('🏃 '+day.ex+' min de ejercicio');
+}
+
+function renderExercise(day){
+  var min=day.ex||0;
+  var el=document.getElementById('ex-num');var meta=document.getElementById('ex-meta');var bar=document.getElementById('ex-bar');
+  if(!el)return;
+  el.textContent=min+' min';
+  var pct=Math.min(100,min/60*100);
+  bar.style.width=pct+'%';
+  if(min===0)meta.textContent='sin ejercicio hoy';
+  else if(min<30)meta.textContent='buen inicio — meta: 30-60 min';
+  else if(min<60)meta.textContent='va muy bien — sigue!';
+  else meta.textContent='🎉 Meta de ejercicio alcanzada!';
+}
+
+function renderWeightGoals(){
+  var el=document.getElementById('weightGoals');if(!el)return;
+  var wts=gw();if(!wts.length){el.innerHTML='<div style="color:var(--muted);font-size:.82rem;text-align:center;padding:10px 0">Registra tu peso inicial para ver las metas</div>';return;}
+  var first=wts[0].w;var last=wts[wts.length-1].w;var lost=parseFloat((first-last).toFixed(1));
+  var goals=[{kg:5,label:'Meta 1'},{kg:10,label:'Meta 2'},{kg:15,label:'Meta 3'}];
+  var html='<div style="font-size:.8rem;color:var(--muted);margin-bottom:12px">Peso inicial: <strong style="color:var(--text)">'+first+'kg</strong> — Actual: <strong style="color:var(--accent)">'+last+'kg</strong> — Bajado: <strong style="color:var(--good)">'+lost+'kg</strong></div>';
+  goals.forEach(function(g){
+    var pct=Math.min(100,Math.max(0,lost/g.kg*100));var done=lost>=g.kg;
+    var remaining=done?0:(g.kg-lost).toFixed(1);
+    html+='<div style="margin-bottom:14px">';
+    html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">';
+    html+='<span style="font-family:Syne,sans-serif;font-weight:700;font-size:.85rem">'+(done?'✅ ':'🎯 ')+g.label+' — '+g.kg+'kg</span>';
+    html+='<span style="font-size:.78rem;color:'+(done?'var(--good)':'var(--muted)')+'">'+( done?'Completada!':remaining+'kg restantes')+'</span>';
+    html+='</div>';
+    html+='<div style="height:10px;background:var(--border);border-radius:999px;overflow:hidden">';
+    html+='<div style="height:100%;width:'+pct+'%;background:'+(done?'var(--good)':'var(--accent)')+';border-radius:999px;transition:width .5s"></div>';
+    html+='</div>';
+    html+='<div style="font-size:.7rem;color:var(--muted);margin-top:3px;text-align:right">'+Math.round(pct)+'% completado</div>';
+    html+='</div>';
+  });
+  el.innerHTML=html;
+}
 
 function toggleMed(id,key){var day=gd(key);if(!day.mc)day.mc=[];var i=day.mc.indexOf(id);if(i>=0)day.mc.splice(i,1);else day.mc.push(id);sd(key,day);renderDia();if(day.mc.indexOf(id)>=0)toast('Listo: '+MEDS.filter(function(m){return m.id===id;})[0].t);}
 function toggleSuero(id,key){var day=gd(key);if(!day.sc)day.sc=[];var i=day.sc.indexOf(id);if(i>=0)day.sc.splice(i,1);else day.sc.push(id);sd(key,day);renderDia();if(day.sc.indexOf(id)>=0)toast('Suero registrado');}
