@@ -218,7 +218,7 @@ input:focus{outline:none;border-color:var(--accent);}
       <div id="weightGoals"></div>
     </div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">💧 AGUA</div><div class="ch"><canvas id="ch-agua"></canvas></div></div>
-    <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">⚖️ PESO</div><div class="ch" id="ch-peso-wrap"><canvas id="ch-peso"></canvas></div></div>
+    <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">⚖️ PESO</div><div class="ch-tall" id="ch-peso-wrap"><canvas id="ch-peso"></canvas></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">🍽 PORCIONES %</div><div class="ch"><canvas id="ch-porc"></canvas></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">💊 MEDICAMENTO %</div><div class="ch"><canvas id="ch-meds"></canvas></div></div>
     <div class="card" style="margin-bottom:10px">
@@ -483,7 +483,7 @@ var EQ={
   lacteos:[{n:'Yogurt griego',q:'0.5 envase'},{n:'Leche deslactosada',q:'1 taza'},{n:'Leche almendra',q:'1 taza'},{n:'Leche avena',q:'1 taza'}],
   grasas_sin:[{n:'Aceite oliva',q:'1 cdita'},{n:'Aguacate',q:'0.33 pieza'},{n:'Guacamole',q:'2 cdas'},{n:'Ghee',q:'1 cdita'},{n:'Mayonesa light',q:'1 cdita'}],
   grasas_con:[{n:'Almendra',q:'10 piezas'},{n:'Nuez mitad',q:'7 mitades'},{n:'Cacahuate',q:'14 piezas'},{n:'Pistaches',q:'18 piezas'},{n:'Crema cacahuate',q:'2 cditas'},{n:'Crema almendras',q:'2 cditas'}],
-  proteina_polvo:[{n:'Scoop proteina',q:'1 scoop'}]
+  proteina_polvo:[{n:'Isopur Platano',q:'1 scoop'},{n:'Isopur Cookies and Cream',q:'1 scoop'},{n:'Whey Helado de Vainilla',q:'1 scoop'},{n:'Scoop proteina (otro)',q:'1 scoop'}]
 };
 
 // ── STATE ──
@@ -492,11 +492,30 @@ function keyOf(d){return d.toISOString().split('T')[0];}
 function ls(){try{return JSON.parse(localStorage.getItem('nt4')||'{}');}catch(e){return {};}}
 function ss(s){localStorage.setItem('nt4',JSON.stringify(s));}
 function gd(k){var s=ls();if(!s[k])s[k]={water:0,mp:{},mc:[],sc:[],ch:[],foods:{},ex:0};if(!s[k].foods)s[k].foods={};if(s[k].ex===undefined)s[k].ex=0;return s[k];}
-function sd(k,d){var s=ls();s[k]=d;ss(s);}
+function sd(k,d){var s=ls();s[k]=d;ss(s);autoSync();}
 function gw(){try{return JSON.parse(localStorage.getItem('wts')||'[]');}catch(e){return [];}}
-function sw(w){localStorage.setItem('wts',JSON.stringify(w));}
+function sw(w){localStorage.setItem('wts',JSON.stringify(w));autoSync();}
 function gcfg(){try{return JSON.parse(localStorage.getItem('ntcfg')||'{}');}catch(e){return {};}}
 function scfg(c){localStorage.setItem('ntcfg',JSON.stringify(c));}
+
+var _syncTimer=null;
+function autoSync(){
+  if(_syncTimer)clearTimeout(_syncTimer);
+  _syncTimer=setTimeout(function(){
+    var cfg=gcfg();
+    if(!cfg.token||!cfg.gist)return;
+    updateCloudUI('sync');
+    var data={nt4:localStorage.getItem('nt4'),wts:localStorage.getItem('wts'),updated:new Date().toISOString()};
+    fetch('https://api.github.com/gists/'+cfg.gist,{
+      method:'PATCH',
+      headers:{'Authorization':'token '+cfg.token,'Content-Type':'application/json'},
+      body:JSON.stringify({files:{'data.json':{content:JSON.stringify(data)}}})
+    }).then(function(r){
+      if(r.ok){updateCloudUI('ok');}
+      else{updateCloudUI('err');toast('Error al guardar en nube');}
+    }).catch(function(){updateCloudUI('err');});
+  },3000);
+}
 
 // ── CLOUD (GITHUB GIST) ──
 var cloudSyncing=false;
@@ -742,9 +761,107 @@ function renderDash(){
 
   dc('ch-peso');
   var wtsF=gw().filter(function(w){return w.date>=chartDays[0];});
+  var allWts=gw();
   if(wtsF.length>=1){
     var popts=JSON.parse(JSON.stringify(opts));
-    charts['ch-peso']=new Chart(document.getElementById('ch-peso').getContext('2d'),{type:'line',data:{labels:wtsF.map(function(w){return w.date.slice(5);}),datasets:[{data:wtsF.map(function(w){return w.w;}),borderColor:'#c8f564',backgroundColor:'rgba(200,245,100,.1)',fill:true,tension:0.4,pointBackgroundColor:'#c8f564',pointRadius:5}]},options:popts});
+    popts.scales.y.min=65;popts.scales.y.max=85;
+    popts.plugins.legend={display:true,labels:{color:'#8888aa',font:{size:11}}};
+
+    // Calculate trendline using linear regression on ALL weight data
+    var trendDataset=null;
+    if(allWts.length>=2){
+      var n2=allWts.length;
+      var sumX=0,sumY=0,sumXY=0,sumX2=0;
+      var t0=new Date(allWts[0].date+'T12:00:00').getTime();
+      allWts.forEach(function(w,i){
+        var x=(new Date(w.date+'T12:00:00').getTime()-t0)/(1000*60*60*24);
+        sumX+=x;sumY+=w.w;sumXY+=x*w.w;sumX2+=x*x;
+      });
+      var slope=(n2*sumXY-sumX*sumY)/(n2*sumX2-sumX*sumX);
+      var intercept=(sumY-slope*sumX)/n2;
+
+      // Project up to 90 days ahead or until 65kg goal
+      var lastX=(new Date(allWts[allWts.length-1].date+'T12:00:00').getTime()-t0)/(1000*60*60*24);
+      var projDays=Math.min(90,Math.ceil((intercept-65)/(-slope||0.01)));
+      projDays=Math.max(0,Math.min(90,projDays));
+
+      // Build trend labels and data covering existing range + projection
+      var trendLabels=[];var trendData=[];
+      var firstDate=new Date(wtsF[0].date+'T12:00:00');
+      for(var d2=0;d2<=lastX+projDays;d2+=Math.ceil((lastX+projDays)/20)){
+        var dd=new Date(firstDate);dd.setDate(dd.getDate()+d2);
+        trendLabels.push(dd.toLocaleDateString('es-MX',{month:'short',day:'numeric'}));
+        var val=parseFloat((intercept+slope*d2).toFixed(1));
+        trendData.push(Math.max(65,Math.min(90,val)));
+      }
+
+      trendDataset={
+        label:'Tendencia',
+        data:trendData,
+        borderColor:'rgba(245,100,180,.6)',
+        borderDash:[5,4],
+        borderWidth:2,
+        backgroundColor:'transparent',
+        pointRadius:0,
+        tension:0
+      };
+    }
+
+    var datasets=[{
+      label:'Peso real',
+      data:wtsF.map(function(w){return w.w;}),
+      borderColor:'#c8f564',
+      backgroundColor:'rgba(200,245,100,.1)',
+      fill:true,tension:0.4,
+      pointBackgroundColor:'#c8f564',pointRadius:5
+    }];
+    if(trendDataset)datasets.push(trendDataset);
+
+    // Use merged labels if trend exists
+    var pesoLabels=wtsF.map(function(w){return w.date.slice(5);});
+    if(trendDataset){
+      // Align real data to trend labels by padding
+      var realAligned=new Array(trendDataset.data.length).fill(null);
+      // just use separate x for each dataset via different label sets — use wtsF labels for real
+      popts.plugins.legend.display=true;
+      charts['ch-peso']=new Chart(document.getElementById('ch-peso').getContext('2d'),{
+        type:'line',
+        data:{labels:pesoLabels,datasets:[datasets[0]]},
+        options:popts
+      });
+      // Add trend as annotation-style second chart overlay isn't easy without plugin
+      // Instead rebuild with shared timeline
+      var allDates={};
+      wtsF.forEach(function(w){allDates[w.date]=w.w;});
+      var firstD=new Date(wtsF[0].date+'T12:00:00');
+      var t0b=new Date(allWts[0].date+'T12:00:00').getTime();
+      var lastXb=(new Date(allWts[allWts.length-1].date+'T12:00:00').getTime()-t0b)/(1000*60*60*24);
+      var slope2=(n2*sumXY-sumX*sumY)/(n2*sumX2-sumX*sumX);
+      var int2=(sumY-slope2*sumX)/n2;
+      var projEnd=Math.min(120,Math.ceil((int2-65)/(-slope2||0.01)));
+      projEnd=Math.max(7,Math.min(120,projEnd));
+      var mergedLabels=[],realD=[],trendD=[];
+      var step=Math.max(1,Math.ceil((lastXb+projEnd)/25));
+      for(var di=0;di<=lastXb+projEnd;di+=step){
+        var dd2=new Date(firstD);dd2.setDate(dd2.getDate()+di);
+        var dk=dd2.toISOString().split('T')[0];
+        mergedLabels.push(dd2.toLocaleDateString('es-MX',{month:'short',day:'numeric'}));
+        realD.push(allDates[dk]!==undefined?allDates[dk]:null);
+        var tv=parseFloat((int2+slope2*di).toFixed(1));
+        trendD.push(di>lastXb?Math.max(65,Math.min(90,tv)):null);
+      }
+      dc('ch-peso');
+      charts['ch-peso']=new Chart(document.getElementById('ch-peso').getContext('2d'),{
+        type:'line',
+        data:{labels:mergedLabels,datasets:[
+          {label:'Peso real',data:realD,borderColor:'#c8f564',backgroundColor:'rgba(200,245,100,.1)',fill:true,tension:0.4,pointBackgroundColor:'#c8f564',pointRadius:function(ctx){return realD[ctx.dataIndex]!==null?5:0;},spanGaps:false},
+          {label:'Proyeccion',data:trendD,borderColor:'rgba(245,100,180,.7)',borderDash:[6,4],borderWidth:2,backgroundColor:'transparent',pointRadius:0,tension:0,spanGaps:false}
+        ]},
+        options:popts
+      });
+    } else {
+      charts['ch-peso']=new Chart(document.getElementById('ch-peso').getContext('2d'),{type:'line',data:{labels:pesoLabels,datasets:datasets},options:popts});
+    }
   } else {
     document.getElementById('ch-peso-wrap').innerHTML='<div style="color:var(--muted);font-size:.8rem;text-align:center;padding:26px 0">Registra tu peso en Mi Dia para ver la grafica</div>';
   }
@@ -945,18 +1062,47 @@ function renderWeightGoals(){
   var el=document.getElementById('weightGoals');if(!el)return;
   var wts=gw();if(!wts.length){el.innerHTML='<div style="color:var(--muted);font-size:.82rem;text-align:center;padding:10px 0">Registra tu peso inicial para ver las metas</div>';return;}
   var first=wts[0].w;var last=wts[wts.length-1].w;var lost=parseFloat((first-last).toFixed(1));
-  var goals=[{kg:5,label:'Meta 1'},{kg:10,label:'Meta 2'},{kg:15,label:'Meta 3'}];
-  var html='<div style="font-size:.8rem;color:var(--muted);margin-bottom:12px">Peso inicial: <strong style="color:var(--text)">'+first+'kg</strong> — Actual: <strong style="color:var(--accent)">'+last+'kg</strong> — Bajado: <strong style="color:var(--good)">'+lost+'kg</strong></div>';
+
+  // Linear regression for projection
+  var slope=null;var intercept=null;
+  if(wts.length>=2){
+    var n2=wts.length;var sumX=0,sumY=0,sumXY=0,sumX2=0;
+    var t0=new Date(wts[0].date+'T12:00:00').getTime();
+    wts.forEach(function(w){
+      var x=(new Date(w.date+'T12:00:00').getTime()-t0)/(1000*60*60*24);
+      sumX+=x;sumY+=w.w;sumXY+=x*w.w;sumX2+=x*x;
+    });
+    slope=(n2*sumXY-sumX*sumY)/(n2*sumX2-sumX*sumX);
+    intercept=(sumY-slope*sumX)/n2;
+  }
+
+  function projDate(targetLost){
+    if(!slope||slope>=0)return null;
+    var targetW=first-targetLost;
+    var lastX=(new Date(wts[wts.length-1].date+'T12:00:00').getTime()-t0)/(1000*60*60*24);
+    var daysNeeded=Math.ceil((targetW-intercept)/slope);
+    if(daysNeeded<=0||daysNeeded>730)return null;
+    var d=new Date(wts[0].date+'T12:00:00');d.setDate(d.getDate()+daysNeeded);
+    return d;
+  }
+
+  var goals=[{kg:5,label:'Meta 1 — 5kg'},{kg:10,label:'Meta 2 — 10kg'},{kg:15,label:'Meta 3 — 15kg'}];
+  var html='<div style="font-size:.8rem;color:var(--muted);margin-bottom:14px">Inicial: <strong style="color:var(--text)">'+first+'kg</strong> &nbsp;·&nbsp; Actual: <strong style="color:var(--accent)">'+last+'kg</strong> &nbsp;·&nbsp; Bajado: <strong style="color:var(--good)">'+lost+'kg</strong></div>';
+
   goals.forEach(function(g){
     var pct=Math.min(100,Math.max(0,lost/g.kg*100));var done=lost>=g.kg;
     var remaining=done?0:(g.kg-lost).toFixed(1);
-    html+='<div style="margin-bottom:14px">';
-    html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">';
-    html+='<span style="font-family:Syne,sans-serif;font-weight:700;font-size:.85rem">'+(done?'✅ ':'🎯 ')+g.label+' — '+g.kg+'kg</span>';
-    html+='<span style="font-size:.78rem;color:'+(done?'var(--good)':'var(--muted)')+'">'+( done?'Completada!':remaining+'kg restantes')+'</span>';
-    html+='</div>';
+    var proj=done?null:projDate(g.kg);
+    var projStr='';
+    if(proj){projStr=proj.toLocaleDateString('es-MX',{day:'numeric',month:'short',year:'numeric'});}
+    html+='<div style="margin-bottom:16px">';
+    html+='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">';
+    html+='<span style="font-family:Syne,sans-serif;font-weight:700;font-size:.85rem">'+(done?'✅ ':'🎯 ')+g.label+'</span>';
+    html+='<div style="text-align:right"><span style="font-size:.78rem;color:'+(done?'var(--good)':'var(--muted)')+'">'+( done?'Completada!':remaining+'kg restantes')+'</span>';
+    if(projStr)html+='<br><span style="font-size:.7rem;color:var(--pink)">📅 '+projStr+'</span>';
+    html+='</div></div>';
     html+='<div style="height:10px;background:var(--border);border-radius:999px;overflow:hidden">';
-    html+='<div style="height:100%;width:'+pct+'%;background:'+(done?'var(--good)':'var(--accent)')+';border-radius:999px;transition:width .5s"></div>';
+    html+='<div style="height:100%;width:'+pct+'%;background:'+(done?'var(--good)':pct>=50?'var(--warn)':'var(--accent)')+';border-radius:999px;transition:width .6s"></div>';
     html+='</div>';
     html+='<div style="font-size:.7rem;color:var(--muted);margin-top:3px;text-align:right">'+Math.round(pct)+'% completado</div>';
     html+='</div>';
