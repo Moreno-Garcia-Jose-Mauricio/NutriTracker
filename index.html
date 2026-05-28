@@ -574,8 +574,8 @@ var EQ={
 };
 
 // ── STATE ──
-function todayKey(){return new Date().toISOString().split('T')[0];}
-function keyOf(d){return d.toISOString().split('T')[0];}
+function todayKey(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function keyOf(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function ls(){try{return JSON.parse(localStorage.getItem('nt4')||'{}');}catch(e){return {};}}
 function ss(s){localStorage.setItem('nt4',JSON.stringify(s));}
 function gd(k){var s=ls();if(!s[k])s[k]={water:0,mp:{},mc:[],sc:[],ch:[],foods:{},ex:0};if(!s[k].foods)s[k].foods={};if(s[k].ex===undefined)s[k].ex=0;return s[k];}
@@ -931,7 +931,7 @@ function renderDash(){
       var step=Math.max(1,Math.ceil((lastXb+projEnd)/25));
       for(var di=0;di<=lastXb+projEnd;di+=step){
         var dd2=new Date(firstD);dd2.setDate(dd2.getDate()+di);
-        var dk=dd2.toISOString().split('T')[0];
+        var dk=dd2.getFullYear()+'-'+String(dd2.getMonth()+1).padStart(2,'0')+'-'+String(dd2.getDate()).padStart(2,'0');
         mergedLabels.push(dd2.toLocaleDateString('es-MX',{month:'short',day:'numeric'}));
         realD.push(allDates[dk]!==undefined?allDates[dk]:null);
         var tv=parseFloat((int2+slope2*di).toFixed(1));
