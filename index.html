@@ -221,6 +221,7 @@ input:focus{outline:none;border-color:var(--accent);}
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">⚖️ PESO</div><div class="ch-tall" id="ch-peso-wrap"><canvas id="ch-peso"></canvas></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">🍽 PORCIONES %</div><div class="ch"><canvas id="ch-porc"></canvas></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">💊 MEDICAMENTO %</div><div class="ch"><canvas id="ch-meds"></canvas></div></div>
+    <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">😴 SUEÑO (horas)</div><div class="ch"><canvas id="ch-sleep"></canvas></div></div>
     <div class="card" style="margin-bottom:10px">
       <div class="stitle" style="margin-bottom:10px">🍱 ALIMENTOS MAS CONSUMIDOS</div>
       <div class="group-tabs" id="foodStatTabs"></div>
@@ -286,6 +287,23 @@ input:focus{outline:none;border-color:var(--accent);}
         <button class="wbtn" onclick="addExercise(-15)">-15</button>
         <button class="wbtn main" style="background:var(--good);border-color:var(--good);color:#000" onclick="addExercise(15)">+ 15 min</button>
         <button class="wbtn" onclick="addExercise(30)">+30</button>
+      </div>
+    </div>
+  </div>
+  <div class="sec">
+    <div class="stitle">😴 Sueño — noche anterior</div>
+    <div class="card">
+      <div style="text-align:center;padding:8px 0 14px">
+        <div id="sl-num" style="font-family:'Syne',sans-serif;font-size:2.6rem;font-weight:800;color:var(--purple);line-height:1">0h</div>
+        <div id="sl-meta" style="font-size:.8rem;color:var(--muted);margin-top:3px">sin registro</div>
+      </div>
+      <div style="height:8px;background:var(--border);border-radius:999px;overflow:hidden;margin-bottom:14px">
+        <div id="sl-bar" style="height:100%;width:0%;background:var(--purple);border-radius:999px;transition:width .5s"></div>
+      </div>
+      <div style="display:flex;gap:7px">
+        <button class="wbtn" onclick="addSleep(-1)">-1h</button>
+        <button class="wbtn main" style="background:var(--purple);border-color:var(--purple);color:#fff" onclick="addSleep(1)">+ 1 hora</button>
+        <button class="wbtn" onclick="addSleep(0.5)">+30min</button>
       </div>
     </div>
   </div>
@@ -521,7 +539,73 @@ var MEDS=[{id:'pm',l:'Pantoprazol',dose:'1 tableta',t:'Antes del desayuno',s:'30
 var SUEROS=[{id:'su0',day:1,l:'Lunes'},{id:'su1',day:3,l:'Miercoles'},{id:'su2',day:5,l:'Viernes'}];
 var EQ={
   verduras:[
-    {n:'Acelga cocida',q:'1/2 taza'},{n:'Alcachofa',q:'1 pieza'},{n:'Alfalfa cruda',q:'3.5 tazas'},{n:'Alga Nori',q:'10g'},
+    {n:'Brocoli cocido',q:'1/2 taza'},{n:'Calabacita cocida',q:'1/2 taza'},{n:'Calabaza cocida',q:'1/2 taza'},
+    {n:'Cebolla cambray cocida',q:'3 pzas'},{n:'Champinon cocido',q:'1/2 taza'},{n:'Chayote cocido',q:'1/2 taza'},
+    {n:'Ejotes cocidos',q:'1/2 taza'},{n:'Espinaca cocida',q:'1/2 taza'},{n:'Esparragos cocidos',q:'6 pzas'},
+    {n:'Flor de calabaza cocida',q:'1 taza'},{n:'Jitomate cocido',q:'1 pieza'},{n:'Nopal cocido',q:'1 taza'},
+    {n:'Pepino (sin semillas)',q:'1 taza'},{n:'Pimiento morron cocido',q:'1/2 taza'},{n:'Zanahoria cocida',q:'1/2 taza'},
+    {n:'Zanahoria cruda',q:'1 pieza'},{n:'Berenjena cocida',q:'1/2 taza'},{n:'Lechuga (cocida/guisada)',q:'2 tazas'},
+    {n:'Chicharo cocido',q:'1/4 taza'},{n:'Betabel cocido',q:'1/4 pieza'},{n:'Kale cocido',q:'1/2 taza'},
+    {n:'Acelga cocida',q:'1/2 taza'},{n:'Coliflor cocida',q:'1 taza'},{n:'Col cocida',q:'1/2 taza'},
+    {n:'Seta cocida',q:'1/2 taza'},{n:'Portobello cocido',q:'1 pieza'}
+  ],
+  frutas:[
+    {n:'Platano',q:'1/2 pieza'},{n:'Fresa rebanada',q:'1 taza'},{n:'Uvas',q:'18 piezas'},
+    {n:'Kiwi',q:'1.5 piezas'},{n:'Naranja',q:'2 piezas'},{n:'Mandarina',q:'2 piezas'},
+    {n:'Pina picada',q:'3/4 taza'},{n:'Papaya picada',q:'1 taza'},{n:'Melon picado',q:'1 taza'},
+    {n:'Manzana cocida',q:'1 pieza'},{n:'Pera cocida',q:'1/2 pieza'},{n:'Blueberries',q:'3/4 taza'},
+    {n:'Frambuesa',q:'1 taza'},{n:'Zarzamora',q:'1 taza'},{n:'Moras',q:'3/4 taza'},
+    {n:'Durazno maduro',q:'2 piezas'},{n:'Mango ataulfo maduro',q:'1/2 pieza'},{n:'Sandia',q:'1 taza'},
+    {n:'Guayaba (sin semillas)',q:'3 piezas'},{n:'Cereza natural',q:'20 piezas'}
+  ],
+  cereales:[
+    {n:'Arroz cocido',q:'1/4 taza'},{n:'Arroz integral',q:'1/3 taza'},{n:'Avena hojuelas',q:'1/3 taza'},
+    {n:'Avena cocida',q:'3/4 taza'},{n:'Pan integral',q:'1 rebanada'},{n:'Pan masa madre',q:'1 rebanada'},
+    {n:'Pan pita integral',q:'1/3 pieza'},{n:'Papa cocida',q:'1/2 pieza'},{n:'Papa cambray',q:'5 piezas'},
+    {n:'Camote cocido',q:'1/3 taza'},{n:'Quinoa',q:'1/2 taza'},{n:'Rice cake',q:'2 piezas'},
+    {n:'Tortilla de maiz',q:'1 pieza'},{n:'Tostada horneada',q:'2 piezas'},{n:'Galleta salma',q:'3 piezas'},
+    {n:'Pasta cocida',q:'1/2 taza'},{n:'Elote cocido',q:'1.5 pieza'},{n:'Amaranto',q:'1/4 taza'},
+    {n:'Granola sin azucar',q:'3 cdas'},{n:'Palomitas sin sal',q:'2.5 tazas'}
+  ],
+  proteina:[
+    {n:'Pechuga de pollo',q:'30g',s:'Muy bajo grasa'},{n:'Pechuga pollo deshebrada',q:'30g',s:'Muy bajo grasa'},
+    {n:'Pechuga de pavo',q:'1.5 rebanadas',s:'Muy bajo grasa'},{n:'Atun en agua',q:'1/3 lata',s:'Muy bajo grasa'},
+    {n:'Filete de pescado blanco',q:'40g',s:'Muy bajo grasa'},{n:'Clara de huevo',q:'30g',s:'Muy bajo grasa'},
+    {n:'Requeson',q:'2 cditas',s:'Muy bajo grasa'},{n:'Queso cottage bajo grasa',q:'3 cdas',s:'Muy bajo grasa'},
+    {n:'Camaron cocido',q:'5 piezas',s:'Muy bajo grasa'},{n:'Salmon',q:'30g',s:'Muy bajo grasa'},
+    {n:'Huevo entero',q:'1 pieza',s:'Bajo grasa'},{n:'Queso panela',q:'40g',s:'Bajo grasa'},
+    {n:'Queso oaxaca',q:'30g',s:'Bajo grasa'},{n:'Arrachera',q:'30g',s:'Bajo grasa'},
+    {n:'Carne molida magra',q:'30g',s:'Bajo grasa'},{n:'Carne roja magra (max 3x/sem)',q:'30g',s:'Bajo grasa'},
+    {n:'Carne deshebrada magra',q:'30g',s:'Bajo grasa'},{n:'Lomo de res',q:'40g',s:'Bajo grasa'},
+    {n:'Maciza de res',q:'25g',s:'Bajo grasa'},{n:'Bistec de res magro',q:'30g',s:'Bajo grasa'}
+  ],
+  lacteos:[
+    {n:'Yogurt griego Oikos',q:'1/2 envase'},{n:'Yogurt natural sin azucar',q:'1 taza'},
+    {n:'Leche deslactosada',q:'1 taza'},{n:'Leche evap. semidescremada',q:'1/2 taza'},
+    {n:'Leche de almendra',q:'1 taza'},{n:'Leche de avena',q:'1 taza'},
+    {n:'Leche de arroz',q:'1 taza'},{n:'Leche de coco sin azucar',q:'1 taza'},
+    {n:'Queso panela',q:'40g'},{n:'Queso oaxaca',q:'30g'},
+    {n:'Queso fresco blanco',q:'40g'},{n:'Requeson',q:'2 cditas'},
+    {n:'Queso cottage bajo grasa',q:'3 cdas'}
+  ],
+  grasas_sin:[
+    {n:'Aceite de oliva',q:'1 cdita'},{n:'Aguacate',q:'1/3 pieza'},
+    {n:'Guacamole (sin chile)',q:'2 cdas'},{n:'Ghee / Mantequilla',q:'1.5 cdita'},
+    {n:'Mayonesa light',q:'1 cdita'},{n:'Aceitunas',q:'5 piezas'},
+    {n:'Aceite de coco',q:'1 cdita'}
+  ],
+  grasas_con:[
+    {n:'Almendra',q:'10 piezas'},{n:'Nuez en mitad',q:'7 mitades'},{n:'Nuez entera',q:'3 piezas'},
+    {n:'Cacahuate tostado',q:'14 piezas'},{n:'Pistaches',q:'18 piezas'},
+    {n:'Crema de cacahuate',q:'2 cditas'},{n:'Crema de almendras',q:'2 cditas'},
+    {n:'Chia',q:'7 cdas'},{n:'Semillas de girasol',q:'4 cditas'},
+    {n:'Ajonjoli tostado',q:'5 cdas'},{n:'Pepitas',q:'60 piezas'}
+  ],
+  proteina_polvo:[
+    {n:'Isopur Platano',q:'1 scoop'},{n:'Isopur Cookies and Cream',q:'1 scoop'},
+    {n:'Whey Helado de Vainilla',q:'1 scoop'},{n:'Scoop proteina (otro)',q:'1 scoop'}
+  ]
+};
     {n:'Apio crudo',q:'1 taza'},{n:'Arugula cruda',q:'4 tazas'},{n:'Berro crudo',q:'2 tazas'},{n:'Betabel crudo',q:'1/4 pieza'},
     {n:'Brocoli cocido',q:'1/2 taza'},{n:'Brocoli crudo',q:'1 taza'},{n:'Calabacita cruda',q:'1 pieza'},{n:'Calabacita cocida',q:'1/2 taza'},
     {n:'Cebolla cruda',q:'1/4 taza'},{n:'Cebolla cambray',q:'3 pzas'},{n:'Champinon crudo',q:'1.5 taza'},{n:'Champinon cocido',q:'1/2 taza'},
@@ -579,38 +663,12 @@ var EQ={
     {n:'Queso parmesano',q:'3.5 cdas',s:'Moderado grasa'},{n:'Salchicha de pavo',q:'1 pieza',s:'Moderado grasa'},
     {n:'Sardinas en tomate',q:'1 pieza',s:'Moderado grasa'},{n:'Longaniza de primera',q:'45g',s:'Moderado grasa'}
   ],
-  lacteos:[
-    {n:'Yogurt griego Oikos',q:'1/2 envase'},{n:'Leche deslactosada',q:'1 taza'},{n:'Leche de almendra',q:'1 taza'},
-    {n:'Leche de avena',q:'1 taza'},{n:'Leche de coco',q:'1 taza'},{n:'Leche de arroz',q:'1 taza'},
-    {n:'Bebida vegetal soya',q:'1 taza'},{n:'Leche entera',q:'1 taza'},{n:'Leche evap. descremada',q:'1/2 taza'},
-    {n:'Leche evap. semidescremada',q:'1/2 taza'},{n:'Yogurt light',q:'1/3 taza'},{n:'Yogurt natural',q:'1 taza'},
-    {n:'Soful LT natural',q:'1.5 taza'}
-  ],
-  grasas_sin:[
-    {n:'Aceite vegetal',q:'1 cdita'},{n:'Aceite de oliva',q:'1 cdita'},{n:'Aguacate',q:'1/3 pieza'},
-    {n:'Aceitunas',q:'5 piezas'},{n:'Coco rallado',q:'1.5 cda'},{n:'Crema',q:'1 cda'},{n:'Ghee / Mantequilla',q:'1.5 cdita'},
-    {n:'Margarina',q:'1 cdita'},{n:'Mayonesa light',q:'1 cdita'},{n:'Queso philadelphia',q:'1 cda'},
-    {n:'Guacamole',q:'2 cdas'},{n:'Pam (aceite spray)',q:'5 disparos'}
-  ],
-  grasas_con:[
-    {n:'Ajonjoli tostado',q:'5 cdas'},{n:'Almendra',q:'10 piezas'},{n:'Almendra fileteada',q:'2 cdas'},
-    {n:'Cacahuate tostado',q:'14 piezas'},{n:'Chia',q:'7 cdas'},{n:'Harina de almendras',q:'11g'},
-    {n:'Nuez en mitad',q:'7 mitades'},{n:'Nuez entera',q:'3 piezas'},{n:'Crema de almendras',q:'2 cditas'},
-    {n:'Crema de cacahuate',q:'2 cditas'},{n:'Pistaches',q:'18 piezas'},{n:'Pepitas',q:'60 piezas'},
-    {n:'Semillas de girasol',q:'4 cditas'}
-  ],
-  proteina_polvo:[
-    {n:'Isopur Platano',q:'1 scoop'},{n:'Isopur Cookies and Cream',q:'1 scoop'},
-    {n:'Whey Helado de Vainilla',q:'1 scoop'},{n:'Scoop proteina (otro)',q:'1 scoop'}
-  ]
-};
-
 // ── STATE ──
 function todayKey(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function keyOf(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function ls(){try{return JSON.parse(localStorage.getItem('nt4')||'{}');}catch(e){return {};}}
 function ss(s){localStorage.setItem('nt4',JSON.stringify(s));}
-function gd(k){var s=ls();if(!s[k])s[k]={water:0,mp:{},mc:[],sc:[],ch:[],foods:{},ex:0};if(!s[k].foods)s[k].foods={};if(s[k].ex===undefined)s[k].ex=0;return s[k];}
+function gd(k){var s=ls();if(!s[k])s[k]={water:0,mp:{},mc:[],sc:[],ch:[],foods:{},ex:0,sl:0};if(!s[k].foods)s[k].foods={};if(s[k].ex===undefined)s[k].ex=0;if(s[k].sl===undefined)s[k].sl=0;return s[k];}
 function sd(k,d){var s=ls();s[k]=d;ss(s);autoSync();}
 function gw(){try{return JSON.parse(localStorage.getItem('wts')||'[]');}catch(e){return [];}}
 function sw(w){localStorage.setItem('wts',JSON.stringify(w));autoSync();}
@@ -776,7 +834,12 @@ function porcPct(k){
   keys.forEach(function(g){if((p[g]||0)>=PT[g].t)met++;});
   return Math.round(met/keys.length*100);
 }
-function medPct(k){var s=ls();var c=s[k]&&s[k].mc||[];return Math.round(c.length/6*100);}
+function medPct(k){
+  var s=ls();var c=s[k]&&s[k].mc||[];
+  var d=new Date(k+'T12:00:00');var dow=d.getDay();var isFri=dow===5;
+  var total=MEDS.filter(function(m){return m.always||(m.friOnly&&isFri);}).length;
+  return Math.round(c.length/total*100);
+}
 
 // ── FOOD STATS ──
 var activeFoodGroup='verduras';
@@ -856,6 +919,20 @@ function renderDash(){
   document.getElementById('m-meds-s').style.color=(n===1?todM:avgM)>=100?'var(--good)':'var(--muted)';
 
   var checkAvg=Math.round(days.map(function(k){var c=s[k]&&s[k].ch&&s[k].ch.length||0;return Math.round(c/8*100);}).reduce(function(a,b){return a+b;},0)/n);
+
+  // Electrolytes status
+  var todayDow=new Date().getDay();
+  var sueroDay=SUEROS.find(function(s2){return s2.day===todayDow;});
+  var sueroChecked=sueroDay&&(s[tk]&&s[tk].sc&&s[tk].sc.indexOf(sueroDay.id)>=0);
+  var sueroStr='';var sueroClass='';
+  if(sueroDay){
+    sueroStr=sueroChecked?'Tomado hoy':'Pendiente hoy';
+    sueroClass=sueroChecked?'bg':'bw';
+  } else {
+    var nextSuero=SUEROS.find(function(s2){return s2.day>todayDow;})||SUEROS[0];
+    sueroStr='Hoy no toca - prox: '+nextSuero.l;
+    sueroClass='';
+  }
   var wAmt=n===1?todW.toFixed(1):avgW;var wClass=parseFloat(wAmt)>=3?'bg':'bw';
   var pClass=(n===1?todP:avgP)>=80?'bg':(n===1?todP:avgP)>=50?'bw':'bb';
   var mClass=(n===1?todM:avgM)>=100?'bg':(n===1?todM:avgM)>0?'bw':'bb';
@@ -867,6 +944,7 @@ function renderDash(){
     '<div class="sum-row"><div class="sdot" style="background:var(--accent)"></div><div class="slbl">Peso actual</div><div class="sval">'+(lw?lw.w+'kg':'sin datos')+'</div>'+(pdelta?'<span class="sbadge '+pdClass+'">'+pdelta+'</span>':'')+'</div>'+
     '<div class="sum-row"><div class="sdot" style="background:var(--pink)"></div><div class="slbl">Porciones</div><div class="sval">'+(n===1?todP:avgP)+'%</div><span class="sbadge '+pClass+'">'+(( n===1?todP:avgP)>=80?'Bien':(n===1?todP:avgP)>=50?'Regular':'Bajo')+'</span></div>'+
     '<div class="sum-row"><div class="sdot" style="background:var(--purple)"></div><div class="slbl">Medicamento</div><div class="sval">'+(n===1?todM:avgM)+'%</div><span class="sbadge '+mClass+'">'+(( n===1?todM:avgM)>=100?'Completo':'Incompleto')+'</span></div>'+
+    '<div class="sum-row"><div class="sdot" style="background:var(--blue)"></div><div class="slbl">⚡ Suero / Electrolit</div><div class="sval" style="font-size:.78rem">'+(sueroStr)+'</div>'+(sueroClass?'<span class="sbadge '+sueroClass+'">'+(sueroChecked?'✓':'Pendiente')+'</span>':'')+'</div>'+
     '<div class="sum-row"><div class="sdot" style="background:var(--warn)"></div><div class="slbl">Checklist anti-reflujo</div><div class="sval">'+checkAvg+'%</div></div>';
 
   var chartDays=getDays(n<7?7:n);
@@ -995,6 +1073,24 @@ function renderDash(){
 
   renderFoodStats(activeFoodGroup);
   renderWeightGoals();
+
+  dc('ch-sleep');
+  var slData=chartDays.map(function(k){return s[k]&&s[k].sl||0;});
+  var slOpts=JSON.parse(JSON.stringify(opts));
+  slOpts.scales.y.min=0;slOpts.scales.y.max=12;
+  slOpts.scales.y.ticks.callback=function(v){return v+'h';};
+  // Add reference lines at 7 and 9
+  slOpts.plugins.annotation=null;
+  charts['ch-sleep']=new Chart(document.getElementById('ch-sleep').getContext('2d'),{
+    type:'bar',
+    data:{labels:labels,datasets:[
+      {data:slData,backgroundColor:slData.map(function(v,i){
+        var col=v===0?'rgba(160,100,245,.15)':v<6?'rgba(245,100,100,.7)':v<7?'rgba(245,162,100,.7)':v<=9?'rgba(100,245,180,.8)':'rgba(245,162,100,.7)';
+        return isToday[i]?col.replace(/[\d.]+\)$/,'1)'):col;
+      }),borderRadius:6,borderSkipped:false,label:'Horas dormidas'}
+    ]},
+    options:slOpts
+  });
 }
 
 function exportReport(){
@@ -1005,7 +1101,7 @@ function exportReport(){
   txt+='Plan: Dieta Anti-Reflujo (Michelle Ocampo)\n';
   txt+='\n--- PESO ---\n';wts.slice(-7).forEach(function(w){txt+=w.date+': '+w.w+'kg\n';});
   txt+='\n--- AGUA (ultimos 7 dias) ---\n';days7.forEach(function(k){txt+=k+': '+((s[k]&&s[k].water||0)*0.25).toFixed(1)+'L\n';});
-  txt+='\n--- MEDICAMENTO (ultimos 7 dias) ---\n';days7.forEach(function(k){var c=s[k]&&s[k].mc||[];txt+=k+': '+c.length+'/6 tomas\n';});
+  txt+='\n--- MEDICAMENTO (ultimos 7 dias) ---\n';days7.forEach(function(k){var c=s[k]&&s[k].mc||[];var d2=new Date(k+'T12:00:00');var isFri2=d2.getDay()===5;var tot=MEDS.filter(function(m){return m.always||(m.friOnly&&isFri2);}).length;txt+=k+': '+c.length+'/'+tot+' tomas\n';});
   txt+='\n--- PORCIONES (ultimos 7 dias) ---\n';days7.forEach(function(k){txt+=k+': '+porcPct(k)+'% adherencia\n';});
   txt+='\n--- PORCIONES HOY DETALLE ('+todayKey()+') ---\n';
   var p=getTotals(s[todayKey()]);
@@ -1113,6 +1209,7 @@ function renderDia(){
   });
   document.getElementById('day-checks').innerHTML=ckh;
   renderExercise(day);
+  renderSleep(day);
 }
 
 function toggleMeal(mk,key){
@@ -1175,6 +1272,28 @@ function renderExercise(day){
   else if(min<30)meta.textContent='buen inicio — meta: 30-60 min';
   else if(min<60)meta.textContent='va muy bien — sigue!';
   else meta.textContent='🎉 Meta de ejercicio alcanzada!';
+}
+
+function addSleep(delta){
+  var key=keyOf(viewDate);var day=gd(key);
+  day.sl=Math.max(0,Math.min(24,parseFloat(((day.sl||0)+delta).toFixed(1))));
+  sd(key,day);renderSleep(day);
+  if(delta>0)toast('😴 '+day.sl+'h de sueño registradas');
+}
+
+function renderSleep(day){
+  var h=day.sl||0;
+  var el=document.getElementById('sl-num');var meta=document.getElementById('sl-meta');var bar=document.getElementById('sl-bar');
+  if(!el)return;
+  var hInt=Math.floor(h);var min=Math.round((h-hInt)*60);
+  el.textContent=hInt+'h'+(min>0?' '+min+'min':'');
+  var pct=Math.min(100,h/9*100);
+  bar.style.width=pct+'%';
+  if(h===0){meta.textContent='sin registro — horas de la noche anterior';bar.style.background='var(--purple)';}
+  else if(h<6){meta.textContent='poco sueno — lo ideal es 7-9h';bar.style.background='var(--bad)';}
+  else if(h<7){meta.textContent='casi en rango — intenta llegar a 7h';bar.style.background='var(--warn)';}
+  else if(h<=9){meta.textContent='🎉 Excelente! Dentro del rango ideal';bar.style.background='var(--good)';}
+  else{meta.textContent='Mucho sueno — revisa tu rutina de descanso';bar.style.background='var(--warn)';}
 }
 
 function renderWeightGoals(){
