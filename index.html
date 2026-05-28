@@ -310,22 +310,54 @@ input:focus{outline:none;border-color:var(--accent);}
     <div class="acc-item"><div class="acc-h" onclick="tacc('ali')"><span>🥦 Alimentos permitidos</span><i class="acc-arr" id="arr-ali">▾</i></div>
       <div class="acc-b" id="body-ali">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:.78rem">
-          <div style="background:var(--card2);border-radius:7px;padding:9px"><strong>🥦 Verduras</strong><br><span style="color:var(--muted)">Zanahoria, calabaza, chayote, pepino, espinaca, jitomate, ejotes, berenjena, pimiento (cocido)</span></div>
-          <div style="background:var(--card2);border-radius:7px;padding:9px"><strong>🍊 Frutas</strong><br><span style="color:var(--muted)">Platano, fresas, uvas, kiwi, naranja, pina, papaya, melon, manzana/pera cocidas</span></div>
-          <div style="background:var(--card2);border-radius:7px;padding:9px"><strong>🌾 Cereales</strong><br><span style="color:var(--muted)">Papa, arroz, avena, tortilla maiz, quinoa, pan masa madre</span></div>
-          <div style="background:var(--card2);border-radius:7px;padding:9px"><strong>🥩 Proteinas</strong><br><span style="color:var(--muted)">Pollo, pavo, pescado, huevo, carne magra, queso panela/oaxaca</span></div>
-          <div style="background:var(--card2);border-radius:7px;padding:9px"><strong>🥛 Lacteos</strong><br><span style="color:var(--muted)">Leche deslactosada, yogurt griego, bebidas vegetales</span></div>
-          <div style="background:var(--card2);border-radius:7px;padding:9px"><strong>🥑 Grasas</strong><br><span style="color:var(--muted)">Aceite oliva, aguacate, nueces, almendras, cacahuates, pistaches</span></div>
+          <div style="background:var(--card2);border-radius:7px;padding:9px"><strong>🥦 Verduras</strong><br><span style="color:var(--muted)">Zanahoria, calabaza, chayote, pepino, espinaca, lechuga, jitomate, ejotes, berenjena, pimiento morron — <strong style="color:var(--accent)">Todo guisado o cocido</strong></span></div>
+          <div style="background:var(--card2);border-radius:7px;padding:9px"><strong>🍊 Frutas</strong><br><span style="color:var(--muted)">Platano, fresas, uvas, kiwi, naranja, mandarina, pina, papaya, melon, manzana cocida, pera cocida</span></div>
+          <div style="background:var(--card2);border-radius:7px;padding:9px"><strong>🌾 Cereales</strong><br><span style="color:var(--muted)">Papa, arroz, avena, tortilla de maiz, quinoa, pan de masa madre</span></div>
+          <div style="background:var(--card2);border-radius:7px;padding:9px"><strong>🥩 Proteinas</strong><br><span style="color:var(--muted)">Pollo, pavo, pescado, huevo, carne magra, quesos blancos (panela, oaxaca)</span></div>
+          <div style="background:var(--card2);border-radius:7px;padding:9px"><strong>🥛 Lacteos</strong><br><span style="color:var(--muted)">Leche deslactosada, yogurt griego, bebidas vegetales (almendra, arroz, coco, avena)</span></div>
+          <div style="background:var(--card2);border-radius:7px;padding:9px"><strong>🥑 Grasas</strong><br><span style="color:var(--muted)">Aceite de oliva, aguacate, nueces, almendras, cacahuates, pistaches, aceitunas (5 pzas = 1 porcion)</span></div>
+          <div style="background:var(--card2);border-radius:7px;padding:9px;grid-column:1/-1"><strong>💧 Bebidas</strong><br><span style="color:var(--muted)">Agua, te (jengibre, canela, manzanilla, curcuma, verde, hibisco), sueros/hidratacion oral</span></div>
         </div>
       </div>
     </div>
     <div class="acc-item"><div class="acc-h" onclick="tacc('proh')"><span>🚫 NO recomendados</span><i class="acc-arr" id="arr-proh">▾</i></div>
       <div class="acc-b" id="body-proh">
+        <div style="background:rgba(245,100,100,.06);border:1px solid rgba(245,100,100,.2);border-radius:10px;padding:12px;margin-bottom:12px;font-size:.8rem;color:var(--muted);line-height:1.5">
+          <strong style="color:var(--bad)">Objetivo:</strong> Disminuir reflujo y pirosis, evitar irritacion esofagica, mejorar vaciamiento gastrico, reducir distension abdominal.
+        </div>
         <div class="ptrow hdr"><div>Grupo</div><div>Evitar</div></div>
-        <div class="ptrow bad"><div>Frituras</div><div>Frito, cremas, embutidos, comida rapida</div></div>
-        <div class="ptrow bad"><div>Irritantes</div><div>Chile, picante, salsas condimentadas, pimienta</div></div>
-        <div class="ptrow bad"><div>Bebidas</div><div>Cafe, alcohol, refrescos, energizantes</div></div>
-        <div class="ptrow bad"><div>Otros</div><div>Chocolate, menta, citricos en exceso, salsa de tomate, cebolla cruda, ajo</div></div>
+        <div class="ptrow bad"><div>🍟 Grasas y frituras</div><div>Comida frita, capeada, empanizada, cremas, embutidos, comida rapida</div></div>
+        <div class="ptrow bad"><div>🌶 Irritantes</div><div>Chile, picante, salsas muy condimentadas, pimienta</div></div>
+        <div class="ptrow bad"><div>☕ Bebidas</div><div>Cafe, alcohol, refrescos, gaseosas, bebidas energizantes</div></div>
+        <div class="ptrow bad"><div>🚫 Otros</div><div>Semillas de frutas (tuna, pitaya), cascara de frutas, verduras crudas, chocolate, menta, citricos en exceso, tomate o salsa de tomate, cebolla cruda, ajo</div></div>
+        <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:12px">
+          <div style="font-family:'Syne',sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:10px">Preparaciones NO permitidas</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            <span style="background:rgba(245,100,100,.12);color:var(--bad);border-radius:6px;padding:4px 10px;font-size:.78rem">Frito</span>
+            <span style="background:rgba(245,100,100,.12);color:var(--bad);border-radius:6px;padding:4px 10px;font-size:.78rem">Capeado</span>
+            <span style="background:rgba(245,100,100,.12);color:var(--bad);border-radius:6px;padding:4px 10px;font-size:.78rem">Empanizado</span>
+            <span style="background:rgba(245,100,100,.12);color:var(--bad);border-radius:6px;padding:4px 10px;font-size:.78rem">Porciones abundantes</span>
+          </div>
+          <div style="font-family:'Syne',sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:12px 0 8px">Preparaciones SI permitidas</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            <span style="background:rgba(100,245,180,.1);color:var(--good);border-radius:6px;padding:4px 10px;font-size:.78rem">Hervido</span>
+            <span style="background:rgba(100,245,180,.1);color:var(--good);border-radius:6px;padding:4px 10px;font-size:.78rem">Guisado</span>
+            <span style="background:rgba(100,245,180,.1);color:var(--good);border-radius:6px;padding:4px 10px;font-size:.78rem">Asado</span>
+            <span style="background:rgba(100,245,180,.1);color:var(--good);border-radius:6px;padding:4px 10px;font-size:.78rem">Al vapor</span>
+            <span style="background:rgba(100,245,180,.1);color:var(--good);border-radius:6px;padding:4px 10px;font-size:.78rem">Horneado</span>
+          </div>
+        </div>
+        <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:12px;font-size:.8rem;color:var(--muted);line-height:1.7">
+          <div style="font-family:'Syne',sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px">Reglas adicionales</div>
+          <div>⏰ No acostarse <strong style="color:var(--text)">2-3 horas</strong> despues de comer</div>
+          <div>🍽 Comer <strong style="color:var(--text)">despacio</strong> y masticar bien</div>
+          <div>💧 Mantener <strong style="color:var(--text)">buena hidratacion</strong></div>
+          <div>🍱 Evitar comidas <strong style="color:var(--text)">muy abundantes</strong></div>
+          <div>🥛 Evitar lacteos enteros o con grasa alta en exceso</div>
+          <div>🍊 Citricos en exceso irritan el esofago — con moderacion</div>
+          <div>🧅 Cebolla cruda y ajo estan prohibidos — cocidos con moderacion</div>
+          <div>🍫 Chocolate y menta relajan el esfinter esofagico — evitar</div>
+        </div>
       </div>
     </div>
     <div class="acc-item"><div class="acc-h" onclick="tacc('ptbl')"><span>📊 Distribucion de porciones</span><i class="acc-arr" id="arr-ptbl">▾</i></div>
