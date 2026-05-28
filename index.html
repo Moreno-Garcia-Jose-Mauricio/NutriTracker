@@ -140,8 +140,29 @@ input:focus{outline:none;border-color:var(--accent);}
 </head>
 <body>
 
+<!-- SETUP MODAL -->
+<div id="setupModal" style="display:none;position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.85);backdrop-filter:blur(6px);align-items:center;justify-content:center;">
+  <div style="background:var(--card);border-radius:18px;padding:24px;margin:20px;width:100%;max-width:420px;">
+    <div style="font-family:Syne,sans-serif;font-weight:800;font-size:1.1rem;margin-bottom:6px">☁️ Configurar sincronizacion</div>
+    <div style="font-size:.82rem;color:var(--muted);margin-bottom:18px;line-height:1.5">Tus datos se guardaran en GitHub Gist y se sincronizaran en todos tus dispositivos.</div>
+    <div style="margin-bottom:12px">
+      <div style="font-size:.75rem;color:var(--muted);margin-bottom:5px;font-family:Syne,sans-serif">TOKEN DE GITHUB</div>
+      <input type="password" id="setup-token" placeholder="ghp_xxxxxxxxxxxx">
+      <div style="font-size:.72rem;color:var(--muted);margin-top:4px">github.com/settings/tokens → Generate new token (classic) → marca solo gist</div>
+    </div>
+    <div style="margin-bottom:12px">
+      <div style="font-size:.75rem;color:var(--muted);margin-bottom:5px;font-family:Syne,sans-serif">GIST ID</div>
+      <input type="text" id="setup-gist" placeholder="abc123def456...">
+      <div style="font-size:.72rem;color:var(--muted);margin-top:4px">gist.github.com → New gist → data.json → {} → Create secret gist → copia el ID</div>
+    </div>
+    <button class="savebtn" style="width:100%;margin-top:8px" onclick="saveSetup()">Guardar y sincronizar</button>
+    <button style="width:100%;margin-top:8px;background:transparent;border:none;color:var(--muted);font-size:.82rem;cursor:pointer;padding:8px" onclick="document.getElementById('setupModal').style.display='none'">Usar sin nube</button>
+  </div>
+</div>
+
+
 <div class="page active" id="page-dash">
-  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span></div><div class="pill" id="dashDate"></div></div>
+  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
   <div class="sec">
     <div class="ptabs">
       <div class="pt active" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
@@ -161,7 +182,14 @@ input:focus{outline:none;border-color:var(--accent);}
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">🍽 PORCIONES %</div><div class="ch"><canvas id="ch-porc"></canvas></div></div>
     <div class="card" style="margin-bottom:14px"><div class="stitle" style="margin-bottom:6px">💊 MEDICAMENTO %</div><div class="ch"><canvas id="ch-meds"></canvas></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">😴 SUENO (horas)</div><div class="ch"><canvas id="ch-sleep"></canvas></div></div>
-    <button class="expbtn" onclick="exportReport()">📤 Exportar reporte para nutrióloga</button>
+    <button class="expbtn" onclick="exportReport()">📤 Exportar reporte para nutriloga</button>
+    <button class="expbtn" style="border-color:var(--blue);color:var(--blue)" onclick="cloudSync()">☁️ Sincronizar con nube</button>
+    <button class="expbtn" style="border-color:var(--purple);color:var(--purple)" onclick="showSetup()">⚙️ Configurar sincronizacion</button>
+    <button class="expbtn" style="border-color:var(--pink);color:var(--pink)" onclick="backupData()">💾 Backup local (JSON)</button>
+    <div style="margin-bottom:10px">
+      <label style="font-size:.75rem;color:var(--muted);display:block;margin-bottom:6px;font-family:Syne,sans-serif">📥 RESTAURAR DESDE BACKUP</label>
+      <input type="file" id="restoreFile" accept=".json" onchange="restoreBackup(this)" style="font-size:.78rem;padding:8px;color:var(--muted)">
+    </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
       <button class="expbtn" style="border-color:var(--blue);color:var(--blue);font-size:.8rem;padding:10px" onclick="backupData()">💾 Backup datos</button>
       <button class="expbtn" style="border-color:var(--purple);color:var(--purple);font-size:.8rem;padding:10px" onclick="restoreData()">📥 Restaurar datos</button>
