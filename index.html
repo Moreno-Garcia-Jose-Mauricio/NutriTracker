@@ -160,6 +160,7 @@ input:focus{outline:none;border-color:var(--accent);}
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">⚖️ PESO</div><div class="ch" id="ch-peso-wrap"><canvas id="ch-peso"></canvas></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">🍽 PORCIONES %</div><div class="ch"><canvas id="ch-porc"></canvas></div></div>
     <div class="card" style="margin-bottom:14px"><div class="stitle" style="margin-bottom:6px">💊 MEDICAMENTO %</div><div class="ch"><canvas id="ch-meds"></canvas></div></div>
+    <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">😴 SUENO (horas)</div><div class="ch"><canvas id="ch-sleep"></canvas></div></div>
     <button class="expbtn" onclick="exportReport()">📤 Exportar reporte para nutrióloga</button>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
       <button class="expbtn" style="border-color:var(--blue);color:var(--blue);font-size:.8rem;padding:10px" onclick="backupData()">💾 Backup datos</button>
@@ -202,6 +203,40 @@ input:focus{outline:none;border-color:var(--accent);}
     </div>
   </div>
   <div class="sec"><div class="stitle">✅ Checklist anti-reflujo</div><div class="card"><div id="day-checks"></div></div></div>
+  <div class="sec">
+    <div class="stitle">🏃 Ejercicio</div>
+    <div class="card">
+      <div style="text-align:center;padding:8px 0 14px">
+        <div id="ex-num" style="font-family:'Syne',sans-serif;font-size:2.6rem;font-weight:800;color:var(--good);line-height:1">0 min</div>
+        <div id="ex-meta" style="font-size:.8rem;color:var(--muted);margin-top:3px">sin ejercicio hoy</div>
+      </div>
+      <div style="height:8px;background:var(--border);border-radius:999px;overflow:hidden;margin-bottom:14px">
+        <div id="ex-bar" style="height:100%;width:0%;background:var(--good);border-radius:999px;transition:width .5s"></div>
+      </div>
+      <div style="display:flex;gap:7px">
+        <button class="wbtn" onclick="addExercise(-15)">-15</button>
+        <button class="wbtn main" style="background:var(--good);border-color:var(--good);color:#000" onclick="addExercise(15)">+ 15 min</button>
+        <button class="wbtn" onclick="addExercise(30)">+30</button>
+      </div>
+    </div>
+  </div>
+  <div class="sec">
+    <div class="stitle">😴 Sueno — noche anterior</div>
+    <div class="card">
+      <div style="text-align:center;padding:8px 0 14px">
+        <div id="sl-num" style="font-family:'Syne',sans-serif;font-size:2.6rem;font-weight:800;color:var(--purple);line-height:1">0h</div>
+        <div id="sl-meta" style="font-size:.8rem;color:var(--muted);margin-top:3px">registra horas de la noche anterior</div>
+      </div>
+      <div style="height:8px;background:var(--border);border-radius:999px;overflow:hidden;margin-bottom:14px">
+        <div id="sl-bar" style="height:100%;width:0%;background:var(--purple);border-radius:999px;transition:width .5s"></div>
+      </div>
+      <div style="display:flex;gap:7px">
+        <button class="wbtn" onclick="addSleep(-1)">-1h</button>
+        <button class="wbtn main" style="background:var(--purple);border-color:var(--purple);color:#fff" onclick="addSleep(1)">+ 1 hora</button>
+        <button class="wbtn" onclick="addSleep(0.5)">+30min</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="page" id="page-plan">
@@ -399,8 +434,8 @@ var EQ={
 };
 
 // ── STATE ──
-function todayKey(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
-function keyOf(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function todayKey(){try{var p=new Intl.DateTimeFormat('es-MX',{timeZone:'America/Mexico_City',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());var parts=p.split('/');return parts[2]+'-'+parts[1]+'-'+parts[0];}catch(e){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}}
+function keyOf(d){try{var p=new Intl.DateTimeFormat('es-MX',{timeZone:'America/Mexico_City',year:'numeric',month:'2-digit',day:'2-digit'}).format(d);var parts=p.split('/');return parts[2]+'-'+parts[1]+'-'+parts[0];}catch(e){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}}
 function ls(){try{return JSON.parse(localStorage.getItem('nt4')||'{}');}catch(e){return {};}}
 function ss(s){localStorage.setItem('nt4',JSON.stringify(s));}
 function gd(k){var s=ls();if(!s[k])s[k]={water:0,mp:{},mc:[],sc:[],ch:[],foods:{},ex:0,sl:0};if(!s[k].foods)s[k].foods={};if(s[k].ex===undefined)s[k].ex=0;if(s[k].sl===undefined)s[k].sl=0;return s[k];}
@@ -531,6 +566,11 @@ function renderDash(){
   dc('ch-meds');
   var md=chartDays.map(medPct);var mopts=JSON.parse(JSON.stringify(opts));mopts.scales.y.ticks.callback=function(v){return v+'%';};mopts.scales.y.min=0;mopts.scales.y.max=100;
   charts['ch-meds']=new Chart(document.getElementById('ch-meds').getContext('2d'),{type:'bar',data:{labels:labels,datasets:[{data:md,backgroundColor:md.map(function(v,i){var base=v>=100?'160,100,245':v>=50?'245,162,100':'245,100,100';return isToday[i]?'rgba('+base+',.95)':'rgba('+base+',.5)';}),borderRadius:6,borderSkipped:false}]},options:mopts});
+
+  dc('ch-sleep');
+  var slData=chartDays.map(function(k){return s[k]&&s[k].sl||0;});
+  var slOpts=JSON.parse(JSON.stringify(opts));slOpts.scales.y.min=0;slOpts.scales.y.max=12;slOpts.scales.y.ticks.callback=function(v){return v+'h';};
+  charts['ch-sleep']=new Chart(document.getElementById('ch-sleep').getContext('2d'),{type:'bar',data:{labels:labels,datasets:[{data:slData,backgroundColor:slData.map(function(v,i){var rgb=v===0?'160,100,245':v<6?'245,100,100':v<7?'245,162,100':v<=9?'100,245,180':'245,162,100';return isToday[i]?'rgba('+rgb+',1)':'rgba('+rgb+',.55)';}),borderRadius:6,borderSkipped:false,label:'Horas dormidas'}]},options:slOpts});
 }
 
 function backupData(){
@@ -706,6 +746,7 @@ function renderDia(){
   });
   document.getElementById('day-checks').innerHTML=ckh;
   renderExercise(day);
+  renderSleep(day);
   renderSleep(day);
 }
 
