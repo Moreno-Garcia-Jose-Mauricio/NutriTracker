@@ -535,7 +535,7 @@ var MKW={d:[6,9],c1:[9,12],co:[12,15],c2:[15,19],ce:[19,22]};
 var MG={d:{cereales:2,proteina:2,frutas:1,proteina_polvo:1},c1:{frutas:1,lacteos:1,grasas_con:2},co:{verduras:2,cereales:4,proteina:6,grasas_sin:2},c2:{frutas:1,lacteos:1,grasas_con:2},ce:{cereales:2,proteina:2,proteina_polvo:1}};
 var PT={verduras:{l:'Verduras',t:2,c:'#64f5b4'},frutas:{l:'Frutas',t:3,c:'#f5c864'},cereales:{l:'Cereales',t:8,c:'#c8f564'},proteina:{l:'Proteina',t:10,c:'#f564b4'},lacteos:{l:'Lacteos',t:2,c:'#64d4f5'},grasas_sin:{l:'Grasas s/p',t:2,c:'#f5a264'},grasas_con:{l:'Grasas c/p',t:4,c:'#a064f5'},proteina_polvo:{l:'Prot.polvo',t:2,c:'#f56464'}};
 var RC=['Comi 5-6 veces hoy','Comi despacio, mastique bien','No me acoste 2-3h despues','Evite fritos, capeado, empanizado','Sin cafe, alcohol ni refrescos','Sin chile ni picante','Porciones moderadas','Buena hidratacion hoy'];
-var MEDS=[{id:'pm',l:'Pantoprazol',dose:'1 tableta',t:'Antes del desayuno',s:'30 min antes - en ayuno',ico:'🌅',c:'#f564b4',always:true},{id:'gm',l:'Glutapak R',dose:'1 sobre',t:'En ayuno (manana)',s:'Disuelto en 100ml agua',ico:'🌿',c:'#64f5b4',always:true},{id:'om',l:'Omegagenics EPA-DHA',dose:'2 capsulas',t:'Despues del desayuno',s:'Metagenics / Nordic 1280',ico:'🐟',c:'#64d4f5',always:true},{id:'mi',l:'Milda 25,000 UI',dose:'1 capsula',t:'Despues del desayuno',s:'Solo viernes - 4 semanas y suspender',ico:'☀️',c:'#f5c864',friOnly:true},{id:'pn',l:'Pantoprazol',dose:'1 tableta',t:'Antes de la cena',s:'30 min antes - en ayuno',ico:'🌙',c:'#a064f5',always:true},{id:'gn',l:'Glutapak R',dose:'1 sobre',t:'Antes de dormir',s:'Disuelto en 100ml agua - en ayuno',ico:'🌙',c:'#64f5b4',always:true}];
+var MEDS=[{id:'pm',l:'Pantoprazol',dose:'1 tableta',t:'Antes del desayuno',s:'30 min antes - en ayuno',ico:'🌅',c:'#f564b4',always:true},{id:'gm',l:'Glutapak R',dose:'1 sobre',t:'En ayuno (manana)',s:'Disuelto en 100ml agua',ico:'🌿',c:'#64f5b4',always:true},{id:'om',l:'Omegagenics EPA-DHA',dose:'2 capsulas',t:'Despues del desayuno',s:'Metagenics / Nordic 1280',ico:'🐟',c:'#64d4f5',always:true},{id:'mi',l:'Milda 25,000 UI',dose:'1 capsula',t:'Despues del desayuno',s:'Solo viernes - 4 semanas y suspender',ico:'☀',c:'#f5c864',friOnly:true},{id:'pn',l:'Pantoprazol',dose:'1 tableta',t:'Antes de la cena',s:'30 min antes - en ayuno',ico:'🌙',c:'#a064f5',always:true},{id:'gn',l:'Glutapak R',dose:'1 sobre',t:'Antes de dormir',s:'Disuelto en 100ml agua - en ayuno',ico:'🌙',c:'#64f5b4',always:true}];
 var SUEROS=[{id:'su0',day:1,l:'Lunes'},{id:'su1',day:3,l:'Miercoles'},{id:'su2',day:5,l:'Viernes'}];
 var EQ={
   verduras:[
@@ -875,7 +875,7 @@ function renderFoodStats(group){
   var grpCounts=counts[group]||{};
   var items=Object.keys(grpCounts).map(function(n){return {n:n,c:grpCounts[n]};});
   items.sort(function(a,b){return b.c-a.c;});
-  if(items.length===0){list.innerHTML='<div style="color:var(--muted);font-size:.82rem;text-align:center;padding:20px 0">Sin datos aun — registra alimentos para ver estadisticas</div>';return;}
+  if(items.length===0){list.innerHTML='<div style="color:var(--muted);font-size:.82rem;text-align:center;padding:20px 0">Sin datos aun - registra alimentos para ver estadisticas</div>';return;}
   var max=items[0].c;
   var html='';
   items.slice(0,10).forEach(function(it,i){
@@ -904,7 +904,7 @@ function renderDash(){
   document.getElementById('m-agua-s').style.color=n===1&&todW>=3?'var(--good)':'var(--muted)';
 
   var wts=gw();var lw=wts.length?wts[wts.length-1]:null;var pw=wts.length>=2?wts[wts.length-2]:null;
-  document.getElementById('m-peso').textContent=lw?lw.w+'kg':'—';
+  document.getElementById('m-peso').textContent=lw?lw.w+'kg':'-';
   if(lw&&pw){var dw=(lw.w-pw.w).toFixed(1);document.getElementById('m-peso-s').textContent=(dw>0?'+':'')+dw+'kg';document.getElementById('m-peso-s').style.color=dw<0?'var(--good)':'var(--bad)';}
   else{document.getElementById('m-peso-s').textContent='sin datos anteriores';document.getElementById('m-peso-s').style.color='var(--muted)';}
 
@@ -1019,7 +1019,7 @@ function renderDash(){
     if(trendDataset){
       // Align real data to trend labels by padding
       var realAligned=new Array(trendDataset.data.length).fill(null);
-      // just use separate x for each dataset via different label sets — use wtsF labels for real
+      // just use separate x for each dataset via different label sets - use wtsF labels for real
       popts.plugins.legend.display=true;
       charts['ch-peso']=new Chart(document.getElementById('ch-peso').getContext('2d'),{
         type:'line',
@@ -1125,7 +1125,7 @@ function changeDay(d){var nd=new Date(viewDate);nd.setDate(nd.getDate()+d);var t
 function renderDia(){
   var key=keyOf(viewDate);var day=gd(key);var isToday=key===todayKey();
   var dow=viewDate.getDay();var dnames=['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado'];
-  document.getElementById('dn-name').textContent=isToday?'Hoy — '+dnames[dow]:dnames[dow];
+  document.getElementById('dn-name').textContent=isToday?'Hoy - '+dnames[dow]:dnames[dow];
   document.getElementById('dn-date').textContent=viewDate.toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'});
   document.getElementById('btn-next').disabled=isToday;
 
@@ -1139,7 +1139,7 @@ function renderDia(){
     var ok=day.mc.indexOf(m.id)>=0;var bc=ok?m.c:'var(--border)';var cbg=ok?m.c:'transparent';
     mh+='<div class="med-card" style="border-color:'+bc+'" onclick="toggleMed(\''+m.id+'\',\''+key+'\')">';
     mh+='<div class="med-ico">'+m.ico+'</div>';
-    mh+='<div class="med-info"><div class="med-name" style="'+(ok?'text-decoration:line-through;opacity:.5':'')+'">'+m.l+' — '+m.dose+'</div>';
+    mh+='<div class="med-info"><div class="med-name" style="'+(ok?'text-decoration:line-through;opacity:.5':'')+'">'+m.l+' - '+m.dose+'</div>';
     mh+='<div class="med-time" style="color:'+m.c+'">'+m.t+'</div><div class="med-sub">'+m.s+'</div></div>';
     mh+='<div class="med-chk" style="background:'+cbg+';border-color:'+bc+'">'+(ok?'✓':'')+'</div></div>';
   });
@@ -1171,7 +1171,7 @@ function renderDia(){
 
   renderWater(key,day);
 
-  // SUERO — solo mostrar el dia correspondiente, los otros como estado
+  // SUERO - solo mostrar el dia correspondiente, los otros como estado
   if(!day.sc)day.sc=[];var sh='';
   var hasSueroToday=SUEROS.some(function(s2){return s2.day===dow;});
   if(hasSueroToday){
@@ -1183,7 +1183,7 @@ function renderDia(){
       sh+='<span class="clbl '+(ok?'done':'')+'">Suero / Electrolit de hoy</span></div>';
     });
   } else {
-    sh='<div style="font-size:.82rem;color:var(--muted);padding:8px 0">Hoy no toca suero — proximos dias: ';
+    sh='<div style="font-size:.82rem;color:var(--muted);padding:8px 0">Hoy no toca suero - proximos dias: ';
     var next=SUEROS.filter(function(s2){return s2.day>dow;});
     if(next.length===0)next=SUEROS;
     sh+=next[0].l+'</div>';
@@ -1244,7 +1244,7 @@ function renderWater(key,day){
   document.getElementById('w-num').textContent=L+'L';
   document.getElementById('w-bar').style.width=Math.min(100,c/16*100)+'%';
   document.getElementById('w-bar').style.background=c>=16?'var(--accent)':'var(--blue)';
-  document.getElementById('w-meta').textContent=c>=16?'Meta superada — '+L+'L':'Meta: 3-4L faltan '+(Math.max(0,3-c*0.25)).toFixed(1)+'L';
+  document.getElementById('w-meta').textContent=c>=16?'Meta superada - '+L+'L':'Meta: 3-4L faltan '+(Math.max(0,3-c*0.25)).toFixed(1)+'L';
   var bh='';for(var i=0;i<c;i++){bh+='<div class="bub '+(i>=16?'extra':'on')+'" onclick="removeW('+i+',\''+key+'\')">💧</div>';}
   document.getElementById('w-bubbles').innerHTML=bh;
 }
@@ -1269,8 +1269,8 @@ function renderExercise(day){
   var pct=Math.min(100,min/60*100);
   bar.style.width=pct+'%';
   if(min===0)meta.textContent='sin ejercicio hoy';
-  else if(min<30)meta.textContent='buen inicio — meta: 30-60 min';
-  else if(min<60)meta.textContent='va muy bien — sigue!';
+  else if(min<30)meta.textContent='buen inicio - meta: 30-60 min';
+  else if(min<60)meta.textContent='va muy bien - sigue!';
   else meta.textContent='🎉 Meta de ejercicio alcanzada!';
 }
 
@@ -1278,7 +1278,7 @@ function addSleep(delta){
   var key=keyOf(viewDate);var day=gd(key);
   day.sl=Math.max(0,Math.min(24,parseFloat(((day.sl||0)+delta).toFixed(1))));
   sd(key,day);renderSleep(day);
-  if(delta>0)toast('😴 '+day.sl+'h de sueño registradas');
+  if(delta>0)toast('Sueno: '+day.sl+'h registradas');
 }
 
 function renderSleep(day){
@@ -1289,11 +1289,11 @@ function renderSleep(day){
   el.textContent=hInt+'h'+(min>0?' '+min+'min':'');
   var pct=Math.min(100,h/9*100);
   bar.style.width=pct+'%';
-  if(h===0){meta.textContent='sin registro — horas de la noche anterior';bar.style.background='var(--purple)';}
-  else if(h<6){meta.textContent='poco sueno — lo ideal es 7-9h';bar.style.background='var(--bad)';}
-  else if(h<7){meta.textContent='casi en rango — intenta llegar a 7h';bar.style.background='var(--warn)';}
+  if(h===0){meta.textContent='sin registro - horas de la noche anterior';bar.style.background='var(--purple)';}
+  else if(h<6){meta.textContent='poco sueno - lo ideal es 7-9h';bar.style.background='var(--bad)';}
+  else if(h<7){meta.textContent='casi en rango - intenta llegar a 7h';bar.style.background='var(--warn)';}
   else if(h<=9){meta.textContent='🎉 Excelente! Dentro del rango ideal';bar.style.background='var(--good)';}
-  else{meta.textContent='Mucho sueno — revisa tu rutina de descanso';bar.style.background='var(--warn)';}
+  else{meta.textContent='Mucho sueno - revisa tu rutina de descanso';bar.style.background='var(--warn)';}
 }
 
 function renderWeightGoals(){
@@ -1324,8 +1324,8 @@ function renderWeightGoals(){
     return d;
   }
 
-  var goals=[{kg:5,label:'Meta 1 — 5kg'},{kg:10,label:'Meta 2 — 10kg'},{kg:15,label:'Meta 3 — 15kg'}];
-  var html='<div style="font-size:.8rem;color:var(--muted);margin-bottom:14px">Inicial: <strong style="color:var(--text)">'+first+'kg</strong> &nbsp;·&nbsp; Actual: <strong style="color:var(--accent)">'+last+'kg</strong> &nbsp;·&nbsp; Bajado: <strong style="color:var(--good)">'+lost+'kg</strong></div>';
+  var goals=[{kg:5,label:'Meta 1 - 5kg'},{kg:10,label:'Meta 2 - 10kg'},{kg:15,label:'Meta 3 - 15kg'}];
+  var html='<div style="font-size:.8rem;color:var(--muted);margin-bottom:14px">Inicial: <strong style="color:var(--text)">'+first+'kg</strong> &nbsp;.&nbsp; Actual: <strong style="color:var(--accent)">'+last+'kg</strong> &nbsp;.&nbsp; Bajado: <strong style="color:var(--good)">'+lost+'kg</strong></div>';
 
   goals.forEach(function(g){
     var pct=Math.min(100,Math.max(0,lost/g.kg*100));var done=lost>=g.kg;
@@ -1359,7 +1359,7 @@ function openFM(g,mk,mt,key){
   _g=g;_mk2=mk;_mt=mt;_key2=key;
   var day=gd(key);var curr=((day.mp&&day.mp[mk])||{})[g]||0;
   var mLabel=MO.filter(function(m){return m.k===mk;})[0].l;
-  document.getElementById('fm-title').textContent=PT[g].l+' — '+mLabel;
+  document.getElementById('fm-title').textContent=PT[g].l+' - '+mLabel;
   document.getElementById('fm-sub').textContent='Meta: '+mt+' porciones - Registradas: '+curr;
   document.getElementById('man-amt').value='1';
   var items=EQ[g];var h='';
