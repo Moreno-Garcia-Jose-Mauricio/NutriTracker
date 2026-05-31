@@ -402,7 +402,7 @@ input:focus{outline:none;border-color:var(--accent);}
             <tr><td>Pantoprazol</td><td>2/día</td><td>30min antes desayuno + 30min antes cena (ayuno)</td></tr>
             <tr><td>Glutapak R</td><td>2 sobres/día</td><td>1 en ayuno mañana + 1 antes dormir (3 sem, luego 1/día)</td></tr>
             <tr><td>Omegagenics EPA-DHA</td><td>2 cápsulas</td><td>Después del desayuno</td></tr>
-            <tr><td>Milda 25,000 UI</td><td>1/semana</td><td>Solo viernes, después desayuno, 4 semanas</td></tr>
+            <tr><td>Milda 25,000 UI</td><td>1/semana</td><td>Solo lunes, despues desayuno, 4 semanas y suspender</td></tr>
           </tbody>
         </table></div>
       </div>
@@ -447,7 +447,7 @@ var MKW = {d:[6,9],c1:[9,12],co:[12,15],c2:[15,19],ce:[19,22]};
 var MG = {d:{cereales:2,proteina:2,frutas:1,proteina_polvo:1},c1:{frutas:1,lacteos:1,grasas_con:2},co:{verduras:2,cereales:4,proteina:6,grasas_sin:2},c2:{frutas:1,lacteos:1,grasas_con:2},ce:{cereales:2,proteina:2,proteina_polvo:1}};
 var PT = {verduras:{l:'Verduras 🥦',t:2,c:'#64f5b4'},frutas:{l:'Frutas 🍊',t:3,c:'#f5c864'},cereales:{l:'Cereales 🌾',t:8,c:'#c8f564'},proteina:{l:'Proteina 🥩',t:10,c:'#f564b4'},lacteos:{l:'Lacteos 🥛',t:2,c:'#64d4f5'},grasas_sin:{l:'Grasas s/p 🫒',t:2,c:'#f5a264'},grasas_con:{l:'Grasas c/p 🥑',t:4,c:'#a064f5'},proteina_polvo:{l:'Prot.polvo 💪',t:2,c:'#f56464'}};
 var RC = ['Comi 5 - 6 veces hoy','Comi despacio, mastique bien 🧘','No me acoste 2 - 3h despues 🛏','Evite fritos, capeado, empanizado','Sin cafe, alcohol ni refrescos ☕','Sin chile ni picante 🌶','Porciones moderadas 🍽','Buena hidratacion hoy 💧'];
-var MEDS=[{id:'pm',l:'Pantoprazol',dose:'1 tableta',t:'Antes del desayuno',s:'30 min antes - en ayuno',ico:'🌅',c:'#f564b4',always:true},{id:'gm',l:'Glutapak R',dose:'1 sobre',t:'En ayuno (manana)',s:'Disuelto en 100ml agua',ico:'🌿',c:'#64f5b4',always:true},{id:'om',l:'Omegagenics EPA-DHA',dose:'2 capsulas',t:'Despues del desayuno',s:'Metagenics / Nordic 1280',ico:'🐟',c:'#64d4f5',always:true},{id:'mi',l:'Milda 25,000 UI',dose:'1 capsula',t:'Despues del desayuno',s:'Solo viernes - 4 semanas y suspender',ico:'sol',c:'#f5c864',friOnly:true},{id:'pn',l:'Pantoprazol',dose:'1 tableta',t:'Antes de la cena',s:'30 min antes - en ayuno',ico:'🌙',c:'#a064f5',always:true},{id:'gn',l:'Glutapak R',dose:'1 sobre',t:'Antes de dormir',s:'Disuelto en 100ml agua - en ayuno',ico:'🌙',c:'#64f5b4',always:true}];
+var MEDS=[{id:'pm',l:'Pantoprazol',dose:'1 tableta',t:'Antes del desayuno',s:'30 min antes - en ayuno',ico:'🌅',c:'#f564b4',always:true},{id:'gm',l:'Glutapak R',dose:'1 sobre',t:'En ayuno (manana)',s:'Disuelto en 100ml agua',ico:'🌿',c:'#64f5b4',always:true},{id:'om',l:'Omegagenics EPA-DHA',dose:'2 capsulas',t:'Despues del desayuno',s:'Metagenics / Nordic 1280',ico:'🐟',c:'#64d4f5',always:true},{id:'mi',l:'Milda 25,000 UI',dose:'1 capsula',t:'Despues del desayuno',s:'Solo lunes - 4 semanas y suspender',ico:'☀️',c:'#f5c864',monOnly:true},{id:'pn',l:'Pantoprazol',dose:'1 tableta',t:'Antes de la cena',s:'30 min antes - en ayuno',ico:'🌙',c:'#a064f5',always:true},{id:'gn',l:'Glutapak R',dose:'1 sobre',t:'Antes de dormir',s:'Disuelto en 100ml agua - en ayuno',ico:'🌙',c:'#64f5b4',always:true}];
 var SUEROS = [{id:'su0',day:1,l:'Lunes'},{id:'su1',day:3,l:'Miercoles'},{id:'su2',day:5,l:'Viernes'}];
 var EQ={
   verduras:[{n:'Brocoli cocido',q:'1/2 taza'},{n:'Calabacita cocida',q:'1/2 taza'},{n:'Calabaza cocida',q:'1/2 taza'},{n:'Champinon cocido',q:'1/2 taza'},{n:'Chayote cocido',q:'1/2 taza'},{n:'Ejotes cocidos',q:'1/2 taza'},{n:'Espinaca cocida',q:'1/2 taza'},{n:'Jitomate cocido',q:'1 pieza'},{n:'Nopal cocido',q:'1 taza'},{n:'Pepino',q:'1 taza'},{n:'Pimiento morron cocido',q:'1/2 taza'},{n:'Zanahoria cocida',q:'1/2 taza'},{n:'Zanahoria cruda',q:'1 pieza'},{n:'Berenjena cocida',q:'1/2 taza'},{n:'Lechuga',q:'2 tazas'},{n:'Chicharo cocido',q:'1/4 taza'},{n:'Betabel cocido',q:'1/4 pieza'},{n:'Kale cocido',q:'1/2 taza'},{n:'Acelga cocida',q:'1/2 taza'},{n:'Coliflor cocida',q:'1 taza'},{n:'Seta cocida',q:'1/2 taza'},{n:'Esparragos cocidos',q:'6 pzas'},{n:'Flor de calabaza',q:'1 taza'}],
@@ -581,7 +581,7 @@ function porcPct(k){
   keys.forEach(function(g){if((p[g]||0)>=PT[g].t)met++;});
   return Math.round(met/keys.length*100);
 }
-function medPct(k){var ss2=ls();var mc2=ss2[k]&&ss2[k].mc||[];var d2=new Date(k+'T12:00:00');var tot=MEDS.filter(function(m){return m.always||(m.friOnly&&d2.getDay()===5);}).length;return Math.round(mc2.length/tot*100);}
+function medPct(k){var ss2=ls();var mc2=ss2[k]&&ss2[k].mc||[];var d2=new Date(k+'T12:00:00');var tot=MEDS.filter(function(m){return m.always||(m.monOnly&&d2.getDay()===1);}).length;return Math.round(mc2.length/tot*100);}
 
 function renderDash(){
   var n=period==='day'?1:period==='week'?7:30;
@@ -597,9 +597,17 @@ function renderDash(){
   document.getElementById('m-agua-s').style.color=n===1&&todW>=3?'var(--good)':'var(--muted)';
 
   var wts=gw();var lw=wts.length?wts[wts.length-1]:null;var pw=wts.length>=2?wts[wts.length-2]:null;
-  document.getElementById('m-peso').textContent=lw?lw.w+'kg':' - ';
-  if(lw&&pw){var dw=(lw.w-pw.w).toFixed(1);document.getElementById('m-peso-s').textContent=(dw>0?'+':'')+dw+'kg';document.getElementById('m-peso-s').style.color=dw<0?'var(--good)':'var(--bad)';}
-  else{document.getElementById('m-peso-s').textContent='sin cambio anterior';document.getElementById('m-peso-s').style.color='var(--muted)';}
+  var lwVal=lw&&lw.w!==undefined?parseFloat(lw.w):null;
+  var pwVal=pw&&pw.w!==undefined?parseFloat(pw.w):null;
+  document.getElementById('m-peso').textContent=lwVal!==null?lwVal+'kg':' - ';
+  if(lwVal!==null&&pwVal!==null){
+    var dw=(lwVal-pwVal).toFixed(1);
+    document.getElementById('m-peso-s').textContent=(dw>0?'+':'')+dw+' kg vs anterior';
+    document.getElementById('m-peso-s').style.color=parseFloat(dw)<0?'var(--good)':parseFloat(dw)>0?'var(--bad)':'var(--muted)';
+  } else {
+    document.getElementById('m-peso-s').textContent=lwVal!==null?'primer registro':'sin datos';
+    document.getElementById('m-peso-s').style.color='var(--muted)';
+  }
 
   var todP=porcPct(tk);var avgP=Math.round(days.map(porcPct).reduce(function(a,b){return a+b;},0)/n);
   document.getElementById('m-porc').textContent=(n===1?todP:avgP)+'%';
@@ -660,6 +668,9 @@ function renderDash(){
   var slData=chartDays.map(function(k){return s[k]&&s[k].sl||0;});
   var slOpts=JSON.parse(JSON.stringify(opts));slOpts.scales.y.min=0;slOpts.scales.y.max=12;slOpts.scales.y.ticks.callback=function(v){return v+'h';};
   charts['ch-sleep']=new Chart(document.getElementById('ch-sleep').getContext('2d'),{type:'bar',data:{labels:labels,datasets:[{data:slData,backgroundColor:slData.map(function(v,i){var rgb=v===0?'160,100,245':v<6?'245,100,100':v<7?'245,162,100':v<=9?'100,245,180':'245,162,100';return isToday[i]?'rgba('+rgb+',1)':'rgba('+rgb+',.55)';}),borderRadius:6,borderSkipped:false,label:'Horas dormidas'}]},options:slOpts});
+
+  renderWeightGoals();
+  renderFoodStats(activeFoodGroup);
 }
 
 
@@ -729,11 +740,32 @@ function changeDay(d){
   viewDate=nd;renderDia();
 }
 
+
+var _clockInterval=null;
+function startClock(){
+  stopClock();
+  function tick(){
+    var el=document.getElementById('dn-date');
+    if(!el)return;
+    var now=new Date();
+    var h=now.getHours();var m=now.getMinutes();var s=now.getSeconds();
+    var timeStr=(h<10?'0':'')+h+':'+(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+    var dateStr=now.toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'});
+    el.textContent=dateStr+' - '+timeStr;
+  }
+  tick();
+  _clockInterval=setInterval(tick,1000);
+}
+function stopClock(){
+  if(_clockInterval){clearInterval(_clockInterval);_clockInterval=null;}
+}
+
 function renderDia(){
   var key=keyOf(viewDate);var day=gd(key);var isToday=key===todayKey();
   var dow=viewDate.getDay();var days_es=['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado'];
-  document.getElementById('dn-name').textContent=isToday?'Hoy  -  '+days_es[dow]:days_es[dow];
+  document.getElementById('dn-name').textContent=isToday?'Hoy - '+days_es[dow]:days_es[dow];
   document.getElementById('dn-date').textContent=viewDate.toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'});
+  if(isToday){startClock();}else{stopClock();}
   document.getElementById('btn-next').disabled=isToday;
 
   // MEDS
@@ -748,7 +780,7 @@ function renderDia(){
     mh+='<div class="med-card" style="border-color:'+bc+'" onclick="toggleMed(\''+m.id+'\',\''+key+'\')">';
     mh+='<div class="med-ico">'+m.ico+'</div>';
     mh+='<div class="med-info"><div class="med-name" style="'+(ok?'text-decoration:line-through;opacity:.5':'')+'">'+m.l+'  -  '+m.dose+'</div>';
-    mh+='<div class="med-time" style="color:'+m.c+'">'+m.t+'</div><div class="med-sub">'+m.s+(m.friOnly?' 🗓':' ')+'</div></div>';
+    mh+='<div class="med-time" style="color:'+m.c+'">'+m.t+'</div><div class="med-sub">'+m.s+(m.monOnly?' 🗓':' ')+'</div></div>';
     mh+='<div class="med-chk" style="background:'+cbg+';border-color:'+bc+'">'+(ok?'v':'')+'</div></div>';
   });
   document.getElementById('day-meds').innerHTML=mh;
@@ -782,17 +814,23 @@ function renderDia(){
   // WATER
   renderWater(key,day);
 
-  // SUERO
+  // SUERO - solo L/Mi/V
   if(!day.sc)day.sc=[];
-  var sh='';
-  SUEROS.forEach(function(s2){
-    var ok=day.sc.indexOf(s2.id)>=0;var isDay=dow===s2.day;
-    sh+='<div class="ci" onclick="toggleSuero(\''+s2.id+'\',\''+key+'\')">';
-    sh+='<div class="cbox" style="background:'+(ok?'var(--blue)':'transparent')+';border-color:'+(ok?'var(--blue)':'var(--border)')+'">'+( ok?'v':'')+'</div>';
-    sh+='<span class="clbl '+(ok?'done':'')+'">';
-    sh+=s2.l+(isDay?' <span style="color:var(--blue);font-size:.7rem">(hoy)</span>':'')+'</span></div>';
-  });
-  document.getElementById('day-suero').innerHTML=sh;
+  var todaySuero=SUEROS.find(function(s2){return s2.day===dow;});
+  var sueroDiv=document.getElementById('day-suero');
+  if(todaySuero){
+    var suOk=day.sc.indexOf(todaySuero.id)>=0;
+    var suDiv=document.createElement('div');
+    suDiv.className='ci';
+    suDiv.dataset.sid=todaySuero.id;suDiv.dataset.key=key;
+    suDiv.onclick=function(){toggleSuero(this.dataset.sid,this.dataset.key);};
+    suDiv.innerHTML='<div class="cbox" style="background:'+(suOk?'var(--blue)':'transparent')+';border-color:'+(suOk?'var(--blue)':'var(--border)')+'">'+(suOk?'v':'')+'</div><span class="clbl '+(suOk?'done':'')+'">Suero / Electrolit '+(suOk?'(tomado)':'(pendiente)')+'</span>';
+    sueroDiv.innerHTML='';sueroDiv.appendChild(suDiv);
+  } else {
+    var nextS=SUEROS.filter(function(x){return x.day>dow;});
+    if(!nextS.length)nextS=SUEROS;
+    sueroDiv.innerHTML='<div style="font-size:.82rem;color:var(--muted);padding:8px 0">Hoy no toca - proximo: <strong style="color:var(--blue)">'+nextS[0].l+'</strong></div>';
+  }
 
   // PESO
   var wts=gw();var ew=wts.find(function(w){return w.date===key;});
