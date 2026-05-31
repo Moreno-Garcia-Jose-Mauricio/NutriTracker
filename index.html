@@ -165,7 +165,8 @@ input:focus{outline:none;border-color:var(--accent);}
   <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
   <div class="sec">
     <div class="ptabs">
-      <div class="pt active" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
+      <div class="pt active" id="pt-all" onclick="setPeriod('all',this)">Overview</div>
+      <div class="pt" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
       <div class="pt" id="pt-week" onclick="setPeriod('week',this)">7 días</div>
       <div class="pt" id="pt-month" onclick="setPeriod('month',this)">30 días</div>
     </div>
@@ -625,7 +626,7 @@ function showPage(n){
 }
 
 // ── DASHBOARD ──
-var period='day';
+var period='all';
 function setPeriod(p,el){
   period=p;
   document.querySelectorAll('.pt').forEach(function(t){t.classList.remove('active');});
@@ -659,8 +660,13 @@ function porcPct(k){
 function medPct(k){var ss2=ls();var mc2=ss2[k]&&ss2[k].mc||[];var d2=new Date(k+'T12:00:00');var tot=MEDS.filter(function(m){return m.always||(m.monOnly&&d2.getDay()===1);}).length;return Math.round(mc2.length/tot*100);}
 
 function renderDash(){
-  var n=period==='day'?1:period==='week'?7:30;
-  var days=getDays(n);var s=ls();
+  var allWtsAll=gw();var firstDateAll=allWtsAll.length?allWtsAll[0].date:null;
+  var s=ls();var allKeys=Object.keys(s);
+  var firstKey=allKeys.length?allKeys.sort()[0]:null;
+  var earliest=firstDateAll&&firstKey?(firstDateAll<firstKey?firstDateAll:firstKey):(firstDateAll||firstKey||todayKey());
+  var daysSinceStart=Math.max(1,Math.ceil((new Date(todayKey()+'T12:00:00')-new Date(earliest+'T12:00:00'))/86400000)+1);
+  var n=period==='day'?1:period==='week'?7:period==='month'?30:daysSinceStart;
+  var days=getDays(n);
   document.getElementById('dashDate').textContent=new Date().toLocaleDateString('es-MX',{weekday:'short',day:'numeric',month:'short'});
 
   var tk=todayKey();
@@ -668,7 +674,7 @@ function renderDash(){
   var avgW=(waters.reduce(function(a,b){return a+b;},0)/n).toFixed(1);
   var todW=(s[tk]&&s[tk].water||0)*0.25;
   document.getElementById('m-agua').textContent=(n===1?todW.toFixed(1):avgW)+'L';
-  document.getElementById('m-agua-s').textContent=n===1?(todW>=3?'v Meta alcanzada':'Faltan '+(3-todW).toFixed(1)+'L'):'prom '+n+' dias';
+  document.getElementById('m-agua-s').textContent=n===1?(todW>=3?'Meta alcanzada':'Faltan '+(3-todW).toFixed(1)+'L'):(period==='all'?'prom total':'prom '+n+' dias');
   document.getElementById('m-agua-s').style.color=n===1&&todW>=3?'var(--good)':'var(--muted)';
 
   var wts=gw();var lw=wts.length?wts[wts.length-1]:null;var pw=wts.length>=2?wts[wts.length-2]:null;
@@ -686,12 +692,12 @@ function renderDash(){
 
   var todP=porcPct(tk);var avgP=Math.round(days.map(porcPct).reduce(function(a,b){return a+b;},0)/n);
   document.getElementById('m-porc').textContent=(n===1?todP:avgP)+'%';
-  document.getElementById('m-porc-s').textContent=n===1?'adherencia hoy':'prom '+n+' dias';
+  document.getElementById('m-porc-s').textContent=n===1?'adherencia hoy':(period==='all'?'prom total':'prom '+n+' dias');
   document.getElementById('m-porc-s').style.color=(n===1?todP:avgP)>=80?'var(--good)':'var(--muted)';
 
   var todM=medPct(tk);var avgM=Math.round(days.map(medPct).reduce(function(a,b){return a+b;},0)/n);
   document.getElementById('m-meds').textContent=(n===1?todM:avgM)+'%';
-  document.getElementById('m-meds-s').textContent=n===1?'hoy':'prom '+n+' dias';
+  document.getElementById('m-meds-s').textContent=n===1?'hoy':(period==='all'?'prom total':'prom '+n+' dias');
   document.getElementById('m-meds-s').style.color=(n===1?todM:avgM)>=100?'var(--good)':'var(--muted)';
 
   var checkAvg=Math.round(days.map(function(k){var c=s[k]&&s[k].ch&&s[k].ch.length||0;return Math.round(c/8*100);}).reduce(function(a,b){return a+b;},0)/n);
@@ -714,7 +720,7 @@ function renderDash(){
 
   // Always show 7 days in charts regardless of period selector
   var opts={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#8888aa',maxRotation:45},grid:{color:'#2a2a38'}},y:{ticks:{color:'#8888aa'},grid:{color:'#2a2a38'}}}};
-  var chartDays=getDays(n<7?7:n);
+  var chartDays=getDays(n===1?1:n);
   var labels=chartDays.map(function(k){var d=new Date(k+'T12:00:00');return d.toLocaleDateString('es-MX',{weekday:'short',day:'numeric'});});
   var isToday=chartDays.map(function(k){return k===todayKey();});
 
