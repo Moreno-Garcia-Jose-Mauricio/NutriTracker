@@ -182,6 +182,11 @@ input:focus{outline:none;border-color:var(--accent);}
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">🍽 PORCIONES %</div><div class="ch"><canvas id="ch-porc"></canvas></div></div>
     <div class="card" style="margin-bottom:14px"><div class="stitle" style="margin-bottom:6px">💊 MEDICAMENTO %</div><div class="ch"><canvas id="ch-meds"></canvas></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">😴 SUENO (horas)</div><div class="ch"><canvas id="ch-sleep"></canvas></div></div>
+    <div class="card" style="margin-bottom:10px">
+      <div class="stitle" style="margin-bottom:10px">🍱 ALIMENTOS MAS CONSUMIDOS</div>
+      <div id="foodStatTabs" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px"></div>
+      <div id="foodStatList"></div>
+    </div>
     <button class="expbtn" onclick="exportReport()">📤 Exportar reporte para nutriloga</button>
     <button class="expbtn" style="border-color:var(--blue);color:var(--blue)" onclick="cloudSync()">☁️ Sincronizar con nube</button>
     <button class="expbtn" style="border-color:var(--purple);color:var(--purple)" onclick="showSetup()">⚙️ Configurar sincronizacion</button>
@@ -450,14 +455,84 @@ var RC = ['Comi 5 - 6 veces hoy','Comi despacio, mastique bien 🧘','No me acos
 var MEDS=[{id:'pm',l:'Pantoprazol',dose:'1 tableta',t:'Antes del desayuno',s:'30 min antes - en ayuno',ico:'🌅',c:'#f564b4',always:true},{id:'gm',l:'Glutapak R',dose:'1 sobre',t:'En ayuno (manana)',s:'Disuelto en 100ml agua',ico:'🌿',c:'#64f5b4',always:true},{id:'om',l:'Omegagenics EPA-DHA',dose:'2 capsulas',t:'Despues del desayuno',s:'Metagenics / Nordic 1280',ico:'🐟',c:'#64d4f5',always:true},{id:'mi',l:'Milda 25,000 UI',dose:'1 capsula',t:'Despues del desayuno',s:'Solo lunes - 4 semanas y suspender',ico:'☀️',c:'#f5c864',monOnly:true},{id:'pn',l:'Pantoprazol',dose:'1 tableta',t:'Antes de la cena',s:'30 min antes - en ayuno',ico:'🌙',c:'#a064f5',always:true},{id:'gn',l:'Glutapak R',dose:'1 sobre',t:'Antes de dormir',s:'Disuelto en 100ml agua - en ayuno',ico:'🌙',c:'#64f5b4',always:true}];
 var SUEROS = [{id:'su0',day:1,l:'Lunes'},{id:'su1',day:3,l:'Miercoles'},{id:'su2',day:5,l:'Viernes'}];
 var EQ={
-  verduras:[{n:'Brocoli cocido',q:'1/2 taza'},{n:'Calabacita cocida',q:'1/2 taza'},{n:'Calabaza cocida',q:'1/2 taza'},{n:'Champinon cocido',q:'1/2 taza'},{n:'Chayote cocido',q:'1/2 taza'},{n:'Ejotes cocidos',q:'1/2 taza'},{n:'Espinaca cocida',q:'1/2 taza'},{n:'Jitomate cocido',q:'1 pieza'},{n:'Nopal cocido',q:'1 taza'},{n:'Pepino',q:'1 taza'},{n:'Pimiento morron cocido',q:'1/2 taza'},{n:'Zanahoria cocida',q:'1/2 taza'},{n:'Zanahoria cruda',q:'1 pieza'},{n:'Berenjena cocida',q:'1/2 taza'},{n:'Lechuga',q:'2 tazas'},{n:'Chicharo cocido',q:'1/4 taza'},{n:'Betabel cocido',q:'1/4 pieza'},{n:'Kale cocido',q:'1/2 taza'},{n:'Acelga cocida',q:'1/2 taza'},{n:'Coliflor cocida',q:'1 taza'},{n:'Seta cocida',q:'1/2 taza'},{n:'Esparragos cocidos',q:'6 pzas'},{n:'Flor de calabaza',q:'1 taza'}],
-  frutas:[{n:'Platano',q:'1/2 pieza'},{n:'Fresa rebanada',q:'1 taza'},{n:'Uvas',q:'18 piezas'},{n:'Kiwi',q:'1.5 piezas'},{n:'Naranja',q:'2 piezas'},{n:'Mandarina',q:'2 piezas'},{n:'Pina picada',q:'3/4 taza'},{n:'Papaya picada',q:'1 taza'},{n:'Melon picado',q:'1 taza'},{n:'Manzana cocida',q:'1 pieza'},{n:'Pera cocida',q:'1/2 pieza'},{n:'Blueberries',q:'3/4 taza'},{n:'Frambuesa',q:'1 taza'},{n:'Zarzamora',q:'1 taza'},{n:'Moras',q:'3/4 taza'},{n:'Durazno maduro',q:'2 piezas'},{n:'Mango ataulfo',q:'1/2 pieza'},{n:'Sandia',q:'1 taza'},{n:'Guayaba sin semillas',q:'3 piezas'},{n:'Cereza natural',q:'20 piezas'}],
-  cereales:[{n:'Arroz cocido',q:'1/4 taza'},{n:'Arroz integral',q:'1/3 taza'},{n:'Avena hojuelas',q:'1/3 taza'},{n:'Avena cocida',q:'3/4 taza'},{n:'Pan integral',q:'1 rebanada'},{n:'Pan masa madre',q:'1 rebanada'},{n:'Pan pita integral',q:'1/3 pieza'},{n:'Papa cocida',q:'1/2 pieza'},{n:'Papa cambray',q:'5 piezas'},{n:'Camote cocido',q:'1/3 taza'},{n:'Quinoa',q:'1/2 taza'},{n:'Rice cake',q:'2 piezas'},{n:'Tortilla de maiz',q:'1 pieza'},{n:'Tostada horneada',q:'2 piezas'},{n:'Galleta salma',q:'3 piezas'},{n:'Pasta cocida',q:'1/2 taza'},{n:'Elote cocido',q:'1.5 pieza'},{n:'Amaranto',q:'1/4 taza'},{n:'Granola sin azucar',q:'3 cdas'},{n:'Palomitas sin sal',q:'2.5 tazas'}],
-  proteina:[{n:'Pechuga de pollo',q:'30g',s:'Muy bajo grasa'},{n:'Pechuga pollo deshebrada',q:'30g',s:'Muy bajo grasa'},{n:'Pechuga de pavo',q:'1.5 reb.',s:'Muy bajo grasa'},{n:'Atun en agua',q:'1/3 lata',s:'Muy bajo grasa'},{n:'Filete de pescado blanco',q:'40g',s:'Muy bajo grasa'},{n:'Clara de huevo',q:'30g',s:'Muy bajo grasa'},{n:'Requeson',q:'2 cditas',s:'Muy bajo grasa'},{n:'Queso cottage bajo grasa',q:'3 cdas',s:'Muy bajo grasa'},{n:'Camaron cocido',q:'5 piezas',s:'Muy bajo grasa'},{n:'Salmon',q:'30g',s:'Muy bajo grasa'},{n:'Huevo entero',q:'1 pieza',s:'Bajo grasa'},{n:'Queso panela',q:'40g',s:'Bajo grasa'},{n:'Queso oaxaca',q:'30g',s:'Bajo grasa'},{n:'Arrachera',q:'30g',s:'Bajo grasa'},{n:'Carne molida magra',q:'30g',s:'Bajo grasa'},{n:'Carne roja magra (max 3x sem)',q:'30g',s:'Bajo grasa'},{n:'Carne deshebrada magra',q:'30g',s:'Bajo grasa'},{n:'Lomo de res',q:'40g',s:'Bajo grasa'},{n:'Maciza de res',q:'25g',s:'Bajo grasa'},{n:'Bistec de res magro',q:'30g',s:'Bajo grasa'}],
-  lacteos:[{n:'Yogurt griego Oikos',q:'1/2 envase'},{n:'Yogurt natural sin azucar',q:'1 taza'},{n:'Leche deslactosada',q:'1 taza'},{n:'Leche evap. semidescremada',q:'1/2 taza'},{n:'Leche de almendra',q:'1 taza'},{n:'Leche de avena',q:'1 taza'},{n:'Leche de arroz',q:'1 taza'},{n:'Leche de coco sin azucar',q:'1 taza'},{n:'Queso panela',q:'40g'},{n:'Queso oaxaca',q:'30g'},{n:'Queso fresco blanco',q:'40g'},{n:'Requeson',q:'2 cditas'},{n:'Queso cottage bajo grasa',q:'3 cdas'}],
-  grasas_sin:[{n:'Aceite de oliva',q:'1 cdita'},{n:'Aguacate',q:'1/3 pieza'},{n:'Guacamole sin chile',q:'2 cdas'},{n:'Ghee Mantequilla',q:'1.5 cdita'},{n:'Mayonesa light',q:'1 cdita'},{n:'Aceitunas',q:'5 piezas'},{n:'Aceite de coco',q:'1 cdita'}],
-  grasas_con:[{n:'Almendra',q:'10 piezas'},{n:'Nuez en mitad',q:'7 mitades'},{n:'Nuez entera',q:'3 piezas'},{n:'Cacahuate tostado',q:'14 piezas'},{n:'Pistaches',q:'18 piezas'},{n:'Crema de cacahuate',q:'2 cditas'},{n:'Crema de almendras',q:'2 cditas'},{n:'Chia',q:'7 cdas'},{n:'Semillas de girasol',q:'4 cditas'},{n:'Ajonjoli tostado',q:'5 cdas'},{n:'Pepitas',q:'60 piezas'}],
-  proteina_polvo:[{n:'Isopur Platano',q:'1 scoop'},{n:'Isopur Cookies and Cream',q:'1 scoop'},{n:'Whey Helado de Vainilla',q:'1 scoop'},{n:'Scoop proteina otro',q:'1 scoop'}]
+  verduras:[
+    {n:'Brocoli cocido',q:'1/2 taza'},{n:'Calabacita cocida',q:'1/2 taza'},{n:'Calabaza cocida',q:'1/2 taza'},
+    {n:'Champinon cocido',q:'1/2 taza'},{n:'Chayote cocido',q:'1/2 taza'},{n:'Ejotes cocidos',q:'1/2 taza'},
+    {n:'Espinaca cocida',q:'1/2 taza'},{n:'Jitomate cocido',q:'1 pieza'},{n:'Nopal cocido',q:'1 taza'},
+    {n:'Pepino',q:'1 taza'},{n:'Pimiento morron cocido',q:'1/2 taza'},{n:'Zanahoria cocida',q:'1/2 taza'},
+    {n:'Zanahoria cruda',q:'1 pieza'},{n:'Berenjena cocida',q:'1/2 taza'},{n:'Lechuga',q:'2 tazas'},
+    {n:'Chicharo cocido',q:'1/4 taza'},{n:'Betabel cocido',q:'1/4 pieza'},{n:'Kale cocido',q:'1/2 taza'},
+    {n:'Acelga cocida',q:'1/2 taza'},{n:'Coliflor cocida',q:'1 taza'},{n:'Col cocida',q:'1/2 taza'},
+    {n:'Seta cocida',q:'1/2 taza'},{n:'Esparragos cocidos',q:'6 pzas'},{n:'Flor de calabaza',q:'1 taza'},
+    {n:'Apio cocido',q:'1/2 taza'},{n:'Nopales asados',q:'1 taza'},{n:'Verduras mixtas cocidas',q:'1/2 taza'},
+    {n:'Poblano cocido sin chile',q:'1/2 pieza'},{n:'Elote en grano cocido',q:'1/4 taza'}
+  ],
+  frutas:[
+    {n:'Platano',q:'1/2 pieza'},{n:'Fresa rebanada',q:'1 taza'},{n:'Uvas',q:'18 piezas'},
+    {n:'Kiwi',q:'1.5 piezas'},{n:'Naranja',q:'2 piezas'},{n:'Mandarina',q:'2 piezas'},
+    {n:'Pina picada',q:'3/4 taza'},{n:'Papaya picada',q:'1 taza'},{n:'Melon picado',q:'1 taza'},
+    {n:'Manzana cocida',q:'1 pieza'},{n:'Pera cocida',q:'1/2 pieza'},{n:'Blueberries',q:'3/4 taza'},
+    {n:'Frambuesa',q:'1 taza'},{n:'Zarzamora',q:'1 taza'},{n:'Moras',q:'3/4 taza'},
+    {n:'Durazno maduro',q:'2 piezas'},{n:'Mango ataulfo maduro',q:'1/2 pieza'},{n:'Sandia',q:'1 taza'},
+    {n:'Guayaba sin semillas',q:'3 piezas'},{n:'Cereza natural',q:'20 piezas'},
+    {n:'Limon (jugo)',q:'3 piezas'},{n:'Lima',q:'3 piezas'},{n:'Tejocote',q:'2 piezas'},
+    {n:'Ciruela roja',q:'3 piezas'},{n:'Arandanos frescos',q:'1.5 taza'}
+  ],
+  cereales:[
+    {n:'Arroz cocido',q:'1/4 taza'},{n:'Arroz integral',q:'1/3 taza'},{n:'Avena hojuelas',q:'1/3 taza'},
+    {n:'Avena cocida',q:'3/4 taza'},{n:'Pan integral',q:'1 rebanada'},{n:'Pan masa madre',q:'1 rebanada'},
+    {n:'Pan pita integral',q:'1/3 pieza'},{n:'Papa cocida',q:'1/2 pieza'},{n:'Papa cambray',q:'5 piezas'},
+    {n:'Camote cocido',q:'1/3 taza'},{n:'Quinoa',q:'1/2 taza'},{n:'Rice cake',q:'2 piezas'},
+    {n:'Tortilla de maiz',q:'1 pieza'},{n:'Tostada horneada',q:'2 piezas'},{n:'Galleta salma',q:'3 piezas'},
+    {n:'Pasta cocida',q:'1/2 taza'},{n:'Elote cocido',q:'1.5 pieza'},{n:'Amaranto',q:'1/4 taza'},
+    {n:'Granola sin azucar',q:'3 cdas'},{n:'Palomitas sin sal',q:'2.5 tazas'}
+  ],
+  proteina:[
+    {n:'Pechuga de pollo asada',q:'30g',s:'Muy bajo grasa'},{n:'Pechuga pollo deshebrada',q:'30g',s:'Muy bajo grasa'},
+    {n:'Pechuga de pavo',q:'1.5 reb.',s:'Muy bajo grasa'},{n:'Atun en agua',q:'1/3 lata',s:'Muy bajo grasa'},
+    {n:'Filete de pescado blanco',q:'40g',s:'Muy bajo grasa'},{n:'Pescado zarandeado',q:'40g',s:'Muy bajo grasa'},
+    {n:'Clara de huevo',q:'30g',s:'Muy bajo grasa'},{n:'Requeson',q:'2 cditas',s:'Muy bajo grasa'},
+    {n:'Queso cottage bajo grasa',q:'3 cdas',s:'Muy bajo grasa'},
+    {n:'Camaron crudo curtido',q:'5 piezas',s:'Muy bajo grasa'},{n:'Camaron crudo sin curtir',q:'5 piezas',s:'Muy bajo grasa'},
+    {n:'Camarones zarandeados',q:'5 piezas',s:'Muy bajo grasa'},{n:'Camaron cocido',q:'5 piezas',s:'Muy bajo grasa'},
+    {n:'Salmon',q:'30g',s:'Muy bajo grasa'},{n:'Bacalao',q:'45g',s:'Muy bajo grasa'},
+    {n:'Huevo entero',q:'1 pieza',s:'Bajo grasa'},{n:'Queso panela',q:'40g',s:'Bajo grasa'},
+    {n:'Queso oaxaca',q:'30g',s:'Bajo grasa'},{n:'Arrachera',q:'30g',s:'Bajo grasa'},
+    {n:'Carne molida magra',q:'30g',s:'Bajo grasa'},{n:'Carne roja magra max 3x sem',q:'30g',s:'Bajo grasa'},
+    {n:'Carne deshebrada magra',q:'30g',s:'Bajo grasa'},{n:'Lomo de res',q:'40g',s:'Bajo grasa'},
+    {n:'Maciza de res',q:'25g',s:'Bajo grasa'},{n:'Bistec de res',q:'30g',s:'Bajo grasa'},
+    {n:'Muslo de pollo sin piel',q:'1/2 pieza',s:'Bajo grasa'}
+  ],
+  lacteos:[
+    {n:'Yogurt griego Oikos',q:'1/2 envase'},{n:'Yogurt natural sin azucar',q:'1 taza'},
+    {n:'Leche deslactosada',q:'1 taza'},{n:'Leche evap. semidescremada',q:'1/2 taza'},
+    {n:'Leche de almendra',q:'1 taza'},{n:'Leche de avena',q:'1 taza'},
+    {n:'Leche de arroz',q:'1 taza'},{n:'Leche de coco sin azucar',q:'1 taza'},
+    {n:'Queso panela',q:'40g'},{n:'Queso oaxaca',q:'30g'},
+    {n:'Queso fresco blanco',q:'40g'},{n:'Requeson',q:'2 cditas'},
+    {n:'Queso cottage bajo grasa',q:'3 cdas'}
+  ],
+  grasas_sin:[
+    {n:'Aceite de oliva',q:'1 cdita'},{n:'Aguacate',q:'1/3 pieza'},
+    {n:'Guacamole sin chile',q:'2 cdas'},{n:'Ghee Mantequilla',q:'1.5 cdita'},
+    {n:'Mayonesa light',q:'1 cdita'},{n:'Aceitunas',q:'5 piezas'},{n:'Aceite de coco',q:'1 cdita'}
+  ],
+  grasas_con:[
+    {n:'Almendra',q:'10 piezas'},{n:'Nuez en mitad',q:'7 mitades'},{n:'Nuez entera',q:'3 piezas'},
+    {n:'Cacahuate tostado',q:'14 piezas'},{n:'Pistaches',q:'18 piezas'},
+    {n:'Crema de cacahuate',q:'2 cditas'},{n:'Crema de almendras',q:'2 cditas'},
+    {n:'Chia',q:'7 cdas'},{n:'Semillas de girasol',q:'4 cditas'},
+    {n:'Ajonjoli tostado',q:'5 cdas'},{n:'Pepitas',q:'60 piezas'}
+  ],
+  proteina_polvo:[
+    {n:'Isopur Platano + agua',q:'1 scoop'},{n:'Isopur Platano + leche almendra',q:'1 scoop'},
+    {n:'Isopur Platano + leche coco',q:'1 scoop'},{n:'Isopur Platano + leche avena',q:'1 scoop'},
+    {n:'Isopur Cookies Cream + agua',q:'1 scoop'},{n:'Isopur Cookies Cream + almendra',q:'1 scoop'},
+    {n:'Isopur Cookies Cream + coco',q:'1 scoop'},{n:'Whey Vainilla + agua',q:'1 scoop'},
+    {n:'Whey Vainilla + almendra',q:'1 scoop'},{n:'Whey Vainilla + coco',q:'1 scoop'},
+    {n:'Whey Vainilla + avena',q:'1 scoop'},{n:'Proteina otro + agua',q:'1 scoop'},
+    {n:'Proteina otro + almendra',q:'1 scoop'}
+  ]
 };
 
 // ── STATE ──
