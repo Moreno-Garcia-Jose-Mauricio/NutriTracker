@@ -165,7 +165,8 @@ input:focus{outline:none;border-color:var(--accent);}
   <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
   <div class="sec">
     <div class="ptabs">
-      <div class="pt active" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
+      <div class="pt active" id="pt-all" onclick="setPeriod('all',this)">Overview</div>
+      <div class="pt" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
       <div class="pt" id="pt-week" onclick="setPeriod('week',this)">7 días</div>
       <div class="pt" id="pt-month" onclick="setPeriod('month',this)">30 días</div>
     </div>
@@ -625,7 +626,7 @@ function showPage(n){
 }
 
 // ── DASHBOARD ──
-var period='day';
+var period='all';
 function setPeriod(p,el){
   period=p;
   document.querySelectorAll('.pt').forEach(function(t){t.classList.remove('active');});
@@ -659,8 +660,13 @@ function porcPct(k){
 function medPct(k){var ss2=ls();var mc2=ss2[k]&&ss2[k].mc||[];var d2=new Date(k+'T12:00:00');var tot=MEDS.filter(function(m){return m.always||(m.monOnly&&d2.getDay()===1);}).length;return Math.round(mc2.length/tot*100);}
 
 function renderDash(){
-  var n=period==='day'?1:period==='week'?7:30;
-  var days=getDays(n);var s=ls();
+  var allWtsAll=gw();var firstDateAll=allWtsAll.length?allWtsAll[0].date:null;
+  var s=ls();var allKeys=Object.keys(s);
+  var firstKey=allKeys.length?allKeys.sort()[0]:null;
+  var earliest=firstDateAll&&firstKey?(firstDateAll<firstKey?firstDateAll:firstKey):(firstDateAll||firstKey||todayKey());
+  var daysSinceStart=Math.max(1,Math.ceil((new Date(todayKey()+'T12:00:00')-new Date(earliest+'T12:00:00'))/86400000)+1);
+  var n=period==='day'?1:period==='week'?7:period==='month'?30:daysSinceStart;
+  var days=getDays(n);
   document.getElementById('dashDate').textContent=new Date().toLocaleDateString('es-MX',{weekday:'short',day:'numeric',month:'short'});
 
   var tk=todayKey();
@@ -668,7 +674,7 @@ function renderDash(){
   var avgW=(waters.reduce(function(a,b){return a+b;},0)/n).toFixed(1);
   var todW=(s[tk]&&s[tk].water||0)*0.25;
   document.getElementById('m-agua').textContent=(n===1?todW.toFixed(1):avgW)+'L';
-  document.getElementById('m-agua-s').textContent=n===1?(todW>=3?'v Meta alcanzada':'Faltan '+(3-todW).toFixed(1)+'L'):'prom '+n+' dias';
+  document.getElementById('m-agua-s').textContent=n===1?(todW>=3?'Meta alcanzada':'Faltan '+(3-todW).toFixed(1)+'L'):(period==='all'?'prom total':'prom '+n+' dias');
   document.getElementById('m-agua-s').style.color=n===1&&todW>=3?'var(--good)':'var(--muted)';
 
   var wts=gw();var lw=wts.length?wts[wts.length-1]:null;var pw=wts.length>=2?wts[wts.length-2]:null;
@@ -686,12 +692,12 @@ function renderDash(){
 
   var todP=porcPct(tk);var avgP=Math.round(days.map(porcPct).reduce(function(a,b){return a+b;},0)/n);
   document.getElementById('m-porc').textContent=(n===1?todP:avgP)+'%';
-  document.getElementById('m-porc-s').textContent=n===1?'adherencia hoy':'prom '+n+' dias';
+  document.getElementById('m-porc-s').textContent=n===1?'adherencia hoy':(period==='all'?'prom total':'prom '+n+' dias');
   document.getElementById('m-porc-s').style.color=(n===1?todP:avgP)>=80?'var(--good)':'var(--muted)';
 
   var todM=medPct(tk);var avgM=Math.round(days.map(medPct).reduce(function(a,b){return a+b;},0)/n);
   document.getElementById('m-meds').textContent=(n===1?todM:avgM)+'%';
-  document.getElementById('m-meds-s').textContent=n===1?'hoy':'prom '+n+' dias';
+  document.getElementById('m-meds-s').textContent=n===1?'hoy':(period==='all'?'prom total':'prom '+n+' dias');
   document.getElementById('m-meds-s').style.color=(n===1?todM:avgM)>=100?'var(--good)':'var(--muted)';
 
   var checkAvg=Math.round(days.map(function(k){var c=s[k]&&s[k].ch&&s[k].ch.length||0;return Math.round(c/8*100);}).reduce(function(a,b){return a+b;},0)/n);
@@ -714,7 +720,7 @@ function renderDash(){
 
   // Always show 7 days in charts regardless of period selector
   var opts={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#8888aa',maxRotation:45},grid:{color:'#2a2a38'}},y:{ticks:{color:'#8888aa'},grid:{color:'#2a2a38'}}}};
-  var chartDays=getDays(n<7?7:n);
+  var chartDays=getDays(n===1?1:n);
   var labels=chartDays.map(function(k){var d=new Date(k+'T12:00:00');return d.toLocaleDateString('es-MX',{weekday:'short',day:'numeric'});});
   var isToday=chartDays.map(function(k){return k===todayKey();});
 
@@ -723,7 +729,7 @@ function renderDash(){
   charts['ch-agua']=new Chart(document.getElementById('ch-agua').getContext('2d'),{type:'bar',data:{labels:labels,datasets:[{data:wd,backgroundColor:wd.map(function(v,i){return isToday[i]?(v>=3?'rgba(100,212,245,1)':'rgba(100,212,245,.6)'):(v>=3?'rgba(100,212,245,.7)':'rgba(100,212,245,.25)');}),borderRadius:6,borderSkipped:false}]},options:opts});
 
   dc('ch-peso');
-  var wtsF=gw().filter(function(w){return w.date>=chartDays[0];});
+  var wtsF=gw();// show all weight data regardless of period
   var allWtsP=gw();
   if(wtsF.length>=1){
     var popts=JSON.parse(JSON.stringify(opts));
@@ -887,7 +893,12 @@ function stopClock(){
 
 function renderDia(){
   var key=keyOf(viewDate);var day=gd(key);var isToday=key===todayKey();
-  var dow=viewDate.getDay();var days_es=['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado'];
+  var days_es=['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado'];
+  // Use Mexico City timezone for day of week to match todayKey()
+  var dowStr=new Intl.DateTimeFormat('es-MX',{timeZone:'America/Mexico_City',weekday:'short'}).format(viewDate);
+  var dowMX=new Intl.DateTimeFormat('en-US',{timeZone:'America/Mexico_City',weekday:'long'}).format(viewDate);
+  var dowMap={'Sunday':0,'Monday':1,'Tuesday':2,'Wednesday':3,'Thursday':4,'Friday':5,'Saturday':6};
+  var dow=dowMap[dowMX]!==undefined?dowMap[dowMX]:viewDate.getDay();
   document.getElementById('dn-name').textContent=isToday?'Hoy - '+days_es[dow]:days_es[dow];
   document.getElementById('dn-date').textContent=viewDate.toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'});
   if(isToday){startClock();}else{stopClock();}
@@ -895,8 +906,8 @@ function renderDia(){
 
   // MEDS
   if(!day.mc)day.mc=[];
-  var dow2=viewDate.getDay();var isFri=dow2===5;
-  var todayMeds=MEDS.filter(function(m){return m.always||(m.friOnly&&isFri);});
+  var isMon2=dow===1;
+  var todayMeds=MEDS.filter(function(m){return m.always||(m.monOnly&&isMon2);});
   var mDone=todayMeds.filter(function(m){return day.mc.indexOf(m.id)>=0;}).length;
   var mh='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:.72rem;font-family:Syne,sans-serif;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)">'+mDone+' / '+todayMeds.length+' completados</span></div>';
   todayMeds.forEach(function(m){
@@ -941,6 +952,7 @@ function renderDia(){
 
   // SUERO - solo L/Mi/V
   if(!day.sc)day.sc=[];
+  var dowFinal=dowMap2!==undefined?(dowMap2[new Intl.DateTimeFormat('en-US',{timeZone:'America/Mexico_City',weekday:'long'}).format(viewDate)]||viewDate.getDay()):dow;
   var todaySuero=SUEROS.find(function(s2){return s2.day===dow;});
   var sueroDiv=document.getElementById('day-suero');
   if(todaySuero){
@@ -1057,6 +1069,11 @@ function addFP(g,amt,name){
   var day=gd(_key2);if(!day.mp)day.mp={};if(!day.mp[_mk2])day.mp[_mk2]={};
   var newVal=Math.max(0,(day.mp[_mk2][g]||0)+amt);
   day.mp[_mk2][g]=newVal;
+  if(amt>0&&name!=='-1'&&name!=='manual'){
+    if(!day.foods)day.foods={};
+    if(!day.foods[name])day.foods[name]={g:g,c:0};
+    day.foods[name].c=(day.foods[name].c||0)+amt;
+  }
   sd(_key2,day);
   var curr=day.mp[_mk2][g];
   document.getElementById('fm-sub').textContent='Meta: '+_mt+' porciones  -  Registradas: '+curr;
