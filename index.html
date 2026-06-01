@@ -165,8 +165,7 @@ input:focus{outline:none;border-color:var(--accent);}
   <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
   <div class="sec">
     <div class="ptabs">
-      <div class="pt active" id="pt-all" onclick="setPeriod('all',this)">Overview</div>
-      <div class="pt" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
+      <div class="pt active" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
       <div class="pt" id="pt-week" onclick="setPeriod('week',this)">7 días</div>
       <div class="pt" id="pt-month" onclick="setPeriod('month',this)">30 días</div>
     </div>
@@ -626,7 +625,7 @@ function showPage(n){
 }
 
 // ── DASHBOARD ──
-var period='all';
+var period='day';
 function setPeriod(p,el){
   period=p;
   document.querySelectorAll('.pt').forEach(function(t){t.classList.remove('active');});
@@ -660,12 +659,8 @@ function porcPct(k){
 function medPct(k){var ss2=ls();var mc2=ss2[k]&&ss2[k].mc||[];var d2=new Date(k+'T12:00:00');var tot=MEDS.filter(function(m){return m.always||(m.monOnly&&d2.getDay()===1);}).length;return Math.round(mc2.length/tot*100);}
 
 function renderDash(){
-  var allWtsAll=gw();var firstDateAll=allWtsAll.length?allWtsAll[0].date:null;
-  var s=ls();var allKeys=Object.keys(s);
-  var firstKey=allKeys.length?allKeys.sort()[0]:null;
-  var earliest=firstDateAll&&firstKey?(firstDateAll<firstKey?firstDateAll:firstKey):(firstDateAll||firstKey||todayKey());
-  var daysSinceStart=Math.max(1,Math.ceil((new Date(todayKey()+'T12:00:00')-new Date(earliest+'T12:00:00'))/86400000)+1);
-  var n=period==='day'?1:period==='week'?7:period==='month'?30:daysSinceStart;
+    var n=period==='day'?1:period==='week'?7:30;
+  var s=ls();
   var days=getDays(n);
   document.getElementById('dashDate').textContent=new Date().toLocaleDateString('es-MX',{weekday:'short',day:'numeric',month:'short'});
 
@@ -674,7 +669,7 @@ function renderDash(){
   var avgW=(waters.reduce(function(a,b){return a+b;},0)/n).toFixed(1);
   var todW=(s[tk]&&s[tk].water||0)*0.25;
   document.getElementById('m-agua').textContent=(n===1?todW.toFixed(1):avgW)+'L';
-  document.getElementById('m-agua-s').textContent=n===1?(todW>=3?'Meta alcanzada':'Faltan '+(3-todW).toFixed(1)+'L'):(period==='all'?'prom total':'prom '+n+' dias');
+  document.getElementById('m-agua-s').textContent=n===1?(todW>=3?'Meta alcanzada':'Faltan '+(3-todW).toFixed(1)+'L'):'prom '+n+' dias';
   document.getElementById('m-agua-s').style.color=n===1&&todW>=3?'var(--good)':'var(--muted)';
 
   var wts=gw();var lw=wts.length?wts[wts.length-1]:null;var pw=wts.length>=2?wts[wts.length-2]:null;
@@ -692,12 +687,12 @@ function renderDash(){
 
   var todP=porcPct(tk);var avgP=Math.round(days.map(porcPct).reduce(function(a,b){return a+b;},0)/n);
   document.getElementById('m-porc').textContent=(n===1?todP:avgP)+'%';
-  document.getElementById('m-porc-s').textContent=n===1?'adherencia hoy':(period==='all'?'prom total':'prom '+n+' dias');
+  document.getElementById('m-porc-s').textContent=n===1?'adherencia hoy':'prom '+n+' dias';
   document.getElementById('m-porc-s').style.color=(n===1?todP:avgP)>=80?'var(--good)':'var(--muted)';
 
   var todM=medPct(tk);var avgM=Math.round(days.map(medPct).reduce(function(a,b){return a+b;},0)/n);
   document.getElementById('m-meds').textContent=(n===1?todM:avgM)+'%';
-  document.getElementById('m-meds-s').textContent=n===1?'hoy':(period==='all'?'prom total':'prom '+n+' dias');
+  document.getElementById('m-meds-s').textContent=n===1?'hoy':'prom '+n+' dias';
   document.getElementById('m-meds-s').style.color=(n===1?todM:avgM)>=100?'var(--good)':'var(--muted)';
 
   var checkAvg=Math.round(days.map(function(k){var c=s[k]&&s[k].ch&&s[k].ch.length||0;return Math.round(c/8*100);}).reduce(function(a,b){return a+b;},0)/n);
@@ -720,7 +715,7 @@ function renderDash(){
 
   // Always show 7 days in charts regardless of period selector
   var opts={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#8888aa',maxRotation:45},grid:{color:'#2a2a38'}},y:{ticks:{color:'#8888aa'},grid:{color:'#2a2a38'}}}};
-  var chartDays=getDays(n===1?1:n);
+  var chartDays=getDays(n<7?7:n);
   var labels=chartDays.map(function(k){var d=new Date(k+'T12:00:00');return d.toLocaleDateString('es-MX',{weekday:'short',day:'numeric'});});
   var isToday=chartDays.map(function(k){return k===todayKey();});
 
@@ -729,59 +724,60 @@ function renderDash(){
   charts['ch-agua']=new Chart(document.getElementById('ch-agua').getContext('2d'),{type:'bar',data:{labels:labels,datasets:[{data:wd,backgroundColor:wd.map(function(v,i){return isToday[i]?(v>=3?'rgba(100,212,245,1)':'rgba(100,212,245,.6)'):(v>=3?'rgba(100,212,245,.7)':'rgba(100,212,245,.25)');}),borderRadius:6,borderSkipped:false}]},options:opts});
 
   dc('ch-peso');
-  var wtsF=gw();// show all weight data regardless of period
-  var allWtsP=gw();
-  if(wtsF.length>=1){
+  var allWts=gw();
+  if(allWts.length>=1){
     var popts=JSON.parse(JSON.stringify(opts));
     popts.scales.y.min=65;popts.scales.y.max=85;
     popts.plugins.legend={display:false};
-    // Point colors: green if lower than previous, red if higher
-    var ptColors=wtsF.map(function(w,i){
+    // Colors: green=bajaste, red=subiste, yellow=primero
+    var ptColors=allWts.map(function(w,i){
       if(i===0)return '#c8f564';
-      return w.w<wtsF[i-1].w?'#64f5b4':'#f56464';
+      return w.w<allWts[i-1].w?'#64f5b4':'#f56464';
     });
-    // Build trendline if enough data
-    var trendDs=null;
-    if(allWtsP.length>=3){
-      var tn=allWtsP.length,tSumX=0,tSumY=0,tSumXY=0,tSumX2=0;
-      var tT0=new Date(allWtsP[0].date+'T12:00:00').getTime();
-      allWtsP.forEach(function(w){var x=(new Date(w.date+'T12:00:00').getTime()-tT0)/(86400000);tSumX+=x;tSumY+=w.w;tSumXY+=x*w.w;tSumX2+=x*x;});
-      var tSlope=(tn*tSumXY-tSumX*tSumY)/(tn*tSumX2-tSumX*tSumX);
-      var tInt=(tSumY-tSlope*tSumX)/tn;
+    // Labels = actual dates of all measurements
+    var pesoLabels=allWts.map(function(w){
+      var d=new Date(w.date+'T12:00:00');
+      return d.toLocaleDateString('es-MX',{month:'short',day:'numeric'});
+    });
+    var pesoData=allWts.map(function(w){return w.w;});
+    // Build projection if slope is negative
+    if(allWts.length>=3){
+      var tn=allWts.length,tSX=0,tSY=0,tSXY=0,tSX2=0;
+      var tT0=new Date(allWts[0].date+'T12:00:00').getTime();
+      allWts.forEach(function(w){var x=(new Date(w.date+'T12:00:00').getTime()-tT0)/86400000;tSX+=x;tSY+=w.w;tSXY+=x*w.w;tSX2+=x*x;});
+      var tSlope=(tn*tSXY-tSX*tSY)/(tn*tSX2-tSX*tSX);
+      var tInt=(tSY-tSlope*tSX)/tn;
+      var lastX=(new Date(allWts[allWts.length-1].date+'T12:00:00').getTime()-tT0)/86400000;
       if(tSlope<0){
-        var lastXP=(new Date(allWtsP[allWtsP.length-1].date+'T12:00:00').getTime()-tT0)/86400000;
-        var projP=Math.min(90,Math.ceil((tInt-65)/(-tSlope)));
-        var tLabels=[],tData=[];
-        var fD=new Date(wtsF[0].date+'T12:00:00');
-        var step=Math.max(1,Math.ceil((lastXP+projP)/20));
-        for(var di=0;di<=lastXP+projP;di+=step){
-          var dd=new Date(fD);dd.setDate(dd.getDate()+di);
-          tLabels.push(dd.toLocaleDateString('es-MX',{month:'short',day:'numeric'}));
-          var tv=parseFloat((tInt+tSlope*di).toFixed(1));
-          tData.push(di>lastXP?Math.max(65,Math.min(90,tv)):null);
+        var projDays=Math.min(90,Math.ceil((tInt-65)/(-tSlope)));
+        // Add projection points every 7 days
+        var projLabels=[...pesoLabels];
+        var projReal=[...pesoData];
+        var projTrend=new Array(allWts.length).fill(null);
+        var fD=new Date(allWts[0].date+'T12:00:00');
+        for(var pi=7;pi<=projDays;pi+=7){
+          var pd=new Date(fD);pd.setDate(pd.getDate()+lastX+pi);
+          projLabels.push(pd.toLocaleDateString('es-MX',{month:'short',day:'numeric'}));
+          projReal.push(null);
+          var tv=parseFloat((tInt+tSlope*(lastX+pi)).toFixed(1));
+          projTrend.push(Math.max(65,Math.min(90,tv)));
         }
-        trendDs={label:'Proyeccion',data:tData,borderColor:'rgba(245,100,180,.6)',borderDash:[5,4],borderWidth:2,backgroundColor:'transparent',pointRadius:0,tension:0,spanGaps:false};
+        // Pad ptColors for projection points
+        var projColors=[...ptColors,...new Array(projLabels.length-allWts.length).fill('transparent')];
         popts.plugins.legend={display:true,labels:{color:'#8888aa',font:{size:10},filter:function(item){return item.text==='Proyeccion';}}};
-        // Merged chart with real + trend
-        var allDatesP={};wtsF.forEach(function(w){allDatesP[w.date]=w.w;});
-        var mLabels=[],mReal=[],mColors=[];
-        var fD2=new Date(wtsF[0].date+'T12:00:00');
-        for(var di2=0;di2<=lastXP+projP;di2+=step){
-          var dd2=new Date(fD2);dd2.setDate(dd2.getDate()+di2);
-          var dk=dd2.getFullYear()+'-'+String(dd2.getMonth()+1).padStart(2,'0')+'-'+String(dd2.getDate()).padStart(2,'0');
-          mLabels.push(dd2.toLocaleDateString('es-MX',{month:'short',day:'numeric'}));
-          mReal.push(allDatesP[dk]!==undefined?allDatesP[dk]:null);
-          // Find color for this point
-          var prevVal=null;for(var pi2=di2-1;pi2>=0;pi2-=step){var pdd=new Date(fD2);pdd.setDate(pdd.getDate()+pi2);var pdk=pdd.getFullYear()+'-'+String(pdd.getMonth()+1).padStart(2,'0')+'-'+String(pdd.getDate()).padStart(2,'0');if(allDatesP[pdk]!==undefined){prevVal=allDatesP[pdk];break;}}
-          var cv=allDatesP[dk];mColors.push(cv===undefined?'transparent':prevVal===null?'#c8f564':cv<prevVal?'#64f5b4':'#f56464');
-        }
-        dc('ch-peso');
-        charts['ch-peso']=new Chart(document.getElementById('ch-peso').getContext('2d'),{type:'line',data:{labels:mLabels,datasets:[{label:'Peso real',data:mReal,borderColor:'#c8f564',backgroundColor:'rgba(200,245,100,.08)',fill:true,tension:0.4,pointBackgroundColor:mColors,pointRadius:function(ctx){return mReal[ctx.dataIndex]!==null?6:0;},spanGaps:false},trendDs]},options:popts});
+        charts['ch-peso']=new Chart(document.getElementById('ch-peso').getContext('2d'),{
+          type:'line',
+          data:{labels:projLabels,datasets:[
+            {label:'Peso real',data:projReal,borderColor:'#c8f564',backgroundColor:'rgba(200,245,100,.08)',fill:true,tension:0.3,pointBackgroundColor:projColors,pointRadius:function(ctx){return projReal[ctx.dataIndex]!==null?6:0;},spanGaps:false},
+            {label:'Proyeccion',data:projTrend,borderColor:'rgba(245,100,180,.7)',borderDash:[6,4],borderWidth:2,backgroundColor:'transparent',pointRadius:0,tension:0,spanGaps:false}
+          ]},
+          options:popts
+        });
       } else {
-        charts['ch-peso']=new Chart(document.getElementById('ch-peso').getContext('2d'),{type:'line',data:{labels:wtsF.map(function(w){return w.date.slice(5);}),datasets:[{data:wtsF.map(function(w){return w.w;}),borderColor:'#c8f564',backgroundColor:'rgba(200,245,100,.08)',fill:true,tension:0.4,pointBackgroundColor:ptColors,pointRadius:6}]},options:popts});
+        charts['ch-peso']=new Chart(document.getElementById('ch-peso').getContext('2d'),{type:'line',data:{labels:pesoLabels,datasets:[{data:pesoData,borderColor:'#c8f564',backgroundColor:'rgba(200,245,100,.08)',fill:true,tension:0.3,pointBackgroundColor:ptColors,pointRadius:6}]},options:popts});
       }
     } else {
-      charts['ch-peso']=new Chart(document.getElementById('ch-peso').getContext('2d'),{type:'line',data:{labels:wtsF.map(function(w){return w.date.slice(5);}),datasets:[{data:wtsF.map(function(w){return w.w;}),borderColor:'#c8f564',backgroundColor:'rgba(200,245,100,.08)',fill:true,tension:0.4,pointBackgroundColor:ptColors,pointRadius:6}]},options:popts});
+      charts['ch-peso']=new Chart(document.getElementById('ch-peso').getContext('2d'),{type:'line',data:{labels:pesoLabels,datasets:[{data:pesoData,borderColor:'#c8f564',backgroundColor:'rgba(200,245,100,.08)',fill:true,tension:0.3,pointBackgroundColor:ptColors,pointRadius:6}]},options:popts});
     }
   } else {
     document.getElementById('ch-peso-wrap').innerHTML='<div style="color:var(--muted);font-size:.8rem;text-align:center;padding:26px 0">Registra tu peso en Mi Dia para ver la grafica</div>';
