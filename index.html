@@ -536,7 +536,7 @@ var EQ={
 };
 
 // ── STATE ──
-function todayKey(){try{return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Mexico_City',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());}catch(e){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}}
+function todayKey(){try{var f=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Mexico_City',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());if(/^\d{4}-\d{2}-\d{2}$/.test(f))return f;}catch(e){}var nd=new Date(new Date().toLocaleString('en-US',{timeZone:'America/Mexico_City'}));return nd.getFullYear()+'-'+String(nd.getMonth()+1).padStart(2,'0')+'-'+String(nd.getDate()).padStart(2,'0');}
 function keyOf(d){try{var f=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Mexico_City',year:'numeric',month:'2-digit',day:'2-digit'}).format(d);return f;}catch(e){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}}
 function ls(){try{return JSON.parse(localStorage.getItem('nt4')||'{}');}catch(e){return {};}}
 function ss(s){localStorage.setItem('nt4',JSON.stringify(s));}
