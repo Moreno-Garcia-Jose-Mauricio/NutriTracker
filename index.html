@@ -948,7 +948,6 @@ function renderDia(){
 
   // SUERO - solo L/Mi/V
   if(!day.sc)day.sc=[];
-  var dowFinal=dowMap2!==undefined?(dowMap2[new Intl.DateTimeFormat('en-US',{timeZone:'America/Mexico_City',weekday:'long'}).format(viewDate)]||viewDate.getDay()):dow;
   var todaySuero=SUEROS.find(function(s2){return s2.day===dow;});
   var sueroDiv=document.getElementById('day-suero');
   if(todaySuero){
@@ -969,8 +968,17 @@ function renderDia(){
   var wts=gw();var ew=wts.find(function(w){return w.date===key;});
   document.getElementById('w-input').value=ew?ew.w:'';
   var prevW=wts.filter(function(w){return w.date<key;}).slice(-1)[0];
-  if(ew){var dw=prevW?(ew.w-prevW.w).toFixed(1):null;
-    document.getElementById('w-display').innerHTML='<div style="display:flex;align-items:baseline;gap:6px;margin-top:6px"><span style="font-family:Syne,sans-serif;font-size:1.8rem;font-weight:800">'+ew.w+'</span><span style="color:var(--muted);font-size:1rem">kg</span>'+(dw!==null?'<span style="font-weight:700;font-size:.95rem;color:'+(dw<0?'var(--good)':'var(--bad)')+'">'+((dw>0?'+':'')+dw)+'kg</span>':'')+'</div>';
+  if(ew){
+    var dw=prevW?(ew.w-prevW.w).toFixed(1):null;
+    var wd2=document.createElement('div');
+    wd2.style.cssText='display:flex;align-items:baseline;gap:6px;margin-top:6px';
+    wd2.innerHTML='<span style="font-family:Syne,sans-serif;font-size:1.8rem;font-weight:800">'+ew.w+'</span><span style="color:var(--muted);font-size:1rem">kg</span>'+(dw!==null?'<span style="font-weight:700;font-size:.95rem;color:'+(parseFloat(dw)<0?'var(--good)':'var(--bad)')+'">'+((dw>0?'+':'')+dw)+'kg</span>':'');
+    var delBtn=document.createElement('button');
+    delBtn.textContent='Borrar';delBtn.dataset.k=key;
+    delBtn.style.cssText='background:transparent;border:1px solid var(--bad);color:var(--bad);border-radius:7px;padding:4px 10px;font-size:.75rem;cursor:pointer;margin-left:8px';
+    delBtn.onclick=function(){deleteWeight(this.dataset.k);};
+    wd2.appendChild(delBtn);
+    document.getElementById('w-display').innerHTML='';document.getElementById('w-display').appendChild(wd2);
   } else document.getElementById('w-display').innerHTML='';
 
   // CHECKLIST
@@ -1037,6 +1045,14 @@ function toggleCW(){var el=document.getElementById('cw-wrap');el.style.display=e
 function toggleMed(id,key){var day=gd(key);if(!day.mc)day.mc=[];var i=day.mc.indexOf(id);if(i>=0)day.mc.splice(i,1);else day.mc.push(id);sd(key,day);renderDia();if(day.mc.indexOf(id)>=0)toast('💊 '+MEDS.filter(function(m){return m.id===id;})[0].t+' v');}
 function toggleSuero(id,key){var day=gd(key);if(!day.sc)day.sc=[];var i=day.sc.indexOf(id);if(i>=0)day.sc.splice(i,1);else day.sc.push(id);sd(key,day);renderDia();if(day.sc.indexOf(id)>=0)toast('⚡ Suero registrado');}
 function toggleCheck(i,key){var day=gd(key);if(!day.ch)day.ch=[];var idx=day.ch.indexOf(i);if(idx>=0)day.ch.splice(idx,1);else day.ch.push(i);sd(key,day);renderDia();}
+function deleteWeight(key){
+  var wts=gw();
+  wts=wts.filter(function(w){return w.date!==key;});
+  sw(wts);
+  toast('Peso borrado');
+  renderDia();
+  renderDash();
+}
 function saveWeight(){var v=parseFloat(document.getElementById('w-input').value);var key=keyOf(viewDate);if(isNaN(v)||v<30||v>300){toast('⚠ Peso invalido');return;}var wts=gw();var i=wts.findIndex(function(w){return w.date===key;});if(i>=0)wts[i].w=v;else wts.push({date:key,w:v});wts.sort(function(a,b){return a.date.localeCompare(b.date);});sw(wts);toast('OK '+v+'kg guardado');renderDia();renderDash();}
 
 // ── FOOD MODAL ──
