@@ -157,7 +157,7 @@ input:focus{outline:none;border-color:var(--accent);}
 </div>
 
 <div class="page active" id="page-dash">
-  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v1.3.1</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
+  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v1.3.2</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
   <div class="sec">
     <div class="ptabs">
       <div class="pt active" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
@@ -521,7 +521,7 @@ var period='day';
 function setPeriod(p,el){period=p;document.querySelectorAll('.pt').forEach(function(t){t.classList.remove('active');});el.classList.add('active');renderDash();}
 function getDays(n){var arr=[];for(var i=n-1;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);arr.push(keyOf(d));}return arr;}
 function getTotals(dayData){var t={};var mp=dayData&&dayData.mp||{};Object.keys(mp).forEach(function(mk){var m=mp[mk];Object.keys(m).forEach(function(g){t[g]=(t[g]||0)+m[g];});});return t;}
-function porcPct(k){var s=ls();var p=getTotals(s[k]);var keys=Object.keys(PT);var met=0;keys.forEach(function(g){if((p[g]||0)>=PT[g].t)met++;});return Math.round(met/keys.length*100);}
+function porcPct(k){var s=ls();var p=getTotals(s[k]);var total=Object.keys(PT).reduce(function(sum,g){return sum+PT[g].t;},0);var consumed=Object.keys(PT).reduce(function(sum,g){return sum+Math.min(p[g]||0,PT[g].t);},0);return Math.round(consumed/total*100);}
 
 // ── medPct: calcula % de medicamentos tomados para un dia k ───────────────────
 // Respeta dateEnd: si la fecha k es posterior al dateEnd del med, ese med no cuenta.
@@ -713,6 +713,7 @@ function showEq(id,btn){document.querySelectorAll('.eqb').forEach(function(e){e.
 function buildWP(){var wp=document.getElementById('wpt');if(!wp||wp.innerHTML!=='')return;var dows=[1,2,3,4,5,6,0];var names=['Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo'];var nd=new Date(new Date().toLocaleString('en-US',{timeZone:'America/Mexico_City'}));var tod=nd.getDay();var h='';dows.forEach(function(d,i){h+='<div class="wday" style="'+(d===tod?'border-left:2px solid var(--accent);padding-left:8px':'')+'"><div class="wdtitle">'+names[i]+(d===tod?' HOY':'')+'</div>';MO.forEach(function(m){h+='<div class="wrow"><div class="wlbl">'+m.l+'</div><div>'+WP[d][m.k]+'</div></div>';});h+='</div>';});wp.innerHTML=h;}
 
 var CHANGELOG=[
+  {v:'1.3.2',fecha:'2026-06-19',cambios:['porcPct cambiado a Opcion A: porciones consumidas / total del plan (31)','Dias con colaciones saltadas reflejan % real de lo comido','Ya no penaliza por grupos incompletos si comiste bien en las comidas principales']},
   {v:'1.3.1',fecha:'2026-06-19',cambios:['Glutapak nocturno desactivado a partir del 16 de junio (solo queda manana)','Milda desactivado a partir del 22 de junio','medPct respeta dateEnd: graficas y porcentajes correctos para dias pasados y futuros','Reporte exportado cambiado a 30 dias (mensual para Michelle)']},
   {v:'1.3.0',fecha:'2026-06-02',cambios:['Emojis restaurados en iconos de medicamentos','Emojis agregados en chips de porciones (Verduras, Frutas, Cereales, etc.)','Emojis y flechas en secciones de Mi Plan','Controlador de versiones con historial de cambios']},
   {v:'1.2.0',fecha:'2026-06-02',cambios:['Milda cambiado a solo lunes (monOnly)','Suero solo muestra el dia que toca (L/Mi/V)','Grafica de peso muestra todos los registros','Puntos verdes si bajaste, rojos si subiste','Proyeccion de peso en linea rosa punteada']},
