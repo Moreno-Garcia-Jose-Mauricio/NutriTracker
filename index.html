@@ -157,7 +157,7 @@ input:focus{outline:none;border-color:var(--accent);}
 </div>
 
 <div class="page active" id="page-dash">
-  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v1.3.0</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
+  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v1.3.1</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
   <div class="sec">
     <div class="ptabs">
       <div class="pt active" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
@@ -435,9 +435,9 @@ input:focus{outline:none;border-color:var(--accent);}
         <thead><tr><th>Suplemento</th><th>Dosis</th><th>Cuando</th></tr></thead>
         <tbody>
           <tr><td>Pantoprazol</td><td>2/dia</td><td>30min antes desayuno + 30min antes cena (ayuno)</td></tr>
-          <tr><td>Glutapak R</td><td>2 sobres/dia</td><td>1 en ayuno manana + 1 antes dormir (3 sem, luego 1/dia)</td></tr>
+          <tr><td>Glutapak R</td><td>1 sobre/dia</td><td>En ayuno manana (desde 16-jun: solo manana)</td></tr>
           <tr><td>Omegagenics EPA-DHA</td><td>2 capsulas</td><td>Despues del desayuno</td></tr>
-          <tr><td>Milda 25,000 UI</td><td>1/semana</td><td>Solo lunes, despues desayuno, 4 semanas y suspender</td></tr>
+          <tr><td>Milda 25,000 UI</td><td>suspendido</td><td>Solo lunes - 4 semanas - suspendido desde 22-jun</td></tr>
         </tbody>
       </table></div></div>
     </div>
@@ -477,7 +477,20 @@ var MKW={d:[6,9],c1:[9,12],co:[12,15],c2:[15,19],ce:[19,22]};
 var MG={d:{cereales:2,proteina:2,frutas:1,proteina_polvo:1},c1:{frutas:1,lacteos:1,grasas_con:2},co:{verduras:2,cereales:4,proteina:6,grasas_sin:2},c2:{frutas:1,lacteos:1,grasas_con:2},ce:{cereales:2,proteina:2,proteina_polvo:1}};
 var PT={verduras:{l:'Verduras 🥦',t:2,c:'#64f5b4'},frutas:{l:'Frutas 🍊',t:3,c:'#f5c864'},cereales:{l:'Cereales 🌾',t:8,c:'#c8f564'},proteina:{l:'Proteina 🥩',t:10,c:'#f564b4'},lacteos:{l:'Lacteos 🥛',t:2,c:'#64d4f5'},grasas_sin:{l:'Grasas s/p 🫒',t:2,c:'#f5a264'},grasas_con:{l:'Grasas c/p 🥑',t:4,c:'#a064f5'},proteina_polvo:{l:'Prot.polvo 💪',t:2,c:'#f56464'}};
 var RC=['Comi 5-6 veces hoy','Comi despacio, mastique bien','No me acoste 2-3h despues','Evite fritos, capeado, empanizado','Sin cafe, alcohol ni refrescos','Sin chile ni picante','Porciones moderadas','Buena hidratacion hoy'];
-var MEDS=[{id:'pm',l:'Pantoprazol',dose:'1 tableta',t:'Antes del desayuno',s:'30 min antes - en ayuno',ico:'🌅',c:'#f564b4',always:true},{id:'gm',l:'Glutapak R',dose:'1 sobre',t:'En ayuno (manana)',s:'Disuelto en 100ml agua',ico:'🌿',c:'#64f5b4',always:true},{id:'om',l:'Omegagenics EPA-DHA',dose:'2 capsulas',t:'Despues del desayuno',s:'Metagenics / Nordic 1280',ico:'🐟',c:'#64d4f5',always:true},{id:'mi',l:'Milda 25,000 UI',dose:'1 capsula',t:'Despues del desayuno',s:'Solo lunes - 4 semanas y suspender',ico:'☀️',c:'#f5c864',monOnly:true},{id:'pn',l:'Pantoprazol',dose:'1 tableta',t:'Antes de la cena',s:'30 min antes - en ayuno',ico:'🌙',c:'#a064f5',always:true},{id:'gn',l:'Glutapak R',dose:'1 sobre',t:'Antes de dormir',s:'Disuelto en 100ml agua - en ayuno',ico:'🌿',c:'#64f5b4',always:true}];
+
+// ── MEDS ──────────────────────────────────────────────────────────────────────
+// dateEnd: ultimo dia en que aplica (inclusive). A partir del dia siguiente ya no cuenta.
+// gn (Glutapak nocturno): aplica hasta 2026-06-15. Desde el 16 de junio solo se toma en la mañana.
+// mi (Milda): aplica hasta 2026-06-21. Desde el 22 de junio suspendido.
+var MEDS=[
+  {id:'pm',l:'Pantoprazol',dose:'1 tableta',t:'Antes del desayuno',s:'30 min antes - en ayuno',ico:'🌅',c:'#f564b4',always:true},
+  {id:'gm',l:'Glutapak R',dose:'1 sobre',t:'En ayuno (manana)',s:'Disuelto en 100ml agua',ico:'🌿',c:'#64f5b4',always:true},
+  {id:'om',l:'Omegagenics EPA-DHA',dose:'2 capsulas',t:'Despues del desayuno',s:'Metagenics / Nordic 1280',ico:'🐟',c:'#64d4f5',always:true},
+  {id:'mi',l:'Milda 25,000 UI',dose:'1 capsula',t:'Despues del desayuno',s:'Solo lunes - 4 semanas y suspender',ico:'☀️',c:'#f5c864',monOnly:true,dateEnd:'2026-06-21'},
+  {id:'pn',l:'Pantoprazol',dose:'1 tableta',t:'Antes de la cena',s:'30 min antes - en ayuno',ico:'🌙',c:'#a064f5',always:true},
+  {id:'gn',l:'Glutapak R',dose:'1 sobre',t:'Antes de dormir',s:'Disuelto en 100ml agua - en ayuno',ico:'🌿',c:'#64f5b4',always:true,dateEnd:'2026-06-15'}
+];
+
 var SUEROS=[{id:'su0',day:1,l:'Lunes'},{id:'su1',day:3,l:'Miercoles'},{id:'su2',day:5,l:'Viernes'}];
 var EQ={verduras:[{n:'Brocoli cocido',q:'1/2 taza'},{n:'Calabacita cocida',q:'1/2 taza'},{n:'Calabaza cocida',q:'1/2 taza'},{n:'Champinon cocido',q:'1/2 taza'},{n:'Chayote cocido',q:'1/2 taza'},{n:'Ejotes cocidos',q:'1/2 taza'},{n:'Espinaca cocida',q:'1/2 taza'},{n:'Jitomate cocido',q:'1 pieza'},{n:'Nopal cocido',q:'1 taza'},{n:'Pepino',q:'1 taza'},{n:'Pimiento morron cocido',q:'1/2 taza'},{n:'Zanahoria cocida',q:'1/2 taza'},{n:'Zanahoria cruda',q:'1 pieza'},{n:'Berenjena cocida',q:'1/2 taza'},{n:'Lechuga',q:'2 tazas'},{n:'Acelga cocida',q:'1/2 taza'},{n:'Coliflor cocida',q:'1 taza'},{n:'Kale cocido',q:'1/2 taza'},{n:'Seta cocida',q:'1/2 taza'},{n:'Esparragos cocidos',q:'6 pzas'},{n:'Nopales asados',q:'1 taza'},{n:'Betabel cocido',q:'1/4 pieza'}],frutas:[{n:'Platano',q:'1/2 pieza'},{n:'Fresa rebanada',q:'1 taza'},{n:'Uvas',q:'18 piezas'},{n:'Kiwi',q:'1.5 piezas'},{n:'Naranja',q:'2 piezas'},{n:'Mandarina',q:'2 piezas'},{n:'Pina picada',q:'3/4 taza'},{n:'Papaya picada',q:'1 taza'},{n:'Melon picado',q:'1 taza'},{n:'Manzana cocida',q:'1 pieza'},{n:'Pera cocida',q:'1/2 pieza'},{n:'Blueberries',q:'3/4 taza'},{n:'Frambuesa',q:'1 taza'},{n:'Zarzamora',q:'1 taza'},{n:'Moras',q:'3/4 taza'},{n:'Durazno',q:'2 piezas'},{n:'Mango ataulfo',q:'1/2 pieza'},{n:'Sandia',q:'1 taza'},{n:'Guayaba sin semillas',q:'3 piezas'},{n:'Cereza natural',q:'20 piezas'},{n:'Ciruela roja',q:'3 piezas'},{n:'Arandanos frescos',q:'1.5 taza'}],cereales:[{n:'Arroz cocido',q:'1/4 taza'},{n:'Arroz integral',q:'1/3 taza'},{n:'Avena hojuelas',q:'1/3 taza'},{n:'Avena cocida',q:'3/4 taza'},{n:'Pan integral',q:'1 rebanada'},{n:'Pan masa madre',q:'1 rebanada'},{n:'Pan pita integral',q:'1/3 pieza'},{n:'Papa cocida',q:'1/2 pieza'},{n:'Papa cambray',q:'5 piezas'},{n:'Camote cocido',q:'1/3 taza'},{n:'Quinoa',q:'1/2 taza'},{n:'Rice cake',q:'2 piezas'},{n:'Tortilla de maiz',q:'1 pieza'},{n:'Tostada horneada',q:'2 piezas'},{n:'Galleta salma',q:'3 piezas'},{n:'Pasta cocida',q:'1/2 taza'},{n:'Elote cocido',q:'1.5 pieza'},{n:'Amaranto',q:'1/4 taza'},{n:'Granola sin azucar',q:'3 cdas'},{n:'Palomitas sin sal',q:'2.5 tazas'}],proteina:[{n:'Pechuga pollo asada',q:'30g',s:'Muy bajo grasa'},{n:'Pechuga pollo deshebrada',q:'30g',s:'Muy bajo grasa'},{n:'Pechuga de pavo',q:'1.5 reb.',s:'Muy bajo grasa'},{n:'Atun en agua',q:'1/3 lata',s:'Muy bajo grasa'},{n:'Filete pescado blanco',q:'40g',s:'Muy bajo grasa'},{n:'Pescado zarandeado',q:'40g',s:'Muy bajo grasa'},{n:'Camaron crudo curtido',q:'5 piezas',s:'Muy bajo grasa'},{n:'Camaron crudo sin curtir',q:'5 piezas',s:'Muy bajo grasa'},{n:'Camarones zarandeados',q:'5 piezas',s:'Muy bajo grasa'},{n:'Camaron cocido',q:'5 piezas',s:'Muy bajo grasa'},{n:'Salmon',q:'30g',s:'Muy bajo grasa'},{n:'Bacalao',q:'45g',s:'Muy bajo grasa'},{n:'Clara de huevo',q:'30g',s:'Muy bajo grasa'},{n:'Requeson',q:'2 cditas',s:'Muy bajo grasa'},{n:'Queso cottage bajo grasa',q:'3 cdas',s:'Muy bajo grasa'},{n:'Huevo entero',q:'1 pieza',s:'Bajo grasa'},{n:'Queso panela',q:'40g',s:'Bajo grasa'},{n:'Queso oaxaca',q:'30g',s:'Bajo grasa'},{n:'Arrachera',q:'30g',s:'Bajo grasa'},{n:'Carne molida magra',q:'30g',s:'Bajo grasa'},{n:'Carne roja max 3x sem',q:'30g',s:'Bajo grasa'},{n:'Carne deshebrada magra',q:'30g',s:'Bajo grasa'},{n:'Lomo de res',q:'40g',s:'Bajo grasa'},{n:'Maciza de res',q:'25g',s:'Bajo grasa'},{n:'Bistec de res',q:'30g',s:'Bajo grasa'},{n:'Muslo pollo sin piel',q:'1/2 pieza',s:'Bajo grasa'}],lacteos:[{n:'Yogurt griego Oikos',q:'1/2 envase'},{n:'Yogurt natural sin azucar',q:'1 taza'},{n:'Leche deslactosada',q:'1 taza'},{n:'Leche de almendra',q:'1 taza'},{n:'Leche de avena',q:'1 taza'},{n:'Leche de arroz',q:'1 taza'},{n:'Leche de coco sin azucar',q:'1 taza'},{n:'Leche evap. semidescremada',q:'1/2 taza'},{n:'Queso panela',q:'40g'},{n:'Queso oaxaca',q:'30g'},{n:'Queso fresco blanco',q:'40g'},{n:'Requeson',q:'2 cditas'},{n:'Queso cottage bajo grasa',q:'3 cdas'}],grasas_sin:[{n:'Aceite de oliva',q:'1 cdita'},{n:'Aguacate',q:'1/3 pieza'},{n:'Guacamole sin chile',q:'2 cdas'},{n:'Ghee Mantequilla',q:'1.5 cdita'},{n:'Mayonesa light',q:'1 cdita'},{n:'Aceitunas',q:'5 piezas'},{n:'Aceite de coco',q:'1 cdita'}],grasas_con:[{n:'Almendra',q:'10 piezas'},{n:'Nuez en mitad',q:'7 mitades'},{n:'Cacahuate tostado',q:'14 piezas'},{n:'Pistaches',q:'18 piezas'},{n:'Crema de cacahuate',q:'2 cditas'},{n:'Crema de almendras',q:'2 cditas'},{n:'Chia',q:'7 cdas'},{n:'Semillas de girasol',q:'4 cditas'},{n:'Ajonjoli tostado',q:'5 cdas'},{n:'Pepitas',q:'60 piezas'}],proteina_polvo:[{n:'Isopur Platano + agua',q:'1 scoop'},{n:'Isopur Platano + almendra',q:'1 scoop'},{n:'Isopur Platano + coco',q:'1 scoop'},{n:'Isopur Platano + avena',q:'1 scoop'},{n:'Isopur Cookies + agua',q:'1 scoop'},{n:'Isopur Cookies + almendra',q:'1 scoop'},{n:'Isopur Cookies + coco',q:'1 scoop'},{n:'Whey Vainilla + agua',q:'1 scoop'},{n:'Whey Vainilla + almendra',q:'1 scoop'},{n:'Whey Vainilla + coco',q:'1 scoop'},{n:'Whey Vainilla + avena',q:'1 scoop'},{n:'Proteina otro + agua',q:'1 scoop'},{n:'Proteina otro + almendra',q:'1 scoop'}]};
 
@@ -509,7 +522,23 @@ function setPeriod(p,el){period=p;document.querySelectorAll('.pt').forEach(funct
 function getDays(n){var arr=[];for(var i=n-1;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);arr.push(keyOf(d));}return arr;}
 function getTotals(dayData){var t={};var mp=dayData&&dayData.mp||{};Object.keys(mp).forEach(function(mk){var m=mp[mk];Object.keys(m).forEach(function(g){t[g]=(t[g]||0)+m[g];});});return t;}
 function porcPct(k){var s=ls();var p=getTotals(s[k]);var keys=Object.keys(PT);var met=0;keys.forEach(function(g){if((p[g]||0)>=PT[g].t)met++;});return Math.round(met/keys.length*100);}
-function medPct(k){var s2=ls();var mc2=s2[k]&&s2[k].mc||[];var d2=new Date(k+'T12:00:00');var tot=MEDS.filter(function(m){return m.always||(m.monOnly&&d2.getDay()===1);}).length;return Math.round(mc2.length/tot*100);}
+
+// ── medPct: calcula % de medicamentos tomados para un dia k ───────────────────
+// Respeta dateEnd: si la fecha k es posterior al dateEnd del med, ese med no cuenta.
+function medPct(k){
+  var s2=ls();
+  var mc2=s2[k]&&s2[k].mc||[];
+  var d2=new Date(k+'T12:00:00');
+  var tot=MEDS.filter(function(m){
+    var active=m.always||(m.monOnly&&d2.getDay()===1);
+    if(!active)return false;
+    if(m.dateEnd){var de=new Date(m.dateEnd+'T23:59:59');if(d2>de)return false;}
+    return true;
+  }).length;
+  if(tot===0)return 100;
+  return Math.round(mc2.length/tot*100);
+}
+
 var activeFoodGroup='verduras';
 function getFoodCounts(){var s=ls();var counts={};Object.keys(PT).forEach(function(g){counts[g]={};});Object.keys(s).forEach(function(dk){var dayFoods=s[dk]&&s[dk].foods||{};Object.keys(dayFoods).forEach(function(fn){var grp=dayFoods[fn].g;var cnt=dayFoods[fn].c||0;if(grp&&counts[grp])counts[grp][fn]=(counts[grp][fn]||0)+cnt;});});return counts;}
 function renderFoodStats(group){activeFoodGroup=group;var tabs=document.getElementById('foodStatTabs');var list=document.getElementById('foodStatList');if(!tabs||!list)return;var thtml='';Object.keys(PT).forEach(function(g){thtml+='<button style="background:var(--card2);border:1px solid '+(g===group?'var(--accent)':'var(--border)')+';border-radius:7px;padding:5px 10px;font-size:.75rem;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;color:'+(g===group?'var(--text)':'var(--muted)')+';" data-g="'+g+'" onclick="renderFoodStats(this.dataset.g)">'+PT[g].l+'</button>';});tabs.innerHTML=thtml;var counts=getFoodCounts();var grpCounts=counts[group]||{};var items=Object.keys(grpCounts).map(function(n){return{n:n,c:grpCounts[n]};});items.sort(function(a,b){return b.c-a.c;});if(items.length===0){list.innerHTML='<div style="color:var(--muted);font-size:.82rem;text-align:center;padding:20px 0">Sin datos aun</div>';return;}var max=items[0].c;var html='';items.slice(0,10).forEach(function(it,i){var pct=Math.round(it.c/max*100);html+='<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:.82rem"><div style="width:18px;font-family:Syne,sans-serif;font-weight:800;font-size:.75rem;color:var(--muted)">'+(i+1)+'</div><div style="flex:1">'+it.n+'</div><div style="width:80px;height:5px;background:var(--border);border-radius:999px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:'+PT[group].c+'"></div></div><div style="font-family:Syne,sans-serif;font-weight:700;font-size:.78rem;color:var(--accent)">x'+it.c+'</div></div>';});list.innerHTML=html;}
@@ -580,7 +609,28 @@ function renderDash(){
   charts['ch-sleep']=new Chart(document.getElementById('ch-sleep').getContext('2d'),{type:'bar',data:{labels:labels,datasets:[{data:slData,backgroundColor:slData.map(function(v,i){var rgb=v===0?'160,100,245':v<6?'245,100,100':v<7?'245,162,100':v<=9?'100,245,180':'245,162,100';return isToday[i]?'rgba('+rgb+',1)':'rgba('+rgb+',.55)';}),borderRadius:6,borderSkipped:false}]},options:slOpts});
   renderWeightGoals();renderFoodStats(activeFoodGroup);
 }
-function exportReport(){var s=ls();var wts=gw();var days7=getDays(7);var today=new Date().toLocaleDateString('es-MX');var txt='REPORTE NUTRITRACK\nFecha: '+today+'\nPaciente: Jose Mauricio Moreno Garcia\nPlan: Dieta Anti-Reflujo (Michelle Ocampo)\n\n--- PESO ---\n';wts.slice(-7).forEach(function(w){txt+=w.date+': '+w.w+'kg\n';});txt+='\n--- AGUA ---\n';days7.forEach(function(k){txt+=k+': '+((s[k]&&s[k].water||0)*0.25).toFixed(1)+'L\n';});txt+='\n--- MEDICAMENTO ---\n';days7.forEach(function(k){var c=s[k]&&s[k].mc||[];var d2=new Date(k+'T12:00:00');var tot=MEDS.filter(function(m){return m.always||(m.monOnly&&d2.getDay()===1);}).length;txt+=k+': '+c.length+'/'+tot+'\n';});txt+='\n--- PORCIONES ---\n';days7.forEach(function(k){txt+=k+': '+porcPct(k)+'%\n';});var blob=new Blob(['\uFEFF'+txt],{type:'text/plain;charset=utf-8'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='nutritrack_'+todayKey()+'.txt';a.click();toast('Reporte exportado');}
+
+// ── exportReport: ahora cubre 30 dias (reporte mensual para Michelle) ─────────
+function exportReport(){
+  var s=ls();var wts=gw();
+  var days30=getDays(30);
+  var today=new Date().toLocaleDateString('es-MX');
+  var txt='REPORTE NUTRITRACK\nFecha: '+today+'\nPaciente: Jose Mauricio Moreno Garcia\nPlan: Dieta Anti-Reflujo (Michelle Ocampo)\n\n--- PESO (ultimos 30 dias) ---\n';
+  wts.slice(-30).forEach(function(w){txt+=w.date+': '+w.w+'kg\n';});
+  txt+='\n--- AGUA ---\n';
+  days30.forEach(function(k){txt+=k+': '+((s[k]&&s[k].water||0)*0.25).toFixed(1)+'L\n';});
+  txt+='\n--- MEDICAMENTO ---\n';
+  days30.forEach(function(k){var c=s[k]&&s[k].mc||[];var d2=new Date(k+'T12:00:00');var tot=MEDS.filter(function(m){var active=m.always||(m.monOnly&&d2.getDay()===1);if(!active)return false;if(m.dateEnd){var de=new Date(m.dateEnd+'T23:59:59');if(d2>de)return false;}return true;}).length;txt+=k+': '+c.length+'/'+(tot||'-')+'\n';});
+  txt+='\n--- PORCIONES ---\n';
+  days30.forEach(function(k){txt+=k+': '+porcPct(k)+'%\n';});
+  var blob=new Blob(['\uFEFF'+txt],{type:'text/plain;charset=utf-8'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='nutritrack_'+todayKey()+'.txt';
+  a.click();
+  toast('Reporte mensual exportado');
+}
+
 var viewDate=new Date();
 function changeDay(d){var nd=new Date(viewDate);nd.setDate(nd.getDate()+d);var today=new Date();today.setHours(23,59,59,999);if(nd>today)return;viewDate=nd;renderDia();}
 var _clockInterval=null;
@@ -597,13 +647,26 @@ function renderDia(){
   document.getElementById('btn-next').disabled=isToday;
   if(!day.mc)day.mc=[];
   var isMon=dow===1;
-  var todayMeds=MEDS.filter(function(m){return m.always||(m.monOnly&&isMon);});
+
+  // ── todayMeds: filtra por fecha además de monOnly/always ──────────────────
+  var viewDateKey=key;
+  var todayMeds=MEDS.filter(function(m){
+    var active=m.always||(m.monOnly&&isMon);
+    if(!active)return false;
+    if(m.dateEnd){
+      var de=new Date(m.dateEnd+'T23:59:59');
+      var vd=new Date(viewDateKey+'T12:00:00');
+      if(vd>de)return false;
+    }
+    return true;
+  });
+
   var mDone=todayMeds.filter(function(m){return day.mc.indexOf(m.id)>=0;}).length;
   var mh='<div style="font-size:.72rem;font-family:Syne,sans-serif;color:var(--muted);margin-bottom:8px">'+mDone+' / '+todayMeds.length+' completados</div>';
   todayMeds.forEach(function(m){var ok=day.mc.indexOf(m.id)>=0;var bc=ok?m.c:'var(--border)';var cbg=ok?m.c:'transparent';mh+='<div class="med-card" style="border-color:'+bc+'" onclick="toggleMed(\''+m.id+'\',\''+key+'\')">';mh+='<div class="med-ico">'+m.ico+'</div>';mh+='<div class="med-info"><div class="med-name" style="'+(ok?'text-decoration:line-through;opacity:.5':'')+'">'+m.l+' - '+m.dose+'</div><div class="med-time" style="color:'+m.c+'">'+m.t+'</div><div class="med-sub">'+m.s+'</div></div><div class="med-chk" style="background:'+cbg+';border-color:'+bc+'">'+(ok?'v':'')+'</div></div>';});
   document.getElementById('day-meds').innerHTML=mh;
   var h=isToday?new Date().getHours():25;var plan=WP[dow];var tlh='';
-  MO.forEach(function(m){var mt=MG[m.k];var mp=(day.mp&&day.mp[m.k])||{};var gks=Object.keys(mt);var done=0;gks.forEach(function(g){if((mp[g]||0)>=mt[g])done++;});var pct=Math.round(done/gks.length*100);var ws=MKW[m.k][0];var we=MKW[m.k][1];var cur=h>=ws&&h<we;var lc=cur?'var(--accent)':h>=we?'var(--muted)':'var(--text)';var bc2=pct>=100?'var(--good)':pct>0?'var(--accent)':'var(--border)';tlh+='<div class="tl-meal" style="'+(cur?'border-color:var(--accent)':'')+(pct>=100?';border-color:var(--good)':'')+'"><div class="tl-head" onclick="toggleMeal(\''+m.k+'\',\''+key+'\')"><div class="tl-lbl" style="color:'+lc+'">'+m.l+'<span class="tl-time">'+m.t+'</span></div><div class="tl-prog"><div class="tl-bar"><div class="tl-fill" id="tfill-'+m.k+'" style="width:'+pct+'%;background:'+bc2+'"></div></div><div class="tl-txt" id="ttxt-'+m.k+'">'+done+'/'+gks.length+'</div></div></div><div class="tl-body" id="tb-'+m.k+'"><div class="tl-hint">'+plan[m.k]+'</div><div class="chips" id="chips-'+m.k+'"></div></div></div>';});
+  MO.forEach(function(m){var mt=MG[m.k];var mp=(day.mp&&day.mp[m.k])||{};var gks=Object.keys(mt);var done=0;gks.forEach(function(g){if((mp[g]||0)>=mt[g])done++;});var pct=Math.round(done/gks.length*100);var ws=MKW[m.k][0];var we=MKW[m.k][1];var cur=h>=ws&&h<we;var lc=cur?'var(--accent)':h>=we?'var(--muted)':'var(--text)';var bc2=pct>=100?'var(--good)':pct>0?'var(--accent)':'var(--border)';tlh+='<div class="tl-meal" style="'+(cur?'border-color:var(--accent)':'')+(pct>=100?';border-color:var(--good)':'')+'"><div class="tl-head" onclick="toggleMeal(\''+m.k+'\',\''+key+'\')""><div class="tl-lbl" style="color:'+lc+'">'+m.l+'<span class="tl-time">'+m.t+'</span></div><div class="tl-prog"><div class="tl-bar"><div class="tl-fill" id="tfill-'+m.k+'" style="width:'+pct+'%;background:'+bc2+'"></div></div><div class="tl-txt" id="ttxt-'+m.k+'">'+done+'/'+gks.length+'</div></div></div><div class="tl-body" id="tb-'+m.k+'"><div class="tl-hint">'+plan[m.k]+'</div><div class="chips" id="chips-'+m.k+'"></div></div></div>';});
   document.getElementById('day-tl').innerHTML=tlh;
   var curMeal=null;MO.forEach(function(m){var ws=MKW[m.k][0];var we=MKW[m.k][1];if(h>=ws&&h<we)curMeal=m.k;});
   if(curMeal){var tb=document.getElementById('tb-'+curMeal);if(tb){tb.classList.add('open');renderChips(curMeal,key,day);}}
@@ -650,8 +713,9 @@ function showEq(id,btn){document.querySelectorAll('.eqb').forEach(function(e){e.
 function buildWP(){var wp=document.getElementById('wpt');if(!wp||wp.innerHTML!=='')return;var dows=[1,2,3,4,5,6,0];var names=['Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo'];var nd=new Date(new Date().toLocaleString('en-US',{timeZone:'America/Mexico_City'}));var tod=nd.getDay();var h='';dows.forEach(function(d,i){h+='<div class="wday" style="'+(d===tod?'border-left:2px solid var(--accent);padding-left:8px':'')+'"><div class="wdtitle">'+names[i]+(d===tod?' HOY':'')+'</div>';MO.forEach(function(m){h+='<div class="wrow"><div class="wlbl">'+m.l+'</div><div>'+WP[d][m.k]+'</div></div>';});h+='</div>';});wp.innerHTML=h;}
 
 var CHANGELOG=[
+  {v:'1.3.1',fecha:'2026-06-19',cambios:['Glutapak nocturno desactivado a partir del 16 de junio (solo queda manana)','Milda desactivado a partir del 22 de junio','medPct respeta dateEnd: graficas y porcentajes correctos para dias pasados y futuros','Reporte exportado cambiado a 30 dias (mensual para Michelle)']},
   {v:'1.3.0',fecha:'2026-06-02',cambios:['Emojis restaurados en iconos de medicamentos','Emojis agregados en chips de porciones (Verduras, Frutas, Cereales, etc.)','Emojis y flechas en secciones de Mi Plan','Controlador de versiones con historial de cambios']},
-  {v:'1.2.0',fecha:'2026-06-02',cambios:['Milda cambiado a solo lunes (monOnly)','Suero solo muestra el dia que toca (L/Mi/V)','Gráfica de peso muestra todos los registros','Puntos verdes si bajaste, rojos si subiste','Proyeccion de peso en linea rosa punteada']},
+  {v:'1.2.0',fecha:'2026-06-02',cambios:['Milda cambiado a solo lunes (monOnly)','Suero solo muestra el dia que toca (L/Mi/V)','Grafica de peso muestra todos los registros','Puntos verdes si bajaste, rojos si subiste','Proyeccion de peso en linea rosa punteada']},
   {v:'1.1.0',fecha:'2026-06-01',cambios:['Checklist anti-reflujo restaurado','Metas de peso con barras de progreso y fecha proyectada','Boton Borrar peso por dia','Reloj en tiempo real en Mi Dia (hoy)','Alimentos mas consumidos por grupo']},
   {v:'1.0.0',fecha:'2026-05-25',cambios:['Version inicial','Plan dieta anti-reflujo Michelle Ocampo','5 comidas con chips de porciones SMAE','Medicamentos con toggle','Agua con burbujas','Sincronizacion GitHub Gist','Backup y restaurar JSON']}
 ];
