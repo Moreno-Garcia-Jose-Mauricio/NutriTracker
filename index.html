@@ -157,7 +157,7 @@ input:focus{outline:none;border-color:var(--accent);}
 </div>
 
 <div class="page active" id="page-dash">
-  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v1.3.4</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
+  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v1.3.3</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
   <div class="sec">
     <div class="ptabs">
       <div class="pt active" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
@@ -614,26 +614,70 @@ function renderDash(){
 function exportReport(){
   var s=ls();var wts=gw();
   var today=new Date().toLocaleDateString('es-MX');
-  var LINE='─────────────────────────────────────────────────────────\n';
 
-  // ── Historial completo ───────────────────────────────────────────────────────
+  // Historial completo: todas las fechas registradas en localStorage
   var allKeys=Object.keys(s).filter(function(k){return /^\d{4}-\d{2}-\d{2}$/.test(k);});
   allKeys.sort();
-  var N=allKeys.length;
+  var totalDays=allKeys.length;
 
-  // ── Helpers estadísticos ─────────────────────────────────────────────────────
-  function avg(arr){return arr.length?arr.reduce(function(a,b){return a+b;},0)/arr.length:0;}
-  function stddev(arr){if(arr.length<2)return 0;var m=avg(arr);return Math.sqrt(arr.reduce(function(a,b){return a+Math.pow(b-m,2);},0)/arr.length);}
-  function pct(n,d){return d?Math.round(n/d*100):0;}
-  function f1(n){return parseFloat(n.toFixed(1));}
-  function f2(n){return parseFloat(n.toFixed(2));}
+  // ── ENCABEZADO ──────────────────────────────────────────────────────────────
+  var txt='REPORTE NUTRITRACK\n';
+  txt+='Fecha de exportacion: '+today+'\n';
+  txt+='Paciente: Jose Mauricio Moreno Garcia\n';
+  txt+='Plan: Dieta Anti-Reflujo (Michelle Ocampo)\n';
+  txt+='Dias con datos registrados: '+totalDays+'\n';
+  if(allKeys.length){txt+='Periodo: '+allKeys[0]+' a '+allKeys[allKeys.length-1]+'\n';}
+  txt+='\n';
 
-  // ── Pre-cómputo de series ────────────────────────────────────────────────────
-  var waterSeries=allKeys.map(function(k){return (s[k].water||0)*0.25;});
-  var sleepSeries=allKeys.map(function(k){return s[k].sl||0;});
-  var exSeries=allKeys.map(function(k){return s[k].ex||0;});
-  var porcSeries=allKeys.map(function(k){return porcPct(k);});
-  var medSeries=allKeys.map(function(k){
+  // ── PESO ────────────────────────────────────────────────────────────────────
+  txt+='=== PESO ===\n';
+  if(wts.length){
+    var first=wts[0].w;var last=wts[wts.length-1].w;
+    txt+='Inicial: '+first+'kg  |  Actual: '+last+'kg  |  Diferencia: '+(last-first>=0?'+':'')+((last-first).toFixed(1))+'kg\n';
+    txt+='Registros:\n';
+    wts.forEach(function(w){txt+='  '+w.date+': '+w.w+'kg\n';});
+  }else{txt+='Sin registros\n';}
+  txt+='\n';
+
+  // ── AGUA ────────────────────────────────────────────────────────────────────
+  txt+='=== AGUA ===\n';
+  var totalWater=0;var daysWithWater=0;
+  allKeys.forEach(function(k){
+    var L=(s[k].water||0)*0.25;
+    totalWater+=L;
+    if(L>0)daysWithWater++;
+    txt+='  '+k+': '+L.toFixed(1)+'L'+(L>=3?' OK':'')+'\n';
+  });
+  if(totalDays){txt+='Promedio: '+(totalWater/totalDays).toFixed(1)+'L/dia (dias con registro: '+daysWithWater+')\n';}
+  txt+='\n';
+
+  // ── SUEÑO ───────────────────────────────────────────────────────────────────
+  txt+='=== SUENO ===\n';
+  var totalSleep=0;var daysSleep=0;
+  allKeys.forEach(function(k){
+    var h=s[k].sl||0;
+    if(h>0){totalSleep+=h;daysSleep++;}
+    txt+='  '+k+': '+h+'h\n';
+  });
+  var avgSleep=daysSleep?totalSleep/daysSleep:0;
+  txt+='Total acumulado: '+totalSleep.toFixed(1)+'h  |  Promedio: '+avgSleep.toFixed(1)+'h/noche ('+daysSleep+' noches registradas)\n';
+  txt+='\n';
+
+  // ── EJERCICIO ───────────────────────────────────────────────────────────────
+  txt+='=== EJERCICIO ===\n';
+  var totalEx=0;var daysEx=0;
+  allKeys.forEach(function(k){
+    var min=s[k].ex||0;
+    if(min>0){totalEx+=min;daysEx++;}
+    txt+='  '+k+': '+min+' min\n';
+  });
+  txt+='Total acumulado: '+totalEx+' min ('+Math.round(totalEx/60*10)/10+'h)  |  Dias activos: '+daysEx+' de '+totalDays+'\n';
+  if(daysEx){txt+='Promedio dias activos: '+Math.round(totalEx/daysEx)+' min/dia\n';}
+  txt+='\n';
+
+  // ── MEDICAMENTO ─────────────────────────────────────────────────────────────
+  txt+='=== MEDICAMENTO ===\n';
+  allKeys.forEach(function(k){
     var c=s[k]&&s[k].mc||[];
     var d2=new Date(k+'T12:00:00');
     var tot=MEDS.filter(function(m){
@@ -642,10 +686,17 @@ function exportReport(){
       if(m.dateEnd){var de=new Date(m.dateEnd+'T23:59:59');if(d2>de)return false;}
       return true;
     }).length;
-    return tot?Math.round(c.length/tot*100):100;
+    txt+='  '+k+': '+c.length+'/'+(tot||'-')+'\n';
   });
+  txt+='\n';
 
-  // ── Conteo de alimentos ──────────────────────────────────────────────────────
+  // ── PORCIONES ───────────────────────────────────────────────────────────────
+  txt+='=== PORCIONES (consumidas / 31 totales) ===\n';
+  allKeys.forEach(function(k){txt+='  '+k+': '+porcPct(k)+'%\n';});
+  txt+='\n';
+
+  // ── TOP 15 ALIMENTOS POR GRUPO ──────────────────────────────────────────────
+  txt+='=== TOP 15 ALIMENTOS POR GRUPO ===\n';
   var foodCounts={};
   Object.keys(PT).forEach(function(g){foodCounts[g]={};});
   allKeys.forEach(function(k){
@@ -655,223 +706,23 @@ function exportReport(){
       if(grp&&foodCounts[grp])foodCounts[grp][fn]=(foodCounts[grp][fn]||0)+cnt;
     });
   });
-
-  // ── Notas acumuladas ─────────────────────────────────────────────────────────
-  var notasDias=allKeys.filter(function(k){return s[k].notes&&s[k].notes.trim();});
-
-  // ════════════════════════════════════════════════════════════════════════════
-  var txt='';
-  txt+='╔═══════════════════════════════════════════════════════╗\n';
-  txt+='║           REPORTE NUTRITRACK — HISTORIAL COMPLETO    ║\n';
-  txt+='╚═══════════════════════════════════════════════════════╝\n\n';
-  txt+='Paciente      : Jose Mauricio Moreno Garcia\n';
-  txt+='Nutriologa    : Lic. Michelle Ocampo\n';
-  txt+='Plan          : Dieta Anti-Reflujo (SMAE)\n';
-  txt+='Exportado     : '+today+'\n';
-  txt+='Periodo       : '+(allKeys[0]||'—')+' → '+(allKeys[N-1]||'—')+'\n';
-  txt+='Dias con datos: '+N+'\n\n';
-
-  // ── [1] RESUMEN EJECUTIVO ────────────────────────────────────────────────────
-  txt+='[1] RESUMEN EJECUTIVO\n'+LINE;
-  txt+='NOTA: Este resumen agrupa los indicadores más relevantes\n';
-  txt+='para evaluar adherencia, progreso y hábitos del periodo.\n\n';
-
-  if(wts.length>=2){
-    var wFirst=wts[0].w,wLast=wts[wts.length-1].w;
-    var wDelta=f1(wLast-wFirst);
-    var wDays=(new Date(wts[wts.length-1].date+'T12:00:00')-new Date(wts[0].date+'T12:00:00'))/86400000||1;
-    var wkRate=f2(wDelta/wDays*7);
-    txt+='  Peso inicial          : '+wFirst+' kg\n';
-    txt+='  Peso actual           : '+wLast+' kg\n';
-    txt+='  Diferencia total      : '+(wDelta>=0?'+':'')+wDelta+' kg\n';
-    txt+='  Tasa semanal aprox.   : '+(wkRate>=0?'+':'')+wkRate+' kg/semana\n';
-    txt+='    Calculo: (peso_actual - peso_inicial) / dias_transcurridos * 7\n\n';
-  }
-  var daysWaterOK=waterSeries.filter(function(v){return v>=3;}).length;
-  var daysSleepOK=sleepSeries.filter(function(v){return v>=7&&v<=9;}).length;
-  var daysSleepReg=sleepSeries.filter(function(v){return v>0;}).length;
-  var daysExAct=exSeries.filter(function(v){return v>0;}).length;
-  var porcAvg=f1(avg(porcSeries));
-  var medAvg=f1(avg(medSeries));
-  txt+='  Agua ≥3L / dia         : '+daysWaterOK+' de '+N+' dias ('+pct(daysWaterOK,N)+'%)\n';
-  txt+='  Sueno 7-9h (ideal)     : '+daysSleepOK+' de '+daysSleepReg+' noches registradas ('+pct(daysSleepOK,daysSleepReg)+'%)\n';
-  txt+='  Dias con ejercicio     : '+daysExAct+' de '+N+' dias ('+pct(daysExAct,N)+'%)\n';
-  txt+='  Adherencia porciones   : '+porcAvg+'% promedio\n';
-  txt+='  Adherencia medicamento : '+medAvg+'% promedio\n\n';
-
-  // ── [2] PESO ─────────────────────────────────────────────────────────────────
-  txt+='[2] PESO\n'+LINE;
-  txt+='CALCULO: Se registra manualmente cada medicion. La tasa\n';
-  txt+='semanal usa regresion lineal simple sobre todos los puntos.\n';
-  txt+='Los pesos minimo y maximo son los extremos del historial.\n\n';
-  if(wts.length){
-    var wVals=wts.map(function(w){return w.w;});
-    var wMin=Math.min.apply(null,wVals),wMax=Math.max.apply(null,wVals);
-    var wFirst2=wts[0].w,wLast2=wts[wts.length-1].w;
-    txt+='  Registros totales : '+wts.length+'\n';
-    txt+='  Peso minimo       : '+wMin+' kg\n';
-    txt+='  Peso maximo       : '+wMax+' kg\n';
-    txt+='  Perdida total     : '+f1(wFirst2-wLast2)+' kg\n\n';
-    // Regresión
-    if(wts.length>=3){
-      var tn=wts.length,tSX=0,tSY=0,tSXY=0,tSX2=0;
-      var tT0=new Date(wts[0].date+'T12:00:00').getTime();
-      wts.forEach(function(w){var x=(new Date(w.date+'T12:00:00').getTime()-tT0)/86400000;tSX+=x;tSY+=w.w;tSXY+=x*w.w;tSX2+=x*x;});
-      var tSlope=(tn*tSXY-tSX*tSY)/(tn*tSX2-tSX*tSX);
-      txt+='  Tendencia (regresion lineal): '+(tSlope*7>=0?'+':'')+f2(tSlope*7)+' kg/semana\n';
-      txt+='    Calculo: pendiente = (n*ΣXY - ΣX*ΣY) / (n*ΣX² - (ΣX)²)\n';
-      txt+='    donde X = dias desde primer registro, Y = peso en kg\n\n';
-    }
-    txt+='  Historial:\n';
-    wts.forEach(function(w){txt+='    '+w.date+': '+w.w+' kg\n';});
-  }else{txt+='  Sin registros de peso.\n';}
-  txt+='\n';
-
-  // ── [3] HIDRATACION ──────────────────────────────────────────────────────────
-  txt+='[3] HIDRATACION\n'+LINE;
-  txt+='CALCULO: Cada burbuja = 250ml. Total diario = burbujas * 0.25L.\n';
-  txt+='Meta establecida: 3L/dia minimo (12 burbujas).\n';
-  txt+='Promedio = suma(litros_dia) / total_dias_con_datos.\n\n';
-  var wAvg=f1(avg(waterSeries));
-  var wStd=f1(stddev(waterSeries));
-  var wMin2=f1(Math.min.apply(null,waterSeries));
-  var wMax2=f1(Math.max.apply(null,waterSeries));
-  var daysW0=waterSeries.filter(function(v){return v===0;}).length;
-  txt+='  Promedio diario    : '+wAvg+' L\n';
-  txt+='  Desv. estandar     : '+wStd+' L  (variabilidad dia a dia)\n';
-  txt+='  Minimo registrado  : '+wMin2+' L\n';
-  txt+='  Maximo registrado  : '+wMax2+' L\n';
-  txt+='  Dias ≥ 3L (meta)   : '+daysWaterOK+' / '+N+' ('+pct(daysWaterOK,N)+'%)\n';
-  txt+='  Dias sin registro  : '+daysW0+'\n\n';
-  txt+='  Detalle por dia:\n';
-  allKeys.forEach(function(k,i){txt+='    '+k+': '+f1(waterSeries[i])+'L'+(waterSeries[i]>=3?' ✓':'')+(waterSeries[i]===0?' —':'')+'\n';});
-  txt+='\n';
-
-  // ── [4] SUENO ────────────────────────────────────────────────────────────────
-  txt+='[4] SUENO\n'+LINE;
-  txt+='CALCULO: Registro manual de horas dormidas la noche anterior.\n';
-  txt+='Rango ideal OMS adultos: 7-9h. Dias sin registro excluidos\n';
-  txt+='del promedio para no distorsionar la media.\n\n';
-  var sleepReg=sleepSeries.filter(function(v){return v>0;});
-  var slAvg=f1(avg(sleepReg));
-  var slStd=f1(stddev(sleepReg));
-  var slMin=sleepReg.length?f1(Math.min.apply(null,sleepReg)):0;
-  var slMax=sleepReg.length?f1(Math.max.apply(null,sleepReg)):0;
-  var daysUnder6=sleepReg.filter(function(v){return v<6;}).length;
-  var daysUnder7=sleepReg.filter(function(v){return v>=6&&v<7;}).length;
-  txt+='  Noches registradas : '+sleepReg.length+' de '+N+' dias\n';
-  txt+='  Promedio           : '+slAvg+' h/noche\n';
-  txt+='  Desv. estandar     : '+slStd+' h\n';
-  txt+='  Minimo             : '+slMin+' h\n';
-  txt+='  Maximo             : '+slMax+' h\n';
-  txt+='  Noches en rango ideal (7-9h): '+daysSleepOK+' ('+pct(daysSleepOK,sleepReg.length)+'%)\n';
-  txt+='  Noches < 6h (privacion)      : '+daysUnder6+' ('+pct(daysUnder6,sleepReg.length)+'%)\n';
-  txt+='  Noches 6-7h (suboptimo)      : '+daysUnder7+' ('+pct(daysUnder7,sleepReg.length)+'%)\n\n';
-  txt+='  Detalle por dia:\n';
-  allKeys.forEach(function(k,i){
-    var h=sleepSeries[i];
-    var tag=h===0?' —':h<6?' ⚠ privacion':h<7?' ~ suboptimo':h<=9?' ✓ ideal':' ~ exceso';
-    txt+='    '+k+': '+h+'h'+tag+'\n';
-  });
-  txt+='\n';
-
-  // ── [5] EJERCICIO ────────────────────────────────────────────────────────────
-  txt+='[5] EJERCICIO\n'+LINE;
-  txt+='CALCULO: Registro manual en minutos por dia.\n';
-  txt+='Promedio activo = suma(min_dias_con_ejercicio) / dias_activos.\n';
-  txt+='Frecuencia = dias_activos / total_dias * 100.\n\n';
-  var exAct=exSeries.filter(function(v){return v>0;});
-  var totalEx2=exSeries.reduce(function(a,b){return a+b;},0);
-  var exAvgAct=f1(avg(exAct));
-  var exStd=f1(stddev(exAct));
-  txt+='  Dias activos       : '+daysExAct+' de '+N+' ('+pct(daysExAct,N)+'%)\n';
-  txt+='  Total acumulado    : '+totalEx2+' min ('+f1(totalEx2/60)+' h)\n';
-  txt+='  Prom. dias activos : '+exAvgAct+' min/dia\n';
-  txt+='  Desv. estandar     : '+exStd+' min\n';
-  txt+='  Sesion maxima      : '+(exAct.length?Math.max.apply(null,exAct):0)+' min\n\n';
-  txt+='  Detalle por dia:\n';
-  allKeys.forEach(function(k,i){if(exSeries[i]>0)txt+='    '+k+': '+exSeries[i]+' min\n';else txt+='    '+k+': —\n';});
-  txt+='\n';
-
-  // ── [6] MEDICAMENTO ──────────────────────────────────────────────────────────
-  txt+='[6] MEDICAMENTO\n'+LINE;
-  txt+='CALCULO: % = medicamentos_tomados / medicamentos_esperados_ese_dia * 100.\n';
-  txt+='Los medicamentos con dateEnd no cuentan despues de su fecha limite.\n';
-  txt+='Milda: solo lunes, suspendido 22-jun. Glutapak nocturno: hasta 15-jun.\n\n';
-  txt+='  Adherencia promedio: '+f1(avg(medSeries))+'%\n';
-  txt+='  Dias 100%          : '+medSeries.filter(function(v){return v>=100;}).length+' de '+N+'\n';
-  txt+='  Dias < 50%         : '+medSeries.filter(function(v){return v<50;}).length+'\n\n';
-  txt+='  Detalle por dia:\n';
-  allKeys.forEach(function(k,i){
-    var c=s[k]&&s[k].mc||[];
-    var d2=new Date(k+'T12:00:00');
-    var tot=MEDS.filter(function(m){
-      var active=m.always||(m.monOnly&&d2.getDay()===1);
-      if(!active)return false;
-      if(m.dateEnd){var de=new Date(m.dateEnd+'T23:59:59');if(d2>de)return false;}
-      return true;
-    }).length;
-    txt+='    '+k+': '+c.length+'/'+(tot||'?')+' ('+medSeries[i]+'%)\n';
-  });
-  txt+='\n';
-
-  // ── [7] ADHERENCIA AL PLAN (PORCIONES) ───────────────────────────────────────
-  txt+='[7] ADHERENCIA AL PLAN — PORCIONES\n'+LINE;
-  txt+='CALCULO: % = sum(min(consumido_grupo, meta_grupo)) / 31 * 100\n';
-  txt+='donde 31 = total de porciones diarias del plan SMAE.\n';
-  txt+='Se usa min() para que comer de mas en un grupo no infle el %.\n';
-  txt+='  Grupos: Verduras(2) Frutas(3) Cereales(8) Proteina(10)\n';
-  txt+='          Lacteos(2) Grasas_sp(2) Grasas_cp(4) Prot.polvo(2)\n\n';
-  var pAvg=f1(avg(porcSeries));
-  var pStd=f1(stddev(porcSeries));
-  var daysP80=porcSeries.filter(function(v){return v>=80;}).length;
-  var daysP50=porcSeries.filter(function(v){return v>=50&&v<80;}).length;
-  var daysP50b=porcSeries.filter(function(v){return v<50;}).length;
-  txt+='  Promedio general   : '+pAvg+'%\n';
-  txt+='  Desv. estandar     : '+pStd+'%\n';
-  txt+='  Dias >= 80% (bueno): '+daysP80+' ('+pct(daysP80,N)+'%)\n';
-  txt+='  Dias 50-79% (regular): '+daysP50+' ('+pct(daysP50,N)+'%)\n';
-  txt+='  Dias < 50% (bajo)  : '+daysP50b+' ('+pct(daysP50b,N)+'%)\n\n';
-  txt+='  Detalle por dia:\n';
-  allKeys.forEach(function(k,i){
-    var v=porcSeries[i];
-    var tag=v>=80?' ✓':v>=50?' ~':' ⚠';
-    txt+='    '+k+': '+v+'%'+tag+'\n';
-  });
-  txt+='\n';
-
-  // ── [8] TOP 15 ALIMENTOS POR GRUPO ───────────────────────────────────────────
-  txt+='[8] TOP 15 ALIMENTOS POR GRUPO\n'+LINE;
-  txt+='CALCULO: Conteo acumulado de veces que se registro cada alimento\n';
-  txt+='en el historial completo. Se ordena de mayor a menor frecuencia.\n\n';
   Object.keys(PT).forEach(function(g){
+    txt+='\n['+PT[g].l.replace(/\s*[^\w\s].*/,'').trim()+']\n';
     var items=Object.keys(foodCounts[g]).map(function(n){return{n:n,c:foodCounts[g][n]};});
     items.sort(function(a,b){return b.c-a.c;});
-    var total=items.reduce(function(a,b){return a+b.c;},0);
-    txt+='  '+PT[g].l+' ('+total+' registros totales)\n';
-    if(!items.length){txt+='    Sin registros\n\n';return;}
+    if(!items.length){txt+='  Sin registros\n';return;}
     items.slice(0,15).forEach(function(it,i){
-      var p=pct(it.c,total);
-      txt+='    '+(i+1<10?' ':''+(i+1))+'. '+it.n+' — x'+it.c+' ('+p+'%)\n';
+      txt+='  '+(i+1)+'. '+it.n+' (x'+it.c+')\n';
     });
-    txt+='\n';
   });
-
-  // ── [9] NOTAS Y PENDIENTES ───────────────────────────────────────────────────
-  if(notasDias.length){
-    txt+='[9] NOTAS Y PENDIENTES DEL PACIENTE\n'+LINE;
-    txt+='Notas escritas en el diario durante el periodo de seguimiento.\n\n';
-    notasDias.forEach(function(k){
-      txt+='  '+k+':\n    '+s[k].notes.trim().replace(/\n/g,'\n    ')+'\n\n';
-    });
-  }
+  txt+='\n';
 
   var blob=new Blob(['\uFEFF'+txt],{type:'text/plain;charset=utf-8'});
   var a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
   a.download='nutritrack_reporte_'+todayKey()+'.txt';
   a.click();
-  toast('Reporte exportado');
+  toast('Reporte completo exportado');
 }
 
 var viewDate=new Date();
@@ -951,4 +802,52 @@ function openFM(g,mk,mt,key){_g=g;_mk2=mk;_mt=mt;_key2=key;var day=gd(key);var c
 function closeFM(e){if(e.target===document.getElementById('foodModal'))document.getElementById('foodModal').style.display='none';}
 function addFP(g,amt,name){var day=gd(_key2);if(!day.mp)day.mp={};if(!day.mp[_mk2])day.mp[_mk2]={};var newVal=Math.max(0,(day.mp[_mk2][g]||0)+amt);day.mp[_mk2][g]=newVal;if(amt>0&&name!=='-1'&&name!=='manual'){if(!day.foods)day.foods={};if(!day.foods[name])day.foods[name]={g:g,c:0};day.foods[name].c=(day.foods[name].c||0)+amt;}sd(_key2,day);var curr=day.mp[_mk2][g];document.getElementById('fm-sub').textContent='Meta: '+_mt+' - Registradas: '+curr;renderChips(_mk2,_key2,day);if(amt>0){if(curr>=_mt){toast(PT[g].l+' completo!');document.getElementById('foodModal').style.display='none';}else toast('+'+amt+' '+name);}else{toast('Quitada - total: '+curr);}}
 function addManual(){var amt=parseFloat(document.getElementById('man-amt').value)||1;addFP(_g,amt,'manual');document.getElementById('foodModal').style.display='none';}
-function tacc(id){var b=document.getElementByI
+function tacc(id){var b=document.getElementById('body-'+id);var a=document.getElementById('arr-'+id);var open=b.classList.contains('open');b.classList.toggle('open',!open);a.classList.toggle('open',!open);if(!open&&id==='sem')buildWP();}
+function showEq(id,btn){document.querySelectorAll('.eqb').forEach(function(e){e.style.display='none';});document.querySelectorAll('.etab').forEach(function(b){b.classList.remove('active');});document.getElementById(id).style.display='block';btn.classList.add('active');}
+function buildWP(){var wp=document.getElementById('wpt');if(!wp||wp.innerHTML!=='')return;var dows=[1,2,3,4,5,6,0];var names=['Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo'];var nd=new Date(new Date().toLocaleString('en-US',{timeZone:'America/Mexico_City'}));var tod=nd.getDay();var h='';dows.forEach(function(d,i){h+='<div class="wday" style="'+(d===tod?'border-left:2px solid var(--accent);padding-left:8px':'')+'"><div class="wdtitle">'+names[i]+(d===tod?' HOY':'')+'</div>';MO.forEach(function(m){h+='<div class="wrow"><div class="wlbl">'+m.l+'</div><div>'+WP[d][m.k]+'</div></div>';});h+='</div>';});wp.innerHTML=h;}
+
+var CHANGELOG=[
+  {v:'1.3.3',fecha:'2026-07-01',cambios:['Reporte ahora cubre historial completo (no solo 30 dias)','Agrega seccion de Sueno: total acumulado, promedio y detalle por dia','Agrega seccion de Ejercicio: total en minutos/horas, dias activos y promedio','Agrega Top 15 alimentos mas consumidos por grupo (Frutas, Proteina, Cereales, etc.)','Encabezado con periodo cubierto y dias con datos registrados']},
+  {v:'1.3.2',fecha:'2026-06-19',cambios:['porcPct cambiado a Opcion A: porciones consumidas / total del plan (31)','Dias con colaciones saltadas reflejan % real de lo comido','Ya no penaliza por grupos incompletos si comiste bien en las comidas principales']},
+  {v:'1.3.1',fecha:'2026-06-19',cambios:['Glutapak nocturno desactivado a partir del 16 de junio (solo queda manana)','Milda desactivado a partir del 22 de junio','medPct respeta dateEnd: graficas y porcentajes correctos para dias pasados y futuros','Reporte exportado cambiado a 30 dias (mensual para Michelle)']},
+  {v:'1.3.0',fecha:'2026-06-02',cambios:['Emojis restaurados en iconos de medicamentos','Emojis agregados en chips de porciones (Verduras, Frutas, Cereales, etc.)','Emojis y flechas en secciones de Mi Plan','Controlador de versiones con historial de cambios']},
+  {v:'1.2.0',fecha:'2026-06-02',cambios:['Milda cambiado a solo lunes (monOnly)','Suero solo muestra el dia que toca (L/Mi/V)','Grafica de peso muestra todos los registros','Puntos verdes si bajaste, rojos si subiste','Proyeccion de peso en linea rosa punteada']},
+  {v:'1.1.0',fecha:'2026-06-01',cambios:['Checklist anti-reflujo restaurado','Metas de peso con barras de progreso y fecha proyectada','Boton Borrar peso por dia','Reloj en tiempo real en Mi Dia (hoy)','Alimentos mas consumidos por grupo']},
+  {v:'1.0.0',fecha:'2026-05-25',cambios:['Version inicial','Plan dieta anti-reflujo Michelle Ocampo','5 comidas con chips de porciones SMAE','Medicamentos con toggle','Agua con burbujas','Sincronizacion GitHub Gist','Backup y restaurar JSON']}
+];
+function showChangelog(){
+  var el=document.getElementById('changelogList');
+  var html='';
+  CHANGELOG.forEach(function(v){
+    html+='<div style="margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border)">';
+    html+='<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px">';
+    html+='<span style="font-family:Syne,sans-serif;font-weight:800;font-size:1rem;color:var(--accent)">v'+v.v+'</span>';
+    html+='<span style="font-size:.72rem;color:var(--muted)">'+v.fecha+'</span></div>';
+    v.cambios.forEach(function(ch){
+      html+='<div style="font-size:.82rem;color:var(--muted);padding:3px 0;display:flex;gap:8px"><span style="color:var(--good);flex-shrink:0">+</span><span>'+ch+'</span></div>';
+    });
+    html+='</div>';
+  });
+  el.innerHTML=html;
+  document.getElementById('changelogModal').style.display='flex';
+}
+
+var cfgI=gcfg();if(cfgI.token&&cfgI.gist){cloudLoad();}else{updateCloudUI('off');}
+renderDash();
+</script>
+
+<!-- CHANGELOG MODAL -->
+<div id="changelogModal" onclick="if(event.target===this)this.style.display='none'" style="display:none;position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.85);backdrop-filter:blur(6px);align-items:flex-start;justify-content:center;overflow-y:auto;padding:20px 0 40px;">
+  <div style="background:var(--card);border-radius:18px;padding:24px;margin:20px;width:100%;max-width:460px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+      <div>
+        <div style="font-family:Syne,sans-serif;font-weight:800;font-size:1.1rem">Nutri<span style="color:var(--accent)">Track</span></div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:2px">Historial de cambios</div>
+      </div>
+      <button onclick="document.getElementById('changelogModal').style.display='none'" style="background:var(--card2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:6px 12px;cursor:pointer;font-size:.85rem">✕</button>
+    </div>
+    <div id="changelogList"></div>
+  </div>
+</div>
+</body>
+</html>
