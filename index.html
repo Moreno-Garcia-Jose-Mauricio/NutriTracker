@@ -172,7 +172,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
 </div>
 
 <div class="page active" id="page-dash">
-  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v1.4.0</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
+  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v1.4.1</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
   <div class="sec">
     <div class="ptabs">
       <div class="pt active" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
@@ -284,7 +284,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
     <div class="acc-item"><div class="acc-h" onclick="tacc('ali')"><span>🥦 Alimentos permitidos</span><i class="acc-arr" id="arr-ali">▾</i></div>
       <div class="acc-b" id="body-ali"><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:.78rem">
         <div style="background:var(--card2);border-radius:7px;padding:9px"><strong>Verduras</strong><br><span style="color:var(--muted)">Zanahoria, calabaza, chayote, pepino, espinaca, jitomate, ejotes, berenjena, pimiento morron (cocido)</span></div>
-        <div style="background:var(--card2);border-radius:7px;padding:9px"><strong>Frutas</strong><br><span style="color:var(--muted)">Platano, fresas, uvas, kiwi, naranja, mandarina, pina, papaya, melon, manzana cocida, pera cocida</span></div>
+        <div style="background:var(--card2);border-radius:7px;padding:9px"><strong>Frutas</strong><br><span style="color:var(--muted)">Platano, fresas, uvas, kiwi, naranja, mandarina, pina, papaya, melon, manzana cocida, pera cocida, acai sin azucar</span></div>
         <div style="background:var(--card2);border-radius:7px;padding:9px"><strong>Cereales</strong><br><span style="color:var(--muted)">Papa, arroz, avena, tortilla de maiz, quinoa, pan de masa madre</span></div>
         <div style="background:var(--card2);border-radius:7px;padding:9px"><strong>Proteinas</strong><br><span style="color:var(--muted)">Pollo, pavo, pescado, huevo, carne magra, quesos blancos (panela, oaxaca)</span></div>
         <div style="background:var(--card2);border-radius:7px;padding:9px"><strong>Lacteos</strong><br><span style="color:var(--muted)">Leche deslactosada, yogurt griego, bebidas vegetales (almendra, arroz, coco, avena)</span></div>
@@ -355,6 +355,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
           <div class="eqrow"><span>Mango ataulfo</span><span>1/2 pieza</span></div><div class="eqrow"><span>Sandia</span><span>1 taza</span></div>
           <div class="eqrow"><span>Guayaba sin semillas</span><span>3 piezas</span></div><div class="eqrow"><span>Cereza natural</span><span>20 piezas</span></div>
           <div class="eqrow"><span>Ciruela roja</span><span>3 piezas</span></div><div class="eqrow"><span>Arandanos frescos</span><span>1.5 taza</span></div>
+          <div class="eqrow"><span>Acai pulpa sin azucar</span><span>1/2 taza</span></div>
         </div></div>
         <div class="eqb" id="eq-ver"><div class="eqgrid">
           <div class="eqrow"><span>Brocoli cocido</span><span>1/2 taza</span></div><div class="eqrow"><span>Calabacita cocida</span><span>1/2 taza</span></div>
@@ -507,7 +508,7 @@ var MEDS=[
 ];
 
 var SUEROS=[{id:'su0',day:1,l:'Lunes'},{id:'su1',day:3,l:'Miercoles'},{id:'su2',day:5,l:'Viernes'}];
-var EQ={verduras:[{n:'Brocoli cocido',q:'1/2 taza'},{n:'Calabacita cocida',q:'1/2 taza'},{n:'Calabaza cocida',q:'1/2 taza'},{n:'Champinon cocido',q:'1/2 taza'},{n:'Chayote cocido',q:'1/2 taza'},{n:'Ejotes cocidos',q:'1/2 taza'},{n:'Espinaca cocida',q:'1/2 taza'},{n:'Jitomate cocido',q:'1 pieza'},{n:'Nopal cocido',q:'1 taza'},{n:'Pepino',q:'1 taza'},{n:'Pimiento morron cocido',q:'1/2 taza'},{n:'Zanahoria cocida',q:'1/2 taza'},{n:'Zanahoria cruda',q:'1 pieza'},{n:'Berenjena cocida',q:'1/2 taza'},{n:'Lechuga',q:'2 tazas'},{n:'Acelga cocida',q:'1/2 taza'},{n:'Coliflor cocida',q:'1 taza'},{n:'Kale cocido',q:'1/2 taza'},{n:'Seta cocida',q:'1/2 taza'},{n:'Esparragos cocidos',q:'6 pzas'},{n:'Nopales asados',q:'1 taza'},{n:'Betabel cocido',q:'1/4 pieza'}],frutas:[{n:'Platano',q:'1/2 pieza'},{n:'Fresa rebanada',q:'1 taza'},{n:'Uvas',q:'18 piezas'},{n:'Kiwi',q:'1.5 piezas'},{n:'Naranja',q:'2 piezas'},{n:'Mandarina',q:'2 piezas'},{n:'Pina picada',q:'3/4 taza'},{n:'Papaya picada',q:'1 taza'},{n:'Melon picado',q:'1 taza'},{n:'Manzana cocida',q:'1 pieza'},{n:'Pera cocida',q:'1/2 pieza'},{n:'Blueberries',q:'3/4 taza'},{n:'Frambuesa',q:'1 taza'},{n:'Zarzamora',q:'1 taza'},{n:'Moras',q:'3/4 taza'},{n:'Durazno',q:'2 piezas'},{n:'Mango ataulfo',q:'1/2 pieza'},{n:'Sandia',q:'1 taza'},{n:'Guayaba sin semillas',q:'3 piezas'},{n:'Cereza natural',q:'20 piezas'},{n:'Ciruela roja',q:'3 piezas'},{n:'Arandanos frescos',q:'1.5 taza'}],cereales:[{n:'Arroz cocido',q:'1/4 taza'},{n:'Arroz integral',q:'1/3 taza'},{n:'Avena hojuelas',q:'1/3 taza'},{n:'Avena cocida',q:'3/4 taza'},{n:'Pan integral',q:'1 rebanada'},{n:'Pan masa madre',q:'1 rebanada'},{n:'Pan pita integral',q:'1/3 pieza'},{n:'Papa cocida',q:'1/2 pieza'},{n:'Papa cambray',q:'5 piezas'},{n:'Camote cocido',q:'1/3 taza'},{n:'Quinoa',q:'1/2 taza'},{n:'Rice cake',q:'2 piezas'},{n:'Tortilla de maiz',q:'1 pieza'},{n:'Tostada horneada',q:'2 piezas'},{n:'Galleta salma',q:'3 piezas'},{n:'Pasta cocida',q:'1/2 taza'},{n:'Elote cocido',q:'1.5 pieza'},{n:'Amaranto',q:'1/4 taza'},{n:'Granola sin azucar',q:'3 cdas'},{n:'Palomitas sin sal',q:'2.5 tazas'}],proteina:[{n:'Pechuga pollo asada',q:'30g',s:'Muy bajo grasa'},{n:'Pechuga pollo deshebrada',q:'30g',s:'Muy bajo grasa'},{n:'Pechuga de pavo',q:'1.5 reb.',s:'Muy bajo grasa'},{n:'Atun en agua',q:'1/3 lata',s:'Muy bajo grasa'},{n:'Filete pescado blanco',q:'40g',s:'Muy bajo grasa'},{n:'Pescado zarandeado',q:'40g',s:'Muy bajo grasa'},{n:'Camaron crudo curtido',q:'5 piezas',s:'Muy bajo grasa'},{n:'Camaron crudo sin curtir',q:'5 piezas',s:'Muy bajo grasa'},{n:'Camarones zarandeados',q:'5 piezas',s:'Muy bajo grasa'},{n:'Camaron cocido',q:'5 piezas',s:'Muy bajo grasa'},{n:'Salmon',q:'30g',s:'Muy bajo grasa'},{n:'Bacalao',q:'45g',s:'Muy bajo grasa'},{n:'Clara de huevo',q:'30g',s:'Muy bajo grasa'},{n:'Requeson',q:'2 cditas',s:'Muy bajo grasa'},{n:'Queso cottage bajo grasa',q:'3 cdas',s:'Muy bajo grasa'},{n:'Huevo entero',q:'1 pieza',s:'Bajo grasa'},{n:'Queso panela',q:'40g',s:'Bajo grasa'},{n:'Queso oaxaca',q:'30g',s:'Bajo grasa'},{n:'Arrachera',q:'30g',s:'Bajo grasa'},{n:'Carne molida magra',q:'30g',s:'Bajo grasa'},{n:'Carne roja max 3x sem',q:'30g',s:'Bajo grasa'},{n:'Carne deshebrada magra',q:'30g',s:'Bajo grasa'},{n:'Lomo de res',q:'40g',s:'Bajo grasa'},{n:'Maciza de res',q:'25g',s:'Bajo grasa'},{n:'Bistec de res',q:'30g',s:'Bajo grasa'},{n:'Muslo pollo sin piel',q:'1/2 pieza',s:'Bajo grasa'}],lacteos:[{n:'Yogurt griego Oikos',q:'1/2 envase'},{n:'Yogurt natural sin azucar',q:'1 taza'},{n:'Leche deslactosada',q:'1 taza'},{n:'Leche de almendra',q:'1 taza'},{n:'Leche de avena',q:'1 taza'},{n:'Leche de arroz',q:'1 taza'},{n:'Leche de coco sin azucar',q:'1 taza'},{n:'Leche evap. semidescremada',q:'1/2 taza'},{n:'Queso panela',q:'40g'},{n:'Queso oaxaca',q:'30g'},{n:'Queso fresco blanco',q:'40g'},{n:'Requeson',q:'2 cditas'},{n:'Queso cottage bajo grasa',q:'3 cdas'}],grasas_sin:[{n:'Aceite de oliva',q:'1 cdita'},{n:'Aguacate',q:'1/3 pieza'},{n:'Guacamole sin chile',q:'2 cdas'},{n:'Ghee Mantequilla',q:'1.5 cdita'},{n:'Mayonesa light',q:'1 cdita'},{n:'Aceitunas',q:'5 piezas'},{n:'Aceite de coco',q:'1 cdita'}],grasas_con:[{n:'Almendra',q:'10 piezas'},{n:'Nuez en mitad',q:'7 mitades'},{n:'Cacahuate tostado',q:'14 piezas'},{n:'Pistaches',q:'18 piezas'},{n:'Crema de cacahuate',q:'2 cditas'},{n:'Crema de almendras',q:'2 cditas'},{n:'Chia',q:'7 cdas'},{n:'Semillas de girasol',q:'4 cditas'},{n:'Ajonjoli tostado',q:'5 cdas'},{n:'Pepitas',q:'60 piezas'}],proteina_polvo:[{n:'Isopur Platano + agua',q:'1 scoop'},{n:'Isopur Platano + almendra',q:'1 scoop'},{n:'Isopur Platano + coco',q:'1 scoop'},{n:'Isopur Platano + avena',q:'1 scoop'},{n:'Isopur Cookies + agua',q:'1 scoop'},{n:'Isopur Cookies + almendra',q:'1 scoop'},{n:'Isopur Cookies + coco',q:'1 scoop'},{n:'Whey Vainilla + agua',q:'1 scoop'},{n:'Whey Vainilla + almendra',q:'1 scoop'},{n:'Whey Vainilla + coco',q:'1 scoop'},{n:'Whey Vainilla + avena',q:'1 scoop'},{n:'Proteina otro + agua',q:'1 scoop'},{n:'Proteina otro + almendra',q:'1 scoop'}]};
+var EQ={verduras:[{n:'Brocoli cocido',q:'1/2 taza'},{n:'Calabacita cocida',q:'1/2 taza'},{n:'Calabaza cocida',q:'1/2 taza'},{n:'Champinon cocido',q:'1/2 taza'},{n:'Chayote cocido',q:'1/2 taza'},{n:'Ejotes cocidos',q:'1/2 taza'},{n:'Espinaca cocida',q:'1/2 taza'},{n:'Jitomate cocido',q:'1 pieza'},{n:'Nopal cocido',q:'1 taza'},{n:'Pepino',q:'1 taza'},{n:'Pimiento morron cocido',q:'1/2 taza'},{n:'Zanahoria cocida',q:'1/2 taza'},{n:'Zanahoria cruda',q:'1 pieza'},{n:'Berenjena cocida',q:'1/2 taza'},{n:'Lechuga',q:'2 tazas'},{n:'Acelga cocida',q:'1/2 taza'},{n:'Coliflor cocida',q:'1 taza'},{n:'Kale cocido',q:'1/2 taza'},{n:'Seta cocida',q:'1/2 taza'},{n:'Esparragos cocidos',q:'6 pzas'},{n:'Nopales asados',q:'1 taza'},{n:'Betabel cocido',q:'1/4 pieza'}],frutas:[{n:'Platano',q:'1/2 pieza'},{n:'Fresa rebanada',q:'1 taza'},{n:'Uvas',q:'18 piezas'},{n:'Kiwi',q:'1.5 piezas'},{n:'Naranja',q:'2 piezas'},{n:'Mandarina',q:'2 piezas'},{n:'Pina picada',q:'3/4 taza'},{n:'Papaya picada',q:'1 taza'},{n:'Melon picado',q:'1 taza'},{n:'Manzana cocida',q:'1 pieza'},{n:'Pera cocida',q:'1/2 pieza'},{n:'Blueberries',q:'3/4 taza'},{n:'Frambuesa',q:'1 taza'},{n:'Zarzamora',q:'1 taza'},{n:'Moras',q:'3/4 taza'},{n:'Durazno',q:'2 piezas'},{n:'Mango ataulfo',q:'1/2 pieza'},{n:'Sandia',q:'1 taza'},{n:'Guayaba sin semillas',q:'3 piezas'},{n:'Cereza natural',q:'20 piezas'},{n:'Ciruela roja',q:'3 piezas'},{n:'Arandanos frescos',q:'1.5 taza'},{n:'Acai pulpa sin azucar',q:'1/2 taza'}],cereales:[{n:'Arroz cocido',q:'1/4 taza'},{n:'Arroz integral',q:'1/3 taza'},{n:'Avena hojuelas',q:'1/3 taza'},{n:'Avena cocida',q:'3/4 taza'},{n:'Pan integral',q:'1 rebanada'},{n:'Pan masa madre',q:'1 rebanada'},{n:'Pan pita integral',q:'1/3 pieza'},{n:'Papa cocida',q:'1/2 pieza'},{n:'Papa cambray',q:'5 piezas'},{n:'Camote cocido',q:'1/3 taza'},{n:'Quinoa',q:'1/2 taza'},{n:'Rice cake',q:'2 piezas'},{n:'Tortilla de maiz',q:'1 pieza'},{n:'Tostada horneada',q:'2 piezas'},{n:'Galleta salma',q:'3 piezas'},{n:'Pasta cocida',q:'1/2 taza'},{n:'Elote cocido',q:'1.5 pieza'},{n:'Amaranto',q:'1/4 taza'},{n:'Granola sin azucar',q:'3 cdas'},{n:'Palomitas sin sal',q:'2.5 tazas'}],proteina:[{n:'Pechuga pollo asada',q:'30g',s:'Muy bajo grasa'},{n:'Pechuga pollo deshebrada',q:'30g',s:'Muy bajo grasa'},{n:'Pechuga de pavo',q:'1.5 reb.',s:'Muy bajo grasa'},{n:'Atun en agua',q:'1/3 lata',s:'Muy bajo grasa'},{n:'Filete pescado blanco',q:'40g',s:'Muy bajo grasa'},{n:'Pescado zarandeado',q:'40g',s:'Muy bajo grasa'},{n:'Camaron crudo curtido',q:'5 piezas',s:'Muy bajo grasa'},{n:'Camaron crudo sin curtir',q:'5 piezas',s:'Muy bajo grasa'},{n:'Camarones zarandeados',q:'5 piezas',s:'Muy bajo grasa'},{n:'Camaron cocido',q:'5 piezas',s:'Muy bajo grasa'},{n:'Salmon',q:'30g',s:'Muy bajo grasa'},{n:'Bacalao',q:'45g',s:'Muy bajo grasa'},{n:'Clara de huevo',q:'30g',s:'Muy bajo grasa'},{n:'Requeson',q:'2 cditas',s:'Muy bajo grasa'},{n:'Queso cottage bajo grasa',q:'3 cdas',s:'Muy bajo grasa'},{n:'Huevo entero',q:'1 pieza',s:'Bajo grasa'},{n:'Queso panela',q:'40g',s:'Bajo grasa'},{n:'Queso oaxaca',q:'30g',s:'Bajo grasa'},{n:'Arrachera',q:'30g',s:'Bajo grasa'},{n:'Carne molida magra',q:'30g',s:'Bajo grasa'},{n:'Carne roja max 3x sem',q:'30g',s:'Bajo grasa'},{n:'Carne deshebrada magra',q:'30g',s:'Bajo grasa'},{n:'Lomo de res',q:'40g',s:'Bajo grasa'},{n:'Maciza de res',q:'25g',s:'Bajo grasa'},{n:'Bistec de res',q:'30g',s:'Bajo grasa'},{n:'Muslo pollo sin piel',q:'1/2 pieza',s:'Bajo grasa'}],lacteos:[{n:'Yogurt griego Oikos',q:'1/2 envase'},{n:'Yogurt natural sin azucar',q:'1 taza'},{n:'Leche deslactosada',q:'1 taza'},{n:'Leche de almendra',q:'1 taza'},{n:'Leche de avena',q:'1 taza'},{n:'Leche de arroz',q:'1 taza'},{n:'Leche de coco sin azucar',q:'1 taza'},{n:'Leche evap. semidescremada',q:'1/2 taza'},{n:'Queso panela',q:'40g'},{n:'Queso oaxaca',q:'30g'},{n:'Queso fresco blanco',q:'40g'},{n:'Requeson',q:'2 cditas'},{n:'Queso cottage bajo grasa',q:'3 cdas'}],grasas_sin:[{n:'Aceite de oliva',q:'1 cdita'},{n:'Aguacate',q:'1/3 pieza'},{n:'Guacamole sin chile',q:'2 cdas'},{n:'Ghee Mantequilla',q:'1.5 cdita'},{n:'Mayonesa light',q:'1 cdita'},{n:'Aceitunas',q:'5 piezas'},{n:'Aceite de coco',q:'1 cdita'}],grasas_con:[{n:'Almendra',q:'10 piezas'},{n:'Nuez en mitad',q:'7 mitades'},{n:'Cacahuate tostado',q:'14 piezas'},{n:'Pistaches',q:'18 piezas'},{n:'Crema de cacahuate',q:'2 cditas'},{n:'Crema de almendras',q:'2 cditas'},{n:'Chia',q:'7 cdas'},{n:'Semillas de girasol',q:'4 cditas'},{n:'Ajonjoli tostado',q:'5 cdas'},{n:'Pepitas',q:'60 piezas'}],proteina_polvo:[{n:'Isopur Platano + agua',q:'1 scoop'},{n:'Isopur Platano + almendra',q:'1 scoop'},{n:'Isopur Platano + coco',q:'1 scoop'},{n:'Isopur Platano + avena',q:'1 scoop'},{n:'Isopur Cookies + agua',q:'1 scoop'},{n:'Isopur Cookies + almendra',q:'1 scoop'},{n:'Isopur Cookies + coco',q:'1 scoop'},{n:'Whey Vainilla + agua',q:'1 scoop'},{n:'Whey Vainilla + almendra',q:'1 scoop'},{n:'Whey Vainilla + coco',q:'1 scoop'},{n:'Whey Vainilla + avena',q:'1 scoop'},{n:'Proteina otro + agua',q:'1 scoop'},{n:'Proteina otro + almendra',q:'1 scoop'}]};
 
 function todayKey(){var nd=new Date(new Date().toLocaleString('en-US',{timeZone:'America/Mexico_City'}));return nd.getFullYear()+'-'+String(nd.getMonth()+1).padStart(2,'0')+'-'+String(nd.getDate()).padStart(2,'0');}
 function keyOf(d){var nd=new Date(d.toLocaleString('en-US',{timeZone:'America/Mexico_City'}));return nd.getFullYear()+'-'+String(nd.getMonth()+1).padStart(2,'0')+'-'+String(nd.getDate()).padStart(2,'0');}
@@ -625,7 +626,7 @@ function renderDash(){
   renderWeightGoals();renderFoodStats(activeFoodGroup);
 }
 
-// ── exportReport: ahora cubre 30 dias (reporte mensual para Michelle) ─────────
+// ── exportReport: historial completo + estadisticas clinicas para Michelle ────
 function exportReport(){
   var s=ls();var wts=gw();
   var today=new Date().toLocaleDateString('es-MX');
@@ -643,6 +644,58 @@ function exportReport(){
   txt+='Dias con datos registrados: '+totalDays+'\n';
   if(allKeys.length){txt+='Periodo: '+allKeys[0]+' a '+allKeys[allKeys.length-1]+'\n';}
   txt+='\n';
+
+  // ── ESTADISTICAS CLINICAS (resumen para Michelle) ──────────────────────────
+  function _mean(a){if(!a.length)return 0;return a.reduce(function(x,y){return x+y;},0)/a.length;}
+  function _std(a){if(a.length<2)return 0;var m=_mean(a);return Math.sqrt(a.reduce(function(s2,v){return s2+(v-m)*(v-m);},0)/(a.length-1));}
+  txt+='=== ESTADISTICAS CLINICAS ===\n';
+  txt+='(Calculadas sobre los '+totalDays+' dias con registro)\n\n';
+  if(wts.length>=3){
+    var n3=wts.length,sX=0,sY=0,sXY=0,sX2=0;
+    var t0b=new Date(wts[0].date+'T12:00:00').getTime();
+    wts.forEach(function(w){var x=(new Date(w.date+'T12:00:00').getTime()-t0b)/86400000;sX+=x;sY+=w.w;sXY+=x*w.w;sX2+=x*x;});
+    var slp=(n3*sXY-sX*sY)/(n3*sX2-sX*sX);
+    var wArrS=wts.map(function(w){return w.w;});
+    txt+='PESO\n';
+    txt+='  Tendencia: '+(slp*7>=0?'+':'')+(slp*7).toFixed(2)+' kg/semana  |  Desv. estandar: '+_std(wArrS).toFixed(2)+' kg  |  Cambio total: '+((wts[wts.length-1].w-wts[0].w)>=0?'+':'')+(wts[wts.length-1].w-wts[0].w).toFixed(1)+' kg\n';
+    txt+='  Como se calculo: regresion lineal (minimos cuadrados) sobre todos los pesajes; la pendiente\n';
+    txt+='  diaria se multiplica x7. La desv. estandar mide la variabilidad entre pesajes.\n\n';
+  }
+  var wArr2=allKeys.map(function(k){return (s[k].water||0)*0.25;});
+  var wMeta=wArr2.filter(function(v){return v>=3;}).length;
+  txt+='AGUA\n';
+  txt+='  Promedio: '+_mean(wArr2).toFixed(1)+' L/dia  |  Desv. estandar: '+_std(wArr2).toFixed(1)+' L  |  Dias con meta (>=3L): '+wMeta+'/'+totalDays+' ('+(totalDays?Math.round(wMeta/totalDays*100):0)+'%)\n';
+  txt+='  Como se calculo: cada vaso registrado = 250ml; promedio y desviacion sobre todos los dias con registro.\n\n';
+  var slArr=allKeys.map(function(k){return s[k].sl||0;}).filter(function(v){return v>0;});
+  txt+='SUENO\n';
+  if(slArr.length){
+    var slOK2=slArr.filter(function(v){return v>=7&&v<=9;}).length;
+    var slAvg2=_mean(slArr);
+    txt+='  Promedio: '+slAvg2.toFixed(1)+' h/noche  |  Desv. estandar: '+_std(slArr).toFixed(1)+' h  |  Noches en rango 7-9h: '+slOK2+'/'+slArr.length+' ('+Math.round(slOK2/slArr.length*100)+'%)\n';
+    txt+='  Clasificacion: '+(slAvg2<6?'deficiente (<6h)':slAvg2<7?'limite (6-7h)':slAvg2<=9?'optimo (7-9h)':'excesivo (>9h)')+'\n';
+    txt+='  Como se calculo: solo noches con horas registradas (>0); la clasificacion usa rangos\n';
+    txt+='  clinicos estandar de sueno para adultos (7-9h optimo).\n\n';
+  }else{txt+='  Sin registros suficientes\n\n';}
+  var exArr=allKeys.map(function(k){return s[k].ex||0;});
+  var exTot2=exArr.reduce(function(a,b){return a+b;},0);
+  var exAct=exArr.filter(function(v){return v>0;}).length;
+  var weeks=Math.max(1,totalDays/7);
+  txt+='EJERCICIO\n';
+  txt+='  Promedio semanal: '+Math.round(exTot2/weeks)+' min/semana  |  Dias activos: '+exAct+'/'+totalDays+' ('+(totalDays?Math.round(exAct/totalDays*100):0)+'%)\n';
+  txt+='  Como se calculo: minutos totales entre semanas del periodo (dias registrados/7);\n';
+  txt+='  dia activo = ejercicio > 0 min. Referencia OMS: 150 min/semana.\n\n';
+  var pArr=allKeys.map(porcPct);
+  var pOK=pArr.filter(function(v){return v>=80;}).length;
+  txt+='ADHERENCIA A PORCIONES (SMAE)\n';
+  txt+='  Promedio: '+Math.round(_mean(pArr))+'%  |  Desv. estandar: '+_std(pArr).toFixed(1)+' pts  |  Dias >=80%: '+pOK+'/'+totalDays+' ('+(totalDays?Math.round(pOK/totalDays*100):0)+'%)\n';
+  txt+='  Como se calculo: % diario = porciones consumidas (con tope por grupo) / 31 porciones\n';
+  txt+='  del plan; luego promedio y desviacion de esos porcentajes diarios.\n\n';
+  var mArr=allKeys.map(medPct);
+  var mOK=mArr.filter(function(v){return v>=100;}).length;
+  txt+='APEGO A MEDICAMENTO / SUPLEMENTOS\n';
+  txt+='  Promedio: '+Math.round(_mean(mArr))+'%  |  Dias completos (100%): '+mOK+'/'+totalDays+' ('+(totalDays?Math.round(mOK/totalDays*100):0)+'%)\n';
+  txt+='  Como se calculo: % diario = tomas marcadas / tomas programadas ese dia, respetando las\n';
+  txt+='  fechas de suspension (Glutapak nocturno 16-jun, Milda 22-jun).\n\n';
 
   // ── PESO ────────────────────────────────────────────────────────────────────
   txt+='=== PESO ===\n';
@@ -822,6 +875,7 @@ function showEq(id,btn){document.querySelectorAll('.eqb').forEach(function(e){e.
 function buildWP(){var wp=document.getElementById('wpt');if(!wp||wp.innerHTML!=='')return;var dows=[1,2,3,4,5,6,0];var names=['Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo'];var nd=new Date(new Date().toLocaleString('en-US',{timeZone:'America/Mexico_City'}));var tod=nd.getDay();var h='';dows.forEach(function(d,i){h+='<div class="wday" style="'+(d===tod?'border-left:2px solid var(--accent);padding-left:8px':'')+'"><div class="wdtitle">'+names[i]+(d===tod?' HOY':'')+'</div>';MO.forEach(function(m){h+='<div class="wrow"><div class="wlbl">'+m.l+'</div><div>'+WP[d][m.k]+'</div></div>';});h+='</div>';});wp.innerHTML=h;}
 
 var CHANGELOG=[
+  {v:'1.4.1',fecha:'2026-07-03',cambios:['Reporte: nueva seccion ESTADISTICAS CLINICAS al inicio (tendencia de peso por regresion lineal, desviacion estandar, % de dias en meta, clasificacion de sueno, apego a medicamento con fechas de suspension)','Cada estadistica incluye 1-2 renglones explicando como se calculo','Acai pulpa sin azucar (1/2 taza) agregado a Frutas: equivalencias, selector de alimentos y alimentos permitidos']},
   {v:'1.4.0',fecha:'2026-07-02',cambios:['Rediseno visual: tarjetas con profundidad, sombras y jerarquia mas clara','Barra de navegacion con blur, indicador activo y soporte safe-area (gestos/notch)','Feedback tactil en botones, chips y tarjetas (micro-animaciones al presionar)','Modal de alimentos tipo bottom-sheet con asa y animacion de entrada','Inputs optimizados para movil: teclado numerico y sin zoom automatico en iOS','Accesibilidad: foco visible y respeto a prefers-reduced-motion','Cero cambios de logica ni de datos: historial y sincronizacion intactos']},
   {v:'1.3.3',fecha:'2026-07-01',cambios:['Reporte ahora cubre historial completo (no solo 30 dias)','Agrega seccion de Sueno: total acumulado, promedio y detalle por dia','Agrega seccion de Ejercicio: total en minutos/horas, dias activos y promedio','Agrega Top 15 alimentos mas consumidos por grupo (Frutas, Proteina, Cereales, etc.)','Encabezado con periodo cubierto y dias con datos registrados']},
   {v:'1.3.2',fecha:'2026-06-19',cambios:['porcPct cambiado a Opcion A: porciones consumidas / total del plan (31)','Dias con colaciones saltadas reflejan % real de lo comido','Ya no penaliza por grupos incompletos si comiste bien en las comidas principales']},
@@ -854,4 +908,13 @@ renderDash();
 
 <!-- CHANGELOG MODAL -->
 <div id="changelogModal" onclick="if(event.target===this)this.style.display='none'" style="display:none;position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.85);backdrop-filter:blur(6px);align-items:flex-start;justify-content:center;overflow-y:auto;padding:20px 0 40px;">
-  <div style="background:var(--card);border-radius:18px;padding:24px;margin:20px;width:10
+  <div style="background:var(--card);border-radius:18px;padding:24px;margin:20px;width:100%;max-width:420px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div style="font-family:Syne,sans-serif;font-weight:800;font-size:1.1rem">Historial de versiones</div>
+      <button class="fcls" onclick="document.getElementById('changelogModal').style.display='none'">X</button>
+    </div>
+    <div id="changelogList"></div>
+  </div>
+</div>
+</body>
+</html>
