@@ -172,7 +172,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
 </div>
 
 <div class="page active" id="page-dash">
-  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v1.4.5</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
+  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v1.4.6</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
   <div class="sec">
     <div class="ptabs">
       <div class="pt active" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
@@ -471,7 +471,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
         <tbody>
           <tr><td>Pantoprazol</td><td>2/dia</td><td>30min antes desayuno + 30min antes cena (ayuno) - ultima toma noche: 4-jul, manana: 5-jul</td></tr>
           <tr><td>Glutapak R</td><td>21 dias 2/dia, luego 21 dias 1/dia</td><td>Desde 26-may: manana y noche en ayuno; desde 16-jun solo manana - ultimo dia: 6-jul</td></tr>
-          <tr><td>Omegagenics EPA-DHA</td><td>2 capsulas/dia</td><td>Despues del desayuno - 60 dias desde 26-may - ultimo dia: 24-jul</td></tr>
+          <tr><td>Omegagenics EPA-DHA</td><td>suspendido</td><td>2 capsulas despues del desayuno - desde 26-may - suspendido por Michelle desde 8-jul</td></tr>
           <tr><td>Milda 25,000 UI</td><td>suspendido</td><td>Solo lunes - 4 semanas - suspendido desde 22-jun</td></tr>
         </tbody>
       </table></div></div>
@@ -517,13 +517,13 @@ var RC=['Comi 5-6 veces hoy','Comi despacio, mastique bien','No me acoste 2-3h d
 // dateEnd: ultimo dia en que aplica (inclusive). A partir del dia siguiente ya no cuenta.
 // dateStart: primer dia en que aplica (inclusive). Dias previos no cuentan en stats.
 // Glutapak: inicio 26-may. Fase 1 (21 dias, manana y noche) hasta 15-jun. Fase 2 (21 dias, solo manana) del 16-jun al 6-jul.
-// Omega: inicio 26-may, 60 dias con 2 capsulas diarias - ultimo dia 24-jul.
+// Omega: inicio 26-may, 2 capsulas diarias - suspendido por Michelle, ultimo dia 7-jul (el plan original era 60 dias hasta 24-jul).
 // mi (Milda): aplica hasta 2026-06-21. Desde el 22 de junio suspendido.
 // pm (Pantoprazol manana): ultima toma 2026-07-05. pn (Pantoprazol noche): ultima toma 2026-07-04.
 var MEDS=[
   {id:'pm',l:'Pantoprazol',dose:'1 tableta',t:'Antes del desayuno',s:'30 min antes - en ayuno',ico:'🌅',c:'#f564b4',always:true,dateEnd:'2026-07-05'},
   {id:'gm',l:'Glutapak R',dose:'1 sobre',t:'En ayuno (manana)',s:'Disuelto en 100ml agua - 21+21 dias desde 26-may (desde 16-jun solo manana)',ico:'🌿',c:'#64f5b4',always:true,dateStart:'2026-05-26',dateEnd:'2026-07-06'},
-  {id:'om',l:'Omegagenics EPA-DHA',dose:'2 capsulas',t:'Despues del desayuno',s:'Metagenics / Nordic 1280 - 60 dias desde 26-may',ico:'🐟',c:'#64d4f5',always:true,dateStart:'2026-05-26',dateEnd:'2026-07-24'},
+  {id:'om',l:'Omegagenics EPA-DHA',dose:'2 capsulas',t:'Despues del desayuno',s:'Metagenics / Nordic 1280 - desde 26-may - suspendido por Michelle desde 8-jul',ico:'🐟',c:'#64d4f5',always:true,dateStart:'2026-05-26',dateEnd:'2026-07-07'},
   {id:'mi',l:'Milda 25,000 UI',dose:'1 capsula',t:'Despues del desayuno',s:'Solo lunes - 4 semanas y suspender',ico:'☀️',c:'#f5c864',monOnly:true,dateEnd:'2026-06-21'},
   {id:'pn',l:'Pantoprazol',dose:'1 tableta',t:'Antes de la cena',s:'30 min antes - en ayuno',ico:'🌙',c:'#a064f5',always:true,dateEnd:'2026-07-04'},
   {id:'gn',l:'Glutapak R',dose:'1 sobre',t:'Antes de dormir',s:'Disuelto en 100ml agua - en ayuno',ico:'🌿',c:'#64f5b4',always:true,dateStart:'2026-05-26',dateEnd:'2026-06-15'}
@@ -737,7 +737,7 @@ function exportReport(){
   txt+='  Como se calculo: promedio general = tomas marcadas / tomas programadas por dia; desglose =\n';
   txt+='  por cada medicamento, dias marcados / dias programados segun su calendario y fechas de inicio y fin\n';
   txt+='  (Glutapak y Omega inician 26-may; Glutapak noche hasta 15-jun, Milda 22-jun, Pantoprazol noche 4-jul,\n';
-  txt+='  Pantoprazol manana 5-jul, Glutapak manana 6-jul, Omega 24-jul).\n\n';
+  txt+='  Pantoprazol manana 5-jul, Glutapak manana 6-jul, Omega 7-jul suspendido por indicacion).\n\n';
   var rfKeysS=allKeys.filter(function(k){return k>=RF_START;});
   if(rfKeysS.length){
     var rfd2=rfKeysS.filter(function(k){return s[k].rfd;}).length;
@@ -969,6 +969,7 @@ function showEq(id,btn){document.querySelectorAll('.eqb').forEach(function(e){e.
 function buildWP(){var wp=document.getElementById('wpt');if(!wp||wp.innerHTML!=='')return;var dows=[1,2,3,4,5,6,0];var names=['Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo'];var nd=new Date(new Date().toLocaleString('en-US',{timeZone:'America/Mexico_City'}));var tod=nd.getDay();var h='';dows.forEach(function(d,i){h+='<div class="wday" style="'+(d===tod?'border-left:2px solid var(--accent);padding-left:8px':'')+'"><div class="wdtitle">'+names[i]+(d===tod?' HOY':'')+'</div>';MO.forEach(function(m){h+='<div class="wrow"><div class="wlbl">'+m.l+'</div><div>'+WP[d][m.k]+'</div></div>';});h+='</div>';});wp.innerHTML=h;}
 
 var CHANGELOG=[
+  {v:'1.4.6',fecha:'2026-07-07',cambios:['Omega suspendido por indicacion de Michelle: ultima toma 7-jul (el plan original era 60 dias hasta 24-jul)','El historico se conserva completo: los dias del 26-may al 7-jul siguen contando en estadisticas, graficas y reporte para saber cuanto se tomo','Desde el 8-jul ya no aparece en Mi Dia ni penaliza el % de apego','Tabla de Suplementacion actualizada']},
   {v:'1.4.5',fecha:'2026-07-06',cambios:['Fibra soluble (Optigest) agregada al reporte para Michelle: estadistica de apego (dias tomada y %) en ESTADISTICAS CLINICAS','Nueva seccion FIBRA SOLUBLE en el reporte con detalle dia por dia (tomada / no tomada)','Seguimiento de fibra desde el 5-jul (v1.4.3); dias previos no se contabilizan']},
   {v:'1.4.4',fecha:'2026-07-06',cambios:['Omega corregido: tratamiento de 60 dias con 2 capsulas diarias desde 26-may - ultimo dia 24-jul','Glutapak corregido: inicio 26-may; 21 dias manana y noche (hasta 15-jun) + 21 dias solo manana - ultimo dia 6-jul (antes decia 5-jul)','Nuevo soporte de fecha de inicio (dateStart) en medicamentos: dias previos al inicio del tratamiento ya no cuentan en estadisticas, graficas ni reporte','Tabla de Suplementacion y explicaciones del reporte actualizadas con periodos completos']},
   {v:'1.4.3',fecha:'2026-07-05',cambios:['Lacteos nuevos (pendiente confirmar con Michelle): Kefir natural bajo grasa (1 taza) y Chobani 20G deslactosado (1 botella)','La proteina extra del Chobani se registra aparte en Proteina como Chobani 20G prot. extra (1/2 botella = 1 eq muy bajo grasa; 1 botella = 2 eq)','Proteina nueva bajo grasa (pendiente confirmar con Michelle): cecina de res 30g','Nuevo check diario Fibra soluble (Optigest) en Mi Dia, debajo del suero']},
