@@ -172,7 +172,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
 </div>
 
 <div class="page active" id="page-dash">
-  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v1.5.0</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
+  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v1.6.2</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
   <div class="sec">
     <div class="ptabs">
       <div class="pt active" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
@@ -191,6 +191,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">Peso</div><div class="ch" id="ch-peso-wrap"><canvas id="ch-peso"></canvas></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">Porciones %</div><div class="ch"><canvas id="ch-porc"></canvas></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">Medicamento %</div><div class="ch"><canvas id="ch-meds"></canvas></div></div>
+    <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">Ejercicio (minutos)</div><div class="ch"><canvas id="ch-ex"></canvas></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">Sueno (horas)</div><div class="ch"><canvas id="ch-sleep"></canvas></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Alimentos mas consumidos</div><div id="foodStatTabs" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px"></div><div id="foodStatList"></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Macros del dia (SMAE)</div><div id="macroCard"></div></div>
@@ -273,6 +274,13 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
   <div class="sec">
     <div class="stitle">Reflujo</div>
     <div class="card"><div id="day-reflux"></div></div>
+  </div>
+  <div class="sec">
+    <div class="stitle">Entrenamiento</div>
+    <div class="card">
+      <div id="gym-header" style="margin-bottom:10px"></div>
+      <div id="gym-body"></div>
+    </div>
   </div>
 </div>
 
@@ -514,6 +522,20 @@ var MG={d:{cereales:2,proteina:2,frutas:1,proteina_polvo:1},c1:{frutas:1,lacteos
 var PT={verduras:{l:'Verduras 🥦',t:2,c:'#64f5b4'},frutas:{l:'Frutas 🍊',t:3,c:'#f5c864'},cereales:{l:'Cereales 🌾',t:8,c:'#c8f564'},proteina:{l:'Proteina 🥩',t:10,c:'#f564b4'},lacteos:{l:'Lacteos 🥛',t:2,c:'#64d4f5'},grasas_sin:{l:'Grasas s/p 🫒',t:2,c:'#f5a264'},grasas_con:{l:'Grasas c/p 🥑',t:4,c:'#a064f5'},proteina_polvo:{l:'Prot.polvo 💪',t:2,c:'#f56464'}};
 var RC=['Comi 5-6 veces hoy','Comi despacio, mastique bien','No me acoste 2-3h despues','Evite fritos, capeado, empanizado','Sin cafe, alcohol ni refrescos','Sin chile ni picante','Porciones moderadas','Buena hidratacion hoy'];
 
+// ── ENTRENAMIENTO ───────────────────────────────────────────────────────────
+// Secuencia semanal fija: Frontal, Trasera, Abdomen, Frontal, Trasera, Abdomen, Libre (dar gracias).
+// Por defecto Libre cae en domingo, pero se puede mover a cualquier dia de esa semana (ver restWeek/toggleRestDay);
+// la secuencia completa se recorre igual, solo que arranca el dia despues del que se marque como libre.
+var GYM_START='2026-08-31';
+var GYM_TYPES={
+  frontal:{l:'Frontal',ico:'💪',muscles:['Hombros','Pectorales','Biceps','Cuadriceps']},
+  trasera:{l:'Trasera',ico:'🏋️',muscles:['Espalda','Triceps','Gluteo','Femorales','Pantorrillas']},
+  abdomen:{l:'Abdomen',ico:'🔥',muscles:['Abdomen']}
+};
+var GYM_SERIES=[{l:'Serie 1',reps:15},{l:'Serie 2',reps:12},{l:'Serie 3',reps:10}];
+var GYM_CARDIO_INI='Sprint eliptica';
+var GYM_CARDIO_FIN='20 pisos escaladora';
+
 // ── MEDS ──────────────────────────────────────────────────────────────────────
 // dateEnd: ultimo dia en que aplica (inclusive). A partir del dia siguiente ya no cuenta.
 // dateStart: primer dia en que aplica (inclusive). Dias previos no cuentan en stats.
@@ -581,6 +603,19 @@ function medPct(k){
   if(tot===0)return 100;
   return Math.round(mc2.length/tot*100);
 }
+
+// ── ENTRENAMIENTO: helpers ─────────────────────────────────────────────────────
+function fmtYMD(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+// weekKeyOf: fecha (lunes) que identifica la semana Lun-Dom a la que pertenece la fecha dada.
+function weekKeyOf(key){var d=new Date(key+'T12:00:00');var dow=d.getDay();var diffToMon=(dow===0?-6:1-dow);var mon=new Date(d);mon.setDate(d.getDate()+diffToMon);return fmtYMD(mon);}
+// restDowForWeek: dia (0=Domingo...6=Sabado) marcado como libre para la semana de esa fecha.
+// Por defecto domingo (0); si algun dia de esa semana tiene restWeek=true, ese dia se vuelve el libre.
+function restDowForWeek(key){var wk=weekKeyOf(key);var s=ls();var override=null;Object.keys(s).forEach(function(k){if(s[k]&&s[k].restWeek&&weekKeyOf(k)===wk){override=new Date(k+'T12:00:00').getDay();}});return override===null?0:override;}
+// gymTypeFor: 'frontal'|'trasera'|'abdomen'|'libre' segun la secuencia fija, arrancando el dia despues del libre.
+function gymTypeFor(key){var d=new Date(key+'T12:00:00');var dow=d.getDay();var restDow=restDowForWeek(key);var diff=(dow-restDow+7)%7;if(diff===0)return 'libre';if(diff===1||diff===4)return 'frontal';if(diff===2||diff===5)return 'trasera';return 'abdomen';}
+function gymDefaultsFor(type){var g={cardioI:false,cardioF:false,muscles:{}};if(GYM_TYPES[type]){GYM_TYPES[type].muscles.forEach(function(m){g.muscles[m]=[false,false,false];});}if(type==='libre')g.restDone=false;return g;}
+// getGymData: crea o regenera los datos de la rutina del dia si el tipo cambio (p.ej. al mover el dia libre).
+function getGymData(key,day){var type=gymTypeFor(key);if(!day.gym||day.gymType!==type){day.gym=gymDefaultsFor(type);day.gymType=type;}return day.gym;}
 
 var activeFoodGroup='verduras';
 function getFoodCounts(){var s=ls();var counts={};Object.keys(PT).forEach(function(g){counts[g]={};});Object.keys(s).forEach(function(dk){var dayFoods=s[dk]&&s[dk].foods||{};Object.keys(dayFoods).forEach(function(fn){var grp=dayFoods[fn].g;var cnt=dayFoods[fn].c||0;if(grp&&counts[grp])counts[grp][fn]=(counts[grp][fn]||0)+cnt;});});return counts;}
@@ -655,6 +690,8 @@ function renderDash(){
   charts['ch-porc']=new Chart(document.getElementById('ch-porc').getContext('2d'),{type:'bar',data:{labels:labels,datasets:[{data:pd,backgroundColor:pd.map(function(v,i){var base=v>=80?'245,100,180':v>=50?'245,162,100':'245,100,100';return isToday[i]?'rgba('+base+',.95)':'rgba('+base+',.5)';}),borderRadius:6,borderSkipped:false}]},options:popts2});
   dc('ch-meds');var md=chartDays.map(medPct);var mopts=JSON.parse(JSON.stringify(opts));mopts.scales.y.ticks.callback=function(v){return v+'%';};mopts.scales.y.min=0;mopts.scales.y.max=100;
   charts['ch-meds']=new Chart(document.getElementById('ch-meds').getContext('2d'),{type:'bar',data:{labels:labels,datasets:[{data:md,backgroundColor:md.map(function(v,i){var base=v>=100?'160,100,245':v>=50?'245,162,100':'245,100,100';return isToday[i]?'rgba('+base+',.95)':'rgba('+base+',.5)';}),borderRadius:6,borderSkipped:false}]},options:mopts});
+  dc('ch-ex');var exData=chartDays.map(function(k){return s[k]&&s[k].ex||0;});var exOpts=JSON.parse(JSON.stringify(opts));exOpts.scales.y.min=0;exOpts.scales.y.ticks.callback=function(v){return v+'m';};
+  charts['ch-ex']=new Chart(document.getElementById('ch-ex').getContext('2d'),{type:'bar',data:{labels:labels,datasets:[{data:exData,backgroundColor:exData.map(function(v,i){var rgb=v===0?'245,100,100':v<30?'245,162,100':'100,245,180';return isToday[i]?'rgba('+rgb+',1)':'rgba('+rgb+',.55)';}),borderRadius:6,borderSkipped:false}]},options:exOpts});
   dc('ch-sleep');var slData=chartDays.map(function(k){return s[k]&&s[k].sl||0;});var slOpts=JSON.parse(JSON.stringify(opts));slOpts.scales.y.min=0;slOpts.scales.y.max=12;slOpts.scales.y.ticks.callback=function(v){return v+'h';};
   charts['ch-sleep']=new Chart(document.getElementById('ch-sleep').getContext('2d'),{type:'bar',data:{labels:labels,datasets:[{data:slData,backgroundColor:slData.map(function(v,i){var rgb=v===0?'160,100,245':v<6?'245,100,100':v<7?'245,162,100':v<=9?'100,245,180':'245,162,100';return isToday[i]?'rgba('+rgb+',1)':'rgba('+rgb+',.55)';}),borderRadius:6,borderSkipped:false}]},options:slOpts});
   renderWeightGoals();renderFoodStats(activeFoodGroup);renderMacros(days,n);
@@ -763,6 +800,38 @@ function exportReport(){
     txt+='  Como se calculo: dias con el check de fibra marcado en Mi Dia; el seguimiento inicia\n';
     txt+='  el '+FIB_START+' (v1.4.3), un sobre diario, dias previos no se contabilizan.\n\n';
   }
+  var gymKeysS=allKeys.filter(function(k){return k>=GYM_START;});
+  if(gymKeysS.length){
+    var gymTrainDays=gymKeysS.filter(function(k){return gymTypeFor(k)!=='libre';});
+    var gymRestDays=gymKeysS.filter(function(k){return gymTypeFor(k)==='libre';});
+    function _gymPct(k){
+      var type=gymTypeFor(k);
+      var day=s[k]||{};
+      if(type==='libre'){var g0=day.gym&&day.gymType==='libre'?day.gym:null;return g0&&g0.restDone?100:0;}
+      var g=day.gym&&day.gymType===type?day.gym:null;
+      if(!g)return 0;
+      var total=0;var done=0;
+      if(g.cardioI)done+=1;total+=1;
+      if(g.cardioF)done+=1;total+=1;
+      Object.keys(g.muscles).forEach(function(m){total+=3;done+=g.muscles[m].filter(function(x){return x;}).length;});
+      return total>0?Math.round(done/total*100):0;
+    }
+    txt+='ENTRENAMIENTO\n';
+    if(gymTrainDays.length){
+      var gymPcts=gymTrainDays.map(_gymPct);
+      var gymFull=gymPcts.filter(function(v){return v>=100;}).length;
+      txt+='  Dias de rutina (no libres): '+gymTrainDays.length+'  |  Promedio de rutina completada: '+Math.round(_mean(gymPcts))+'%  |  Dias al 100%: '+gymFull+'/'+gymTrainDays.length+' ('+Math.round(gymFull/gymTrainDays.length*100)+'%)\n';
+    }
+    if(gymRestDays.length){
+      var restOK=gymRestDays.filter(function(k){return _gymPct(k)>=100;}).length;
+      txt+='  Dias libres (dar gracias): '+gymRestDays.length+'  |  Marcados como completados: '+restOK+'/'+gymRestDays.length+'\n';
+    }
+    var movedWeeks=allKeys.filter(function(k){return s[k].restWeek;}).length;
+    txt+='  Dias libres movidos manualmente de domingo a otro dia: '+movedWeeks+'\n';
+    txt+='  Como se calculo: rutina completada = (series de musculos + bloques de cardio marcados) / total\n';
+    txt+='  asignado ese dia segun el tipo (Frontal/Trasera/Abdomen); dia libre = 100% si se marco\n';
+    txt+='  "Descanso completado". Seguimiento inicia el '+GYM_START+', dias previos no se contabilizan.\n\n';
+  }
 
   // ── PESO ────────────────────────────────────────────────────────────────────
   txt+='=== PESO ===\n';
@@ -848,6 +917,37 @@ function exportReport(){
       txt+='  '+k+': '+(tom?'tomada OK':'no tomada')+'\n';
     });
   }else{txt+='  Sin dias registrados aun\n';}
+  txt+='\n';
+
+  // -- ENTRENAMIENTO --
+  txt+='=== ENTRENAMIENTO (seguimiento desde '+GYM_START+') ===\n';
+  var gymKeys=allKeys.filter(function(k){return k>=GYM_START;});
+  if(gymKeys.length){
+    gymKeys.forEach(function(k){
+      var type=gymTypeFor(k);
+      var day=s[k]||{};
+      if(type==='libre'){
+        var g0=day.gym&&day.gymType==='libre'?day.gym:null;
+        txt+='  '+k+': Dia libre - descanso: '+(g0&&g0.restDone?'si':'no')+'\n';
+        return;
+      }
+      var g=day.gym&&day.gymType===type?day.gym:null;
+      if(!g){txt+='  '+k+': '+GYM_TYPES[type].l+' - sin registro ese dia\n';return;}
+      var parts=[];
+      parts.push('Cardio inicial '+(g.cardioI?1:0)+'/1');
+      Object.keys(g.muscles).forEach(function(m){parts.push(m+' '+g.muscles[m].filter(function(x){return x;}).length+'/3');});
+      parts.push('Cardio final '+(g.cardioF?1:0)+'/1');
+      var total=2+Object.keys(g.muscles).length*3;
+      var done=(g.cardioI?1:0)+(g.cardioF?1:0);
+      Object.keys(g.muscles).forEach(function(m){done+=g.muscles[m].filter(function(x){return x;}).length;});
+      var pctDay=Math.round(done/total*100);
+      txt+='  '+k+': '+GYM_TYPES[type].l+' - '+parts.join(', ')+' ('+pctDay+'% completado)\n';
+    });
+  }else{txt+='  Sin dias registrados aun\n';}
+  txt+='Como se calculo: cardio inicial = sprint en eliptica; cardio final = 20 pisos de escaladora;\n';
+  txt+='cada musculo son 3 series (15, 12 y 10 repeticiones en ese orden). El tipo de dia sigue la\n';
+  txt+='secuencia fija Frontal, Trasera, Abdomen, Frontal, Trasera, Abdomen, Libre; el dia libre por\n';
+  txt+='defecto es domingo pero se puede mover a otro dia de esa semana desde Mi Dia.\n';
   txt+='\n';
 
   // ── PORCIONES ───────────────────────────────────────────────────────────────
@@ -955,20 +1055,23 @@ function renderDia(){
   var prevW=wts.filter(function(w){return w.date<key;}).slice(-1)[0];
   if(ew){var dw=prevW?(ew.w-prevW.w).toFixed(1):null;var wDisp=document.getElementById('w-display');wDisp.innerHTML='';var wDiv=document.createElement('div');wDiv.style.cssText='display:flex;align-items:baseline;gap:6px;margin-top:6px';wDiv.innerHTML='<span style="font-family:Syne,sans-serif;font-size:1.8rem;font-weight:800">'+ew.w+'</span><span style="color:var(--muted);font-size:1rem">kg</span>'+(dw!==null?'<span style="font-weight:700;font-size:.95rem;color:'+(parseFloat(dw)<0?'var(--good)':'var(--bad)')+'">'+((dw>0?'+':'')+dw)+'kg</span>':'');var delBtn=document.createElement('button');delBtn.textContent='Borrar';delBtn.dataset.k=key;delBtn.style.cssText='background:transparent;border:1px solid var(--bad);color:var(--bad);border-radius:7px;padding:3px 8px;font-size:.73rem;cursor:pointer;margin-left:6px';delBtn.onclick=function(){deleteWeight(this.dataset.k);};wDiv.appendChild(delBtn);wDisp.appendChild(wDiv);}
   else document.getElementById('w-display').innerHTML='';
-  if(!day.ch)day.ch=[];var ckh='';
-  RC.forEach(function(rc,i){var ok=day.ch.indexOf(i)>=0;ckh+='<div class="ci" onclick="toggleCheck('+i+',\''+key+'\')">';ckh+='<div class="cbox" style="background:'+(ok?'var(--accent)':'transparent')+';border-color:'+(ok?'var(--accent)':'var(--border)')+'">'+( ok?'v':'')+'</div>';ckh+='<span class="clbl '+(ok?'done':'')+'">'+rc+'</span></div>';});
-  document.getElementById('day-checks').innerHTML=ckh;
+  renderChecklist(key,day);
   renderExercise(day);
   renderSleep(day);
   renderReflux(key,day);
+  renderGym(key,day);
 }
 function deleteWeight(key){var wts=gw();wts=wts.filter(function(w){return w.date!==key;});sw(wts);toast('Peso borrado');renderDia();renderDash();}
 function toggleMeal(mk,key){var tb=document.getElementById('tb-'+mk);tb.classList.toggle('open');if(tb.classList.contains('open'))renderChips(mk,key,gd(key));}
 function renderChips(mk,key,day){if(!day)day=gd(key);var mt=MG[mk];var mp=(day.mp&&day.mp[mk])||{};var h='';var gks=Object.keys(mt);var done2=0;gks.forEach(function(g){var tgt=mt[g];var curr=mp[g]||0;var pct=Math.min(100,curr/tgt*100);var done=curr>=tgt;if(done)done2++;h+='<div class="chip '+(done?'done':'')+'" onclick="openFM(\''+g+'\',\''+mk+'\','+tgt+',\''+key+'\')">';h+='<div class="chip-name" style="'+(done?'color:var(--good)':'')+'">'+PT[g].l+'</div>';h+='<div class="chip-bar"><div class="chip-fill" style="width:'+pct+'%;background:'+PT[g].c+'"></div></div>';h+='<div class="chip-cnt">'+curr+'/'+tgt+(done?' v':'')+'</div></div>';});document.getElementById('chips-'+mk).innerHTML=h;var headerPct=Math.round(done2/gks.length*100);var barColor=headerPct>=100?'var(--good)':headerPct>0?'var(--accent)':'var(--border)';var fill=document.getElementById('tfill-'+mk);var txt=document.getElementById('ttxt-'+mk);if(fill){fill.style.width=headerPct+'%';fill.style.background=barColor;}if(txt){txt.textContent=done2+'/'+gks.length;}var mealEl=document.getElementById('tb-'+mk);if(mealEl&&headerPct>=100)mealEl.parentElement.style.borderColor='var(--good)';else if(mealEl)mealEl.parentElement.style.borderColor='';}
+function renderChecklist(key,day){if(!day.ch)day.ch=[];var ckh='';RC.forEach(function(rc,i){var ok=day.ch.indexOf(i)>=0;ckh+='<div class="ci" onclick="toggleCheck('+i+',\''+key+'\')">';ckh+='<div class="cbox" style="background:'+(ok?'var(--accent)':'transparent')+';border-color:'+(ok?'var(--accent)':'var(--border)')+'">'+( ok?'v':'')+'</div>';ckh+='<span class="clbl '+(ok?'done':'')+'">'+rc+'</span></div>';});document.getElementById('day-checks').innerHTML=ckh;}
+// checkHydrationGoal: marca automaticamente "Buena hidratacion hoy" (indice 7 de RC) al llegar a la meta de 3L.
+// Solo marca hacia adelante (al llegar a la meta); no la desmarca sola si luego bajas el conteo.
+function checkHydrationGoal(day){var liters=(day.water||0)*0.25;if(liters>=3){if(!day.ch)day.ch=[];if(day.ch.indexOf(7)<0)day.ch.push(7);}}
 function renderWater(key,day){var c=day.water||0;var L=(c*0.25).toFixed(1);document.getElementById('w-num').textContent=L+'L';document.getElementById('w-bar').style.width=Math.min(100,c/16*100)+'%';document.getElementById('w-bar').style.background=c>=16?'var(--accent)':'var(--blue)';document.getElementById('w-meta').textContent=c>=16?'Meta superada - '+L+'L':'Meta: 3-4L - faltan '+(Math.max(0,3-c*0.25)).toFixed(1)+'L';var bh='';for(var i=0;i<c;i++){bh+='<div class="bub '+(i>=16?'extra':'on')+'" onclick="removeW('+i+',\''+key+'\')">&#x1F4A7;</div>';}document.getElementById('w-bubbles').innerHTML=bh;}
-function addWater(d){var key=keyOf(viewDate);var day=gd(key);day.water=Math.max(0,(day.water||0)+d);sd(key,day);renderWater(key,day);if(d>0)toast((day.water*0.25).toFixed(1)+'L');}
-function addWaterMl(){var ml=parseInt(document.getElementById('cw-ml').value)||0;if(ml<50){toast('Min 50ml');return;}var key=keyOf(viewDate);var day=gd(key);day.water=(day.water||0)+Math.round(ml/250);sd(key,day);renderWater(key,day);document.getElementById('cw-wrap').style.display='none';toast('+'+ml+'ml');}
-function removeW(i,key){var day=gd(key);day.water=i;sd(key,day);renderWater(key,day);}
+function addWater(d){var key=keyOf(viewDate);var day=gd(key);day.water=Math.max(0,(day.water||0)+d);checkHydrationGoal(day);sd(key,day);renderWater(key,day);renderChecklist(key,day);if(d>0)toast((day.water*0.25).toFixed(1)+'L');}
+function addWaterMl(){var ml=parseInt(document.getElementById('cw-ml').value)||0;if(ml<50){toast('Min 50ml');return;}var key=keyOf(viewDate);var day=gd(key);day.water=(day.water||0)+Math.round(ml/250);checkHydrationGoal(day);sd(key,day);renderWater(key,day);renderChecklist(key,day);document.getElementById('cw-wrap').style.display='none';toast('+'+ml+'ml');}
+function removeW(i,key){var day=gd(key);day.water=i;checkHydrationGoal(day);sd(key,day);renderWater(key,day);renderChecklist(key,day);}
 function toggleCW(){var el=document.getElementById('cw-wrap');el.style.display=el.style.display==='none'?'block':'none';}
 function addExercise(delta){var key=keyOf(viewDate);var day=gd(key);day.ex=Math.max(0,(day.ex||0)+delta);sd(key,day);renderExercise(day);if(delta>0)toast(day.ex+' min');}
 function renderExercise(day){var min=day.ex||0;var el=document.getElementById('ex-num');var meta=document.getElementById('ex-meta');var bar=document.getElementById('ex-bar');if(!el)return;el.textContent=min+' min';bar.style.width=Math.min(100,min/60*100)+'%';if(min===0)meta.textContent='sin ejercicio hoy';else if(min<30)meta.textContent='buen inicio - meta: 30-60 min';else if(min<60)meta.textContent='va muy bien!';else meta.textContent='Meta alcanzada!';}
@@ -976,6 +1079,54 @@ function addSleep(delta){var key=keyOf(viewDate);var day=gd(key);day.sl=Math.max
 function renderSleep(day){var h=day.sl||0;var el=document.getElementById('sl-num');var meta=document.getElementById('sl-meta');var bar=document.getElementById('sl-bar');if(!el)return;var hInt=Math.floor(h);var min=Math.round((h-hInt)*60);el.textContent=hInt+'h'+(min>0?' '+min+'min':'');var pct=Math.min(100,h/9*100);bar.style.width=pct+'%';if(h===0){meta.textContent='registra horas de la noche anterior';bar.style.background='var(--purple)';}else if(h<6){meta.textContent='poco sueno - lo ideal es 7-9h';bar.style.background='var(--bad)';}else if(h<7){meta.textContent='casi en rango - intenta llegar a 7h';bar.style.background='var(--warn)';}else if(h<=9){meta.textContent='Excelente! Rango ideal';bar.style.background='var(--good)';}else{meta.textContent='Mucho sueno - revisa tu rutina';bar.style.background='var(--warn)';}}
 function renderReflux(key,day){var el=document.getElementById('day-reflux');if(!el)return;var items=[{f:'rfn',l:'Tuve reflujo la noche anterior'},{f:'rfd',l:'Tuve reflujo durante el dia'}];var h='';items.forEach(function(it){var on=!!day[it.f];h+='<div class="ci" onclick="toggleReflux(\''+it.f+'\',\''+key+'\')"><div class="cbox" style="background:'+(on?'var(--bad)':'transparent')+';border-color:'+(on?'var(--bad)':'var(--border)')+'">'+(on?'!':'')+'</div><span class="clbl" style="'+(on?'color:var(--bad)':'')+'">'+it.l+'</span></div>';});h+='<div style="font-size:.72rem;color:var(--muted);margin-top:8px">Marca solo si hubo sintomas - se incluye en el reporte para Michelle</div>';el.innerHTML=h;}
 function toggleReflux(f,key){var day=gd(key);day[f]=!day[f];sd(key,day);renderReflux(key,day);}
+function renderGym(key,day){
+  var hdr=document.getElementById('gym-header');var el=document.getElementById('gym-body');
+  if(!el)return;
+  var type=gymTypeFor(key);
+  var g=getGymData(key,day);
+  var typeLbl=type==='libre'?'Dia libre - dar gracias':GYM_TYPES[type].l+' '+GYM_TYPES[type].ico;
+  hdr.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span style="font-family:Syne,sans-serif;font-weight:800;font-size:.95rem">'+typeLbl+'</span><label style="display:flex;align-items:center;gap:6px;font-size:.7rem;color:var(--muted);cursor:pointer;white-space:nowrap"><input type="checkbox" '+(day.restWeek?'checked':'')+' onchange="toggleRestDay(\''+key+'\')" style="width:auto">Dia libre esta semana</label></div>';
+  var h='';
+  if(type==='libre'){
+    h+='<div style="text-align:center;padding:14px 0"><div style="font-size:2rem">\uD83D\uDE4F</div><div style="font-size:.85rem;color:var(--muted);margin-top:6px">Hoy toca descansar y dar gracias</div></div>';
+    h+='<div class="ci" onclick="toggleGymRest(\''+key+'\')"><div class="cbox" style="background:'+(g.restDone?'var(--good)':'transparent')+';border-color:'+(g.restDone?'var(--good)':'var(--border)')+'">'+(g.restDone?'v':'')+'</div><span class="clbl '+(g.restDone?'done':'')+'">Descanso completado</span></div>';
+  } else {
+    h+=renderGymCardio(key,'cardioI','Cardio inicial',GYM_CARDIO_INI,g.cardioI);
+    h+='<div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:12px 0 6px">Musculos - '+GYM_TYPES[type].l+'</div>';
+    GYM_TYPES[type].muscles.forEach(function(m){h+=renderGymMuscle(key,m,g.muscles[m]);});
+    h+=renderGymCardio(key,'cardioF','Cardio final',GYM_CARDIO_FIN,g.cardioF);
+  }
+  el.innerHTML=h;
+}
+function renderGymCardio(key,slot,label,itemLabel,val){
+  var h='<div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:8px 0 6px">'+label+'</div>';
+  h+='<div class="ci" onclick="toggleGymCardio(\''+key+'\',\''+slot+'\')"><div class="cbox" style="background:'+(val?'var(--warn)':'transparent')+';border-color:'+(val?'var(--warn)':'var(--border)')+'">'+(val?'v':'')+'</div><span class="clbl '+(val?'done':'')+'">'+itemLabel+'</span></div>';
+  return h;
+}
+function renderGymMuscle(key,muscle,arr){
+  var doneCount=arr.filter(function(x){return x;}).length;
+  var h='<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><span style="font-size:.83rem;font-weight:600">'+muscle+'</span><span style="font-size:.7rem;color:var(--muted)">'+doneCount+'/3</span></div><div style="display:flex;gap:6px">';
+  GYM_SERIES.forEach(function(sr,i){var on=arr[i];h+='<button style="flex:1;padding:8px 4px;border-radius:9px;border:1px solid '+(on?'var(--good)':'var(--border)')+';background:'+(on?'rgba(100,245,180,.12)':'var(--card2)')+';color:'+(on?'var(--good)':'var(--muted)')+';font-size:.72rem;font-family:Syne,sans-serif;font-weight:700;cursor:pointer" onclick="toggleGymSeries(\''+key+'\',\''+muscle+'\','+i+')">'+sr.l+'<br>'+sr.reps+' reps</button>';});
+  h+='</div></div>';
+  return h;
+}
+function toggleGymCardio(key,slot){var day=gd(key);var g=getGymData(key,day);g[slot]=!g[slot];sd(key,day);renderGym(key,day);}
+function toggleGymSeries(key,muscle,i){var day=gd(key);var g=getGymData(key,day);g.muscles[muscle][i]=!g.muscles[muscle][i];sd(key,day);renderGym(key,day);}
+function toggleGymRest(key){var day=gd(key);var g=getGymData(key,day);g.restDone=!g.restDone;sd(key,day);renderGym(key,day);}
+function toggleRestDay(key){
+  var day=gd(key);
+  var wk=weekKeyOf(key);
+  var newState=!day.restWeek;
+  if(newState){
+    var s=ls();
+    Object.keys(s).forEach(function(k){if(k!==key&&s[k].restWeek&&weekKeyOf(k)===wk){s[k].restWeek=false;}});
+    ss(s);
+  }
+  day.restWeek=newState;
+  sd(key,day);
+  renderGym(key,day);
+  toast(newState?'Dia libre movido a este dia':'Dia libre regresado a domingo (predeterminado)');
+}
 function toggleMed(id,key){var day=gd(key);if(!day.mc)day.mc=[];var i=day.mc.indexOf(id);if(i>=0)day.mc.splice(i,1);else day.mc.push(id);sd(key,day);renderDia();}
 function toggleSuero(id,key){var day=gd(key);if(!day.sc)day.sc=[];var i=day.sc.indexOf(id);if(i>=0)day.sc.splice(i,1);else day.sc.push(id);sd(key,day);renderDia();}
 function toggleCheck(i,key){var day=gd(key);if(!day.ch)day.ch=[];var idx=day.ch.indexOf(i);if(idx>=0)day.ch.splice(idx,1);else day.ch.push(i);sd(key,day);renderDia();}
@@ -990,6 +1141,9 @@ function showEq(id,btn){document.querySelectorAll('.eqb').forEach(function(e){e.
 function buildWP(){var wp=document.getElementById('wpt');if(!wp||wp.innerHTML!=='')return;var dows=[1,2,3,4,5,6,0];var names=['Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo'];var nd=new Date(new Date().toLocaleString('en-US',{timeZone:'America/Mexico_City'}));var tod=nd.getDay();var h='';dows.forEach(function(d,i){h+='<div class="wday" style="'+(d===tod?'border-left:2px solid var(--accent);padding-left:8px':'')+'"><div class="wdtitle">'+names[i]+(d===tod?' HOY':'')+'</div>';MO.forEach(function(m){h+='<div class="wrow"><div class="wlbl">'+m.l+'</div><div>'+WP[d][m.k]+'</div></div>';});h+='</div>';});wp.innerHTML=h;}
 
 var CHANGELOG=[
+  {v:'1.6.2',fecha:'2026-08-31',cambios:['Corregido: Serie 1 ahora es de 15 repeticiones (antes 12). Serie 2 sigue en 12 y Serie 3 en 10']},
+  {v:'1.6.1',fecha:'2026-08-31',cambios:['Corregido: el cardio ya no se repite al inicio y al final. Cardio inicial = solo sprint en eliptica. Cardio final = solo 20 pisos de escaladora','Reporte y estadisticas de ENTRENAMIENTO actualizados a la nueva logica de cardio (1 ejercicio por bloque en vez de 2)']},
+  {v:'1.6.0',fecha:'2026-08-31',cambios:['Nueva grafica de Ejercicio (minutos) en Dashboard, arriba de la de Sueno','Checklist anti-reflujo: "Buena hidratacion hoy" se marca automaticamente al llegar a 3L de agua en el dia (no se desmarca sola si despues bajas el conteo)','Nueva seccion Entrenamiento al final de Mi Dia: secuencia semanal fija Frontal, Trasera, Abdomen, Frontal, Trasera, Abdomen, Dia libre (dar gracias)','Frontal = hombros, pectorales, biceps, cuadriceps. Trasera = espalda, triceps, gluteo, femorales, pantorrillas. Abdomen = abdomen. 3 series por musculo (12, 12 y 10 repeticiones)','Cardio al inicio y al final de cada rutina: sprint en eliptica + 20 pisos de escaladora','El dia libre por defecto es domingo, pero se puede mover a cualquier dia de esa semana con un check en Mi Dia; la secuencia se recorre igual, solo cambia donde arranca','Nueva seccion ENTRENAMIENTO en el reporte con detalle dia por dia y estadisticas de cumplimiento en ESTADISTICAS CLINICAS (seguimiento desde el 31-ago)']},
   {v:'1.5.0',fecha:'2026-07-07',cambios:['Nueva tarjeta Macros del dia (SMAE) en Dashboard, debajo de Alimentos mas consumidos: proteina, lipidos, carbohidratos y calorias consumidos vs meta del plan, con barras de progreso','Se calcula desde las porciones que ya registras: cada intercambio se multiplica por su aporte SMAE (verduras 2P/4C, frutas 15C, cereales 2P/15C, AOB 7P/3L, leche 9P/2L/12C, grasa 5L, grasa c/prot 3P/5L/3C, prot. polvo 24P/1L/2C)','En Hoy muestra lo consumido hasta el momento; en 7/30 dias muestra el promedio diario','Nueva seccion MACROS ESTIMADOS POR DIA en el reporte para Michelle con P/L/C/kcal de cada dia y la meta diaria del plan']},
   {v:'1.4.6',fecha:'2026-07-07',cambios:['Omega suspendido por indicacion de Michelle: ultima toma 7-jul (el plan original era 60 dias hasta 24-jul)','El historico se conserva completo: los dias del 26-may al 7-jul siguen contando en estadisticas, graficas y reporte para saber cuanto se tomo','Desde el 8-jul ya no aparece en Mi Dia ni penaliza el % de apego','Tabla de Suplementacion actualizada']},
   {v:'1.4.5',fecha:'2026-07-06',cambios:['Fibra soluble (Optigest) agregada al reporte para Michelle: estadistica de apego (dias tomada y %) en ESTADISTICAS CLINICAS','Nueva seccion FIBRA SOLUBLE en el reporte con detalle dia por dia (tomada / no tomada)','Seguimiento de fibra desde el 5-jul (v1.4.3); dias previos no se contabilizan']},
