@@ -172,7 +172,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
 </div>
 
 <div class="page active" id="page-dash">
-  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v1.11.0</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
+  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.0.0</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
   <div class="sec">
     <div class="ptabs">
       <div class="pt active" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
@@ -195,7 +195,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">Medicamento %</div><div class="ch"><canvas id="ch-meds"></canvas></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">Ejercicio (minutos)</div><div class="ch"><canvas id="ch-ex"></canvas></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">Sueno (horas)</div><div class="ch"><canvas id="ch-sleep"></canvas></div></div>
-    <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Promedio de peso por tipo de rutina</div><div class="ch" id="ch-muscleweight-wrap"><canvas id="ch-muscleweight"></canvas></div></div>
+    <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Promedio de peso por tipo de rutina</div><div class="ch" id="ch-muscleweight-wrap"><canvas id="ch-muscleweight"></canvas></div><div id="restDayHint" style="font-size:.74rem;color:var(--muted);text-align:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)"></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Alimentos mas consumidos</div><div id="foodStatTabs" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px"></div><div id="foodStatList"></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Macros del dia (SMAE)</div><div id="macroCard"></div></div>
     <button class="expbtn" onclick="exportReport()" style="margin-bottom:8px">Exportar reporte</button>
@@ -215,9 +215,16 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
     <div class="dncenter"><div class="dnname" id="dn-name"></div><div class="dndate" id="dn-date"></div></div>
     <button class="dnbtn" id="btn-next" onclick="changeDay(1)">&#8250;</button>
   </div>
-  <div class="sec"><div class="stitle">Medicamento</div><div id="day-meds"></div></div>
-  <div class="sec"><div class="stitle">Comidas y porciones</div><div id="day-tl"></div></div>
-  <div class="sec">
+  <div style="padding:12px 18px 0">
+    <div class="ptabs">
+      <div class="pt active" id="dt-nutricion" onclick="setDiaTab('nutricion',this)">Nutricion</div>
+      <div class="pt" id="dt-salud" onclick="setDiaTab('salud',this)">Salud</div>
+      <div class="pt" id="dt-gimnasio" onclick="setDiaTab('gimnasio',this)">Gimnasio</div>
+    </div>
+  </div>
+  <div class="sec" data-diagroup="nutricion"><div class="stitle">Medicamento</div><div id="day-meds"></div></div>
+  <div class="sec" data-diagroup="nutricion"><div class="stitle">Comidas y porciones</div><div id="day-tl"></div></div>
+  <div class="sec" data-diagroup="nutricion">
     <div class="stitle">Agua</div>
     <div class="card">
       <div class="water-num" id="w-num">0.0L</div>
@@ -233,24 +240,31 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
         <div class="wr"><input type="number" inputmode="numeric" id="cw-ml" placeholder="ml" min="50" step="50"><button class="savebtn" onclick="addWaterMl()">OK</button></div>
       </div>
     </div>
-    <div class="card"><div class="stitle">Suero / Electrolit - 3x semana</div><div id="day-suero"></div></div>
-    <div class="card"><div class="stitle">Fibra soluble (Optigest) - diario</div><div id="day-fibra"></div></div>
   </div>
-  <div class="sec">
+  <div class="sec" data-diagroup="salud">
     <div class="stitle">Peso</div>
     <div class="card">
       <div class="wr"><input type="number" inputmode="decimal" id="w-input" placeholder="kg" min="30" max="300" step="0.1"><button class="savebtn" onclick="saveWeight()">Guardar</button></div>
       <div id="w-display" style="margin-top:10px"></div>
     </div>
   </div>
-  <div class="sec"><div class="stitle">Checklist anti-reflujo</div><div class="card"><div id="day-checks"></div></div></div>
-  <div class="sec">
+  <div class="sec" data-diagroup="salud"><div class="stitle">Checklist anti-reflujo</div><div class="card"><div id="day-checks"></div></div></div>
+  <div class="sec" data-diagroup="salud">
+    <div class="stitle">Suero / Electrolit - 3x semana</div>
+    <div class="card"><div id="day-suero"></div></div>
+  </div>
+  <div class="sec" data-diagroup="salud">
+    <div class="stitle">Fibra soluble (Optigest) - diario</div>
+    <div class="card"><div id="day-fibra"></div></div>
+  </div>
+  <div class="sec" data-diagroup="salud">
     <div class="stitle">Reflujo</div>
     <div class="card"><div id="day-reflux"></div></div>
   </div>
-  <div class="sec">
+  <div class="sec" data-diagroup="gimnasio">
     <div class="stitle">Entrenamiento</div>
     <div class="card">
+      <div id="weekProgress" style="margin-bottom:12px"></div>
       <div style="text-align:center;padding:2px 0 12px;border-bottom:1px solid var(--border);margin-bottom:12px">
         <div id="ex-num" style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--good);line-height:1">0 min</div>
         <div id="ex-meta" style="font-size:.74rem;color:var(--muted);margin-top:2px">sin ejercicio hoy</div>
@@ -265,7 +279,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
       <div id="gym-body"></div>
     </div>
   </div>
-  <div class="sec">
+  <div class="sec" data-diagroup="salud">
     <div class="stitle">Sueno - noche anterior</div>
     <div class="card">
       <div style="text-align:center;padding:8px 0 14px">
@@ -539,6 +553,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
   <div class="fsheet">
     <div class="fhead"><div class="ftitle" id="fm-title"></div><button class="fcls" onclick="document.getElementById('foodModal').style.display='none'">X</button></div>
     <div class="fsub" id="fm-sub"></div>
+    <div id="fm-warn"></div>
     <div id="fm-list"></div>
     <div class="mrow">
       <button class="savebtn" style="background:var(--card2);border:1px solid var(--border);color:var(--bad);font-size:1.1rem;padding:9px 14px" onclick="addFP(_g,-1,'-1')">-</button>
@@ -644,6 +659,15 @@ var charts={};
 function dc(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
 function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2200);}
 function showPage(n){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('active');});document.getElementById('page-'+n).classList.add('active');var idx={dash:0,dia:1,plan:2};document.querySelectorAll('.nb')[idx[n]].classList.add('active');if(n==='dash')renderDash();if(n==='dia')renderDia();}
+var activeDiaTab='nutricion';
+function setDiaTab(tab,el){
+  activeDiaTab=tab;
+  document.querySelectorAll('#page-dia .pt').forEach(function(b){b.classList.remove('active');});
+  if(el)el.classList.add('active');
+  document.querySelectorAll('#page-dia .sec[data-diagroup]').forEach(function(sec){
+    sec.style.display=(sec.dataset.diagroup===tab)?'':'none';
+  });
+}
 var period='day';
 function setPeriod(p,el){period=p;document.querySelectorAll('.pt').forEach(function(t){t.classList.remove('active');});el.classList.add('active');renderDash();}
 function getDays(n){var arr=[];for(var i=n-1;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);arr.push(keyOf(d));}return arr;}
@@ -707,7 +731,7 @@ function typeAvgWeight(k,type){
     if(v.length)vals.push(Math.max.apply(null,v));
   });
   if(!vals.length)return null;
-  return vals.reduce(function(a,b){return a+b;},0)/vals.length;
+  return Math.round(vals.reduce(function(a,b){return a+b;},0)/vals.length*10)/10;
 }
 function renderMuscleWeightChart(){
   dc('ch-muscleweight');
@@ -718,6 +742,7 @@ function renderMuscleWeightChart(){
   var trainKeys=keys.filter(function(k){var type=gymTypeFor(k);if(type==='libre')return false;var day=s[k];return day.gym&&day.gymType===type&&day.gym.weights;});
   if(!trainKeys.length){
     wrapEl.innerHTML='<div style="color:var(--muted);font-size:.8rem;text-align:center;padding:26px 0">Sin registros de peso en el gimnasio aun - anota el kg en Mi Dia</div>';
+    renderRestDayHint();
     return;
   }
   wrapEl.innerHTML='<canvas id="ch-muscleweight"></canvas>';
@@ -725,48 +750,104 @@ function renderMuscleWeightChart(){
   var frontalData=trainKeys.map(function(k){return gymTypeFor(k)==='frontal'?typeAvgWeight(k,'frontal'):null;});
   var traseraData=trainKeys.map(function(k){return gymTypeFor(k)==='trasera'?typeAvgWeight(k,'trasera'):null;});
   var abdomenData=trainKeys.map(function(k){return gymTypeFor(k)==='abdomen'?typeAvgWeight(k,'abdomen'):null;});
-  var mopts={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{color:'#8888aa',font:{size:10},boxWidth:12}}},scales:{x:{ticks:{color:'#8888aa',maxRotation:45},grid:{color:'#2a2a38'}},y:{ticks:{color:'#8888aa',callback:function(v){return v+'kg';}},grid:{color:'#2a2a38'}}}};
+  var mopts={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{color:'#8888aa',font:{size:10},boxWidth:12}}},scales:{x:{ticks:{color:'#8888aa',maxRotation:45},grid:{color:'#2a2a38'}},y:{ticks:{color:'#8888aa',precision:0,callback:function(v){return Math.round(v)+'kg';}},grid:{color:'#2a2a38'}}}};
   charts['ch-muscleweight']=new Chart(document.getElementById('ch-muscleweight').getContext('2d'),{type:'line',data:{labels:labels,datasets:[
     {label:'Frontal',data:frontalData,borderColor:'#c8f564',backgroundColor:'transparent',tension:0.3,pointRadius:4,spanGaps:true},
     {label:'Trasera',data:traseraData,borderColor:'#f564b4',backgroundColor:'transparent',tension:0.3,pointRadius:4,spanGaps:true},
     {label:'Abdomen',data:abdomenData,borderColor:'#64d4f5',backgroundColor:'transparent',tension:0.3,pointRadius:4,spanGaps:true}
   ]},options:mopts});
+  renderRestDayHint();
+}
+// recommendedRestDay: si no se ha tomado descanso esta semana, sugiere el mejor dia restante
+// (preferimos el dia justo despues de un dia Frontal, para dejar que las piernas se recuperen).
+function recommendedRestDay(){
+  var todayK=todayKey();
+  var wk=weekKeyOf(todayK);
+  var s=ls();
+  var mon=new Date(wk+'T12:00:00');
+  var already=false;
+  var candidates=[];
+  var dowNames=['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado'];
+  for(var i=0;i<7;i++){
+    var d=new Date(mon);d.setDate(mon.getDate()+i);
+    var k=fmtYMD(d);
+    var type=gymTypeFor(k);
+    if(type==='libre'){
+      var day=s[k];
+      var g=day&&day.gym&&day.gymType==='libre'?day.gym:null;
+      if(g&&g.restDone)already=true;
+    }
+    if(k>=todayK)candidates.push({k:k,dow:d.getDay(),type:type});
+  }
+  if(already)return {done:true};
+  for(var j=0;j<candidates.length;j++){
+    var c=candidates[j];
+    var prevDate=new Date(c.k+'T12:00:00');prevDate.setDate(prevDate.getDate()-1);
+    var prevType=gymTypeFor(fmtYMD(prevDate));
+    if(prevType==='frontal'){return {done:false,dow:dowNames[c.dow],ideal:true};}
+  }
+  if(candidates.length)return {done:false,dow:dowNames[candidates[candidates.length-1].dow],ideal:false};
+  return null;
+}
+function renderRestDayHint(){
+  var el=document.getElementById('restDayHint');
+  if(!el)return;
+  var rec=recommendedRestDay();
+  if(!rec){el.textContent='';return;}
+  if(rec.done){el.innerHTML='\u2705 Ya tomaste tu dia de descanso esta semana.';return;}
+  el.innerHTML='\uD83D\uDCA4 Aun no tomas tu dia libre esta semana - te recomendamos descansar el <strong style="color:var(--accent)">'+rec.dow+'</strong>'+(rec.ideal?' (justo despues de tu dia de pierna, para que se recupere)':'.');
 }
 function renderDash(){
   var n=period==='day'?1:period==='week'?7:30;
   var days=getDays(n);var s=ls();var tk=todayKey();
+  var todayLogged=!!s[tk];
   document.getElementById('dashDate').textContent=new Date().toLocaleDateString('es-MX',{weekday:'short',day:'numeric',month:'short'});
   var waters=days.map(function(k){return (s[k]&&s[k].water||0)*0.25;});
   var avgW=(waters.reduce(function(a,b){return a+b;},0)/n).toFixed(1);
   var todW=(s[tk]&&s[tk].water||0)*0.25;
+  if(n===1&&!todayLogged){document.getElementById('m-agua').textContent='–';document.getElementById('m-agua-s').textContent='sin registro hoy';document.getElementById('m-agua-s').style.color='var(--muted)';}
+  else{
   document.getElementById('m-agua').textContent=(n===1?todW.toFixed(1):avgW)+'L';
   document.getElementById('m-agua-s').textContent=n===1?(todW>=3?'Meta alcanzada':'Faltan '+(3-todW).toFixed(1)+'L'):'prom '+n+' dias';
   document.getElementById('m-agua-s').style.color=n===1&&todW>=3?'var(--good)':'var(--muted)';
+  }
   var wts=gw();var lw=wts.length?wts[wts.length-1]:null;var pw=wts.length>=2?wts[wts.length-2]:null;
   var lwVal=lw&&lw.w!==undefined?parseFloat(lw.w):null;var pwVal=pw&&pw.w!==undefined?parseFloat(pw.w):null;
-  document.getElementById('m-peso').textContent=lwVal!==null?lwVal+'kg':'-';
+  document.getElementById('m-peso').textContent=lwVal!==null?lwVal+'kg':'–';
   if(lwVal!==null&&pwVal!==null){var dw=(lwVal-pwVal).toFixed(1);document.getElementById('m-peso-s').textContent=(dw>0?'+':'')+dw+' kg';document.getElementById('m-peso-s').style.color=parseFloat(dw)<0?'var(--good)':parseFloat(dw)>0?'var(--bad)':'var(--muted)';}
-  else{document.getElementById('m-peso-s').textContent=lwVal!==null?'primer registro':'sin datos';document.getElementById('m-peso-s').style.color='var(--muted)';}
+  else{document.getElementById('m-peso-s').textContent=lwVal!==null?'primer registro':'sin registros aun';document.getElementById('m-peso-s').style.color='var(--muted)';}
+  if(n===1&&!todayLogged){document.getElementById('m-porc').textContent='–';document.getElementById('m-porc-s').textContent='sin registro hoy';document.getElementById('m-porc-s').style.color='var(--muted)';}
+  else{
   var todP=porcPct(tk);var avgP=Math.round(days.map(porcPct).reduce(function(a,b){return a+b;},0)/n);
   document.getElementById('m-porc').textContent=(n===1?todP:avgP)+'%';
   document.getElementById('m-porc-s').textContent=n===1?'adherencia hoy':'prom '+n+' dias';
   document.getElementById('m-porc-s').style.color=(n===1?todP:avgP)>=80?'var(--good)':'var(--muted)';
+  }
+  if(n===1&&!todayLogged){document.getElementById('m-meds').textContent='–';document.getElementById('m-meds-s').textContent='sin registro hoy';document.getElementById('m-meds-s').style.color='var(--muted)';}
+  else{
   var todM=medPct(tk);var avgM=Math.round(days.map(medPct).reduce(function(a,b){return a+b;},0)/n);
   document.getElementById('m-meds').textContent=(n===1?todM:avgM)+'%';
   document.getElementById('m-meds-s').textContent=n===1?'hoy':'prom '+n+' dias';
   document.getElementById('m-meds-s').style.color=(n===1?todM:avgM)>=100?'var(--good)':'var(--muted)';
+  }
+  if(n===1&&!todayLogged){document.getElementById('m-ex').textContent='–';document.getElementById('m-ex-s').textContent='sin registro hoy';}
+  else{
   var todEx=s[tk]&&s[tk].ex||0;
   var avgExMin=Math.round(days.map(function(k){return s[k]&&s[k].ex||0;}).reduce(function(a,b){return a+b;},0)/n);
   var exMinShow=n===1?todEx:avgExMin;
   var exH=Math.floor(exMinShow/60);var exM=exMinShow%60;
   document.getElementById('m-ex').textContent=exH+'h'+(exM>0?' '+exM+'m':'');
   document.getElementById('m-ex-s').textContent=n===1?'hoy':'prom '+n+' dias';
+  }
+  if(n===1&&!todayLogged){document.getElementById('m-sleep').textContent='–';document.getElementById('m-sleep-s').textContent='sin registro hoy';}
+  else{
   var todSl=s[tk]&&s[tk].sl||0;
   var avgSlH=days.map(function(k){return s[k]&&s[k].sl||0;}).reduce(function(a,b){return a+b;},0)/n;
   var slShow=n===1?todSl:avgSlH;
   var slH=Math.floor(slShow);var slM=Math.round((slShow-slH)*60);
   document.getElementById('m-sleep').textContent=slH+'h'+(slM>0?' '+slM+'m':'');
   document.getElementById('m-sleep-s').textContent=n===1?'hoy':'prom '+n+' dias';
+  }
   var checkAvg=Math.round(days.map(function(k){var c=s[k]&&s[k].ch&&s[k].ch.length||0;return Math.round(c/8*100);}).reduce(function(a,b){return a+b;},0)/n);
   var wAmt=n===1?todW.toFixed(1):avgW;
   document.getElementById('dashSum').innerHTML='<div class="sum-row"><div class="sdot" style="background:var(--blue)"></div><div class="slbl">Agua</div><div class="sval">'+wAmt+'L</div><span class="sbadge '+(parseFloat(wAmt)>=3?'bg':'bw')+'">'+(parseFloat(wAmt)>=3?'Meta':'Incompleto')+'</span></div><div class="sum-row"><div class="sdot" style="background:var(--accent)"></div><div class="slbl">Peso actual</div><div class="sval">'+(lwVal!==null?lwVal+'kg':'sin datos')+'</div>'+(lwVal!==null&&pwVal!==null?'<span class="sbadge '+(lwVal<pwVal?'bg':'bb')+'">'+(lwVal<pwVal?'-':'+')+(Math.abs(lwVal-pwVal).toFixed(1))+'kg</span>':'')+'</div><div class="sum-row"><div class="sdot" style="background:var(--pink)"></div><div class="slbl">Porciones</div><div class="sval">'+(n===1?todP:avgP)+'%</div><span class="sbadge '+((n===1?todP:avgP)>=80?'bg':(n===1?todP:avgP)>=50?'bw':'bb')+'">'+(( n===1?todP:avgP)>=80?'Bien':(n===1?todP:avgP)>=50?'Regular':'Bajo')+'</span></div><div class="sum-row"><div class="sdot" style="background:var(--purple)"></div><div class="slbl">Medicamento</div><div class="sval">'+(n===1?todM:avgM)+'%</div><span class="sbadge '+((n===1?todM:avgM)>=100?'bg':(n===1?todM:avgM)>0?'bw':'bb')+'">'+(( n===1?todM:avgM)>=100?'Completo':'Incompleto')+'</span></div><div class="sum-row"><div class="sdot" style="background:var(--warn)"></div><div class="slbl">Checklist</div><div class="sval">'+checkAvg+'%</div></div>';
@@ -906,7 +987,22 @@ function exportReport(){
     txt+='REFLUJO (sintomas reportados)\n';
     txt+='  Dias con reflujo diurno: '+rfd2+'/'+rfKeysS.length+' ('+Math.round(rfd2/rfKeysS.length*100)+'%)  |  Noches con reflujo: '+rfn2+'/'+rfKeysS.length+' ('+Math.round(rfn2/rfKeysS.length*100)+'%)\n';
     txt+='  Como se calculo: dias marcados con sintomas entre los dias con seguimiento activo;\n';
-    txt+='  el registro de reflujo inicia el '+RF_START+' (v1.4.2), dias previos no se contabilizan.\n\n';
+    txt+='  el registro de reflujo inicia el '+RF_START+' (v1.4.2), dias previos no se contabilizan.\n';
+    var rfSickDays=rfKeysS.filter(function(k){return s[k].rfd||s[k].rfn;});
+    var rfOkDays=rfKeysS.filter(function(k){return !s[k].rfd&&!s[k].rfn;});
+    if(rfSickDays.length>=2&&rfOkDays.length>=2){
+      txt+='  Alimentos en dias CON reflujo vs SIN reflujo (promedio de porciones por grupo, ese dia):\n';
+      Object.keys(PT).forEach(function(g){
+        var avgSick=_mean(rfSickDays.map(function(k){return getTotals(s[k])[g]||0;}));
+        var avgOk=_mean(rfOkDays.map(function(k){return getTotals(s[k])[g]||0;}));
+        var diff=avgSick-avgOk;
+        if(Math.abs(diff)>=0.3){txt+='    '+PT[g].l+': '+avgSick.toFixed(1)+' con reflujo vs '+avgOk.toFixed(1)+' sin reflujo ('+(diff>=0?'+':'')+diff.toFixed(1)+')\n';}
+      });
+      txt+='  Como se calculo: promedio de porciones de cada grupo SMAE, comparando dias marcados con\n';
+      txt+='  reflujo (diurno o nocturno) contra dias sin sintomas. Solo se listan grupos con diferencia\n';
+      txt+='  notable (>=0.3 porciones); no implica causalidad, es una pista para revisar con Michelle.\n';
+    }
+    txt+='\n';
   }
   var fbKeysS=allKeys.filter(function(k){return k>=FIB_START;});
   if(fbKeysS.length){
@@ -1149,6 +1245,8 @@ var _clockInterval=null;
 function startClock(){stopClock();function tick(){var el=document.getElementById('dn-date');if(!el)return;var now=new Date();var h=now.getHours();var m=now.getMinutes();var sec=now.getSeconds();el.textContent=now.toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'})+' - '+(h<10?'0':'')+h+':'+(m<10?'0':'')+m+':'+(sec<10?'0':'')+sec;}tick();_clockInterval=setInterval(tick,1000);}
 function stopClock(){if(_clockInterval){clearInterval(_clockInterval);_clockInterval=null;}}
 function renderDia(){
+  var dtBtn=document.getElementById('dt-'+activeDiaTab);
+  setDiaTab(activeDiaTab,dtBtn);
   var key=keyOf(viewDate);var day=gd(key);var isToday=key===todayKey();
   var nd=new Date(viewDate.toLocaleString('en-US',{timeZone:'America/Mexico_City'}));
   var dow=nd.getDay();
@@ -1209,14 +1307,27 @@ function renderDia(){
 function deleteWeight(key){var wts=gw();wts=wts.filter(function(w){return w.date!==key;});sw(wts);toast('Peso borrado');renderDia();renderDash();}
 function toggleMeal(mk,key){var tb=document.getElementById('tb-'+mk);tb.classList.toggle('open');if(tb.classList.contains('open'))renderChips(mk,key,gd(key));}
 function renderChips(mk,key,day){if(!day)day=gd(key);var mt=MG[mk];var mp=(day.mp&&day.mp[mk])||{};var h='';var gks=Object.keys(mt);var done2=0;gks.forEach(function(g){var tgt=mt[g];var curr=mp[g]||0;var pct=Math.min(100,curr/tgt*100);var done=curr>=tgt;if(done)done2++;h+='<div class="chip '+(done?'done':'')+'" onclick="openFM(\''+g+'\',\''+mk+'\','+tgt+',\''+key+'\')">';h+='<div class="chip-name" style="'+(done?'color:var(--good)':'')+'">'+PT[g].l+'</div>';h+='<div class="chip-bar"><div class="chip-fill" style="width:'+pct+'%;background:'+PT[g].c+'"></div></div>';h+='<div class="chip-cnt">'+curr+'/'+tgt+(done?' v':'')+'</div></div>';});document.getElementById('chips-'+mk).innerHTML=h;var headerPct=Math.round(done2/gks.length*100);var barColor=headerPct>=100?'var(--good)':headerPct>0?'var(--accent)':'var(--border)';var fill=document.getElementById('tfill-'+mk);var txt=document.getElementById('ttxt-'+mk);if(fill){fill.style.width=headerPct+'%';fill.style.background=barColor;}if(txt){txt.textContent=done2+'/'+gks.length;}var mealEl=document.getElementById('tb-'+mk);if(mealEl&&headerPct>=100)mealEl.parentElement.style.borderColor='var(--good)';else if(mealEl)mealEl.parentElement.style.borderColor='';}
-function renderChecklist(key,day){if(!day.ch)day.ch=[];var ckh='';RC.forEach(function(rc,i){var ok=day.ch.indexOf(i)>=0;ckh+='<div class="ci" onclick="toggleCheck('+i+',\''+key+'\')">';ckh+='<div class="cbox" style="background:'+(ok?'var(--accent)':'transparent')+';border-color:'+(ok?'var(--accent)':'var(--border)')+'">'+( ok?'v':'')+'</div>';ckh+='<span class="clbl '+(ok?'done':'')+'">'+rc+'</span></div>';});document.getElementById('day-checks').innerHTML=ckh;}
-// checkHydrationGoal: marca automaticamente "Buena hidratacion hoy" (indice 7 de RC) al llegar a la meta de 3L.
-// Solo marca hacia adelante (al llegar a la meta); no la desmarca sola si luego bajas el conteo.
-function checkHydrationGoal(day){var liters=(day.water||0)*0.25;if(liters>=3){if(!day.ch)day.ch=[];if(day.ch.indexOf(7)<0)day.ch.push(7);}}
+function renderChecklist(key,day){if(!day.ch)day.ch=[];var ckh='';RC.forEach(function(rc,i){var ok=day.ch.indexOf(i)>=0;var isAuto=(i===6||i===7);ckh+='<div class="ci"'+(isAuto?' style="cursor:default"':' onclick="toggleCheck('+i+',\''+key+'\')"')+'>';ckh+='<div class="cbox" style="background:'+(ok?'var(--accent)':'transparent')+';border-color:'+(ok?'var(--accent)':'var(--border)')+'">'+( ok?'v':'')+'</div>';ckh+='<span class="clbl '+(ok?'done':'')+'">'+rc+(isAuto?' <span style="color:var(--muted);font-size:.68rem">(automático)</span>':'')+'</span></div>';});document.getElementById('day-checks').innerHTML=ckh;}
+// syncAutoChecks (definida abajo): reemplaza el auto-check unidireccional anterior por uno bidireccional
+// y agrega el calculo de "Porciones moderadas".
+// syncAutoChecks: calcula y persiste 2 items del checklist que ya no llena el usuario a mano:
+// "Porciones moderadas" (indice 6) = true si NINGUN grupo SMAE supero su meta diaria ese dia.
+// "Buena hidratacion hoy" (indice 7) = true si el agua del dia llego a 3L. Bidireccional (se puede quitar sola).
+function syncAutoChecks(key,day){
+  if(!day.ch)day.ch=[];
+  var totals=getTotals(day);
+  var overLimit=Object.keys(PT).some(function(g){return (totals[g]||0)>PT[g].t;});
+  var idx6=day.ch.indexOf(6);
+  if(!overLimit){if(idx6<0)day.ch.push(6);}else{if(idx6>=0)day.ch.splice(idx6,1);}
+  var liters=(day.water||0)*0.25;
+  var idx7=day.ch.indexOf(7);
+  if(liters>=3){if(idx7<0)day.ch.push(7);}else{if(idx7>=0)day.ch.splice(idx7,1);}
+  sd(key,day);
+}
 function renderWater(key,day){var c=day.water||0;var L=(c*0.25).toFixed(1);document.getElementById('w-num').textContent=L+'L';document.getElementById('w-bar').style.width=Math.min(100,c/16*100)+'%';document.getElementById('w-bar').style.background=c>=16?'var(--accent)':'var(--blue)';document.getElementById('w-meta').textContent=c>=16?'Meta superada - '+L+'L':'Meta: 3-4L - faltan '+(Math.max(0,3-c*0.25)).toFixed(1)+'L';var bh='';for(var i=0;i<c;i++){bh+='<div class="bub '+(i>=16?'extra':'on')+'" onclick="removeW('+i+',\''+key+'\')">&#x1F4A7;</div>';}document.getElementById('w-bubbles').innerHTML=bh;}
-function addWater(d){var key=keyOf(viewDate);var day=gd(key);day.water=Math.max(0,(day.water||0)+d);checkHydrationGoal(day);sd(key,day);renderWater(key,day);renderChecklist(key,day);if(d>0)toast((day.water*0.25).toFixed(1)+'L');}
-function addWaterMl(){var ml=parseInt(document.getElementById('cw-ml').value)||0;if(ml<50){toast('Min 50ml');return;}var key=keyOf(viewDate);var day=gd(key);day.water=(day.water||0)+Math.round(ml/250);checkHydrationGoal(day);sd(key,day);renderWater(key,day);renderChecklist(key,day);document.getElementById('cw-wrap').style.display='none';toast('+'+ml+'ml');}
-function removeW(i,key){var day=gd(key);day.water=i;checkHydrationGoal(day);sd(key,day);renderWater(key,day);renderChecklist(key,day);}
+function addWater(d){var key=keyOf(viewDate);var day=gd(key);day.water=Math.max(0,(day.water||0)+d);syncAutoChecks(key,day);renderWater(key,day);renderChecklist(key,day);if(d>0)toast((day.water*0.25).toFixed(1)+'L');}
+function addWaterMl(){var ml=parseInt(document.getElementById('cw-ml').value)||0;if(ml<50){toast('Min 50ml');return;}var key=keyOf(viewDate);var day=gd(key);day.water=(day.water||0)+Math.round(ml/250);syncAutoChecks(key,day);renderWater(key,day);renderChecklist(key,day);document.getElementById('cw-wrap').style.display='none';toast('+'+ml+'ml');}
+function removeW(i,key){var day=gd(key);day.water=i;syncAutoChecks(key,day);renderWater(key,day);renderChecklist(key,day);}
 function toggleCW(){var el=document.getElementById('cw-wrap');el.style.display=el.style.display==='none'?'block':'none';}
 function addExercise(delta){var key=keyOf(viewDate);var day=gd(key);day.ex=Math.max(0,(day.ex||0)+delta);sd(key,day);renderExercise(day);if(delta>0)toast(day.ex+' min');}
 function renderExercise(day){var min=day.ex||0;var el=document.getElementById('ex-num');var meta=document.getElementById('ex-meta');var bar=document.getElementById('ex-bar');if(!el)return;el.textContent=min+' min';bar.style.width=Math.min(100,min/60*100)+'%';if(min===0)meta.textContent='sin ejercicio hoy';else if(min<30)meta.textContent='buen inicio - meta: 30-60 min';else if(min<60)meta.textContent='va muy bien!';else meta.textContent='Meta alcanzada!';}
@@ -1224,9 +1335,49 @@ function addSleep(delta){var key=keyOf(viewDate);var day=gd(key);day.sl=Math.max
 function renderSleep(day){var h=day.sl||0;var el=document.getElementById('sl-num');var meta=document.getElementById('sl-meta');var bar=document.getElementById('sl-bar');if(!el)return;var hInt=Math.floor(h);var min=Math.round((h-hInt)*60);el.textContent=hInt+'h'+(min>0?' '+min+'min':'');var pct=Math.min(100,h/9*100);bar.style.width=pct+'%';if(h===0){meta.textContent='registra horas de la noche anterior';bar.style.background='var(--purple)';}else if(h<6){meta.textContent='poco sueno - lo ideal es 7-9h';bar.style.background='var(--bad)';}else if(h<7){meta.textContent='casi en rango - intenta llegar a 7h';bar.style.background='var(--warn)';}else if(h<=9){meta.textContent='Excelente! Rango ideal';bar.style.background='var(--good)';}else{meta.textContent='Mucho sueno - revisa tu rutina';bar.style.background='var(--warn)';}}
 function renderReflux(key,day){var el=document.getElementById('day-reflux');if(!el)return;var items=[{f:'rfn',l:'Tuve reflujo la noche anterior'},{f:'rfd',l:'Tuve reflujo durante el dia'}];var h='';items.forEach(function(it){var on=!!day[it.f];h+='<div class="ci" onclick="toggleReflux(\''+it.f+'\',\''+key+'\')"><div class="cbox" style="background:'+(on?'var(--bad)':'transparent')+';border-color:'+(on?'var(--bad)':'var(--border)')+'">'+(on?'!':'')+'</div><span class="clbl" style="'+(on?'color:var(--bad)':'')+'">'+it.l+'</span></div>';});h+='<div style="font-size:.72rem;color:var(--muted);margin-top:8px">Marca solo si hubo sintomas - se incluye en el reporte para Michelle</div>';el.innerHTML=h;}
 function toggleReflux(f,key){var day=gd(key);day[f]=!day[f];sd(key,day);renderReflux(key,day);}
+// weekProgress: % completado de la rutina de la semana actual, contando solo los dias que ya pasaron o es hoy.
+function weekProgress(){
+  var todayK=todayKey();
+  var wk=weekKeyOf(todayK);
+  var s=ls();
+  var mon=new Date(wk+'T12:00:00');
+  var totalDone=0,totalPossible=0;
+  for(var i=0;i<7;i++){
+    var d=new Date(mon);d.setDate(mon.getDate()+i);
+    var k=fmtYMD(d);
+    if(k>todayK)break;
+    var type=gymTypeFor(k);
+    var day=s[k];
+    if(type==='libre'){
+      totalPossible+=1;
+      var g0=day&&day.gym&&day.gymType==='libre'?day.gym:null;
+      if(g0&&g0.restDone)totalDone+=1;
+      continue;
+    }
+    var muscleCount=GYM_TYPES[type].muscles.length;
+    var dayTotal=2+muscleCount*3;
+    totalPossible+=dayTotal;
+    var g=day&&day.gym&&day.gymType===type?day.gym:null;
+    if(g){
+      var done=(g.cardioI?1:0)+(g.cardioF?1:0);
+      Object.keys(g.muscles).forEach(function(m){done+=g.muscles[m].filter(function(x){return x;}).length;});
+      totalDone+=done;
+    }
+  }
+  if(totalPossible===0)return 100;
+  return Math.round(totalDone/totalPossible*100);
+}
+function renderWeekProgress(){
+  var el=document.getElementById('weekProgress');
+  if(!el)return;
+  var pct=weekProgress();
+  var color=pct>=80?'var(--good)':pct>=50?'var(--warn)':'var(--bad)';
+  el.innerHTML='<div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-bottom:5px"><span>Rutina de la semana</span><span style="font-family:Syne,sans-serif;font-weight:700;color:'+color+'">'+pct+'%</span></div><div style="height:8px;background:var(--border);border-radius:999px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:'+color+';border-radius:999px;transition:width .5s"></div></div>';
+}
 function renderGym(key,day){
   var hdr=document.getElementById('gym-header');var el=document.getElementById('gym-body');
   if(!el)return;
+  renderWeekProgress();
   var type=gymTypeFor(key);
   var g=getGymData(key,day);
   var typeLbl=type==='libre'?'Dia libre - dar gracias':GYM_TYPES[type].l+' '+GYM_TYPES[type].ico;
@@ -1253,19 +1404,56 @@ function renderGymMuscle(key,muscle,machine,arr,weights){
   if(!Array.isArray(weights))weights=[null,null,null];
   var machineDisplay=Array.isArray(machine)?machine.join(' o '):machine;
   var h='<div style="margin-bottom:14px"><div style="margin-bottom:6px"><span style="font-size:.83rem;font-weight:600">'+muscle+'</span><span style="font-size:.68rem;color:var(--accent)"> · '+machineDisplay+'</span><span style="font-size:.68rem;color:var(--muted)"> · '+doneCount+'/3</span></div>';
+  var hint=progressiveOverloadHint(muscle);
+  if(hint)h+='<div style="background:rgba(200,245,100,.08);border:1px solid rgba(200,245,100,.3);border-radius:8px;padding:6px 9px;margin-bottom:8px;font-size:.7rem;color:var(--accent)">\u2191 '+hint+'</div>';
   h+='<div style="display:flex;gap:6px">';
   GYM_SERIES.forEach(function(sr,i){
     var on=arr[i];var w=weights[i]!=null?weights[i]:'';
-    h+='<div style="flex:1;display:flex;flex-direction:column;gap:4px">';
+    h+='<div style="flex:1;display:flex;flex-direction:column;gap:3px">';
     h+='<div style="font-size:.65rem;color:var(--muted);text-align:center;line-height:1.25">'+sr.l+'<br>'+sr.reps+' reps</div>';
-    h+='<input type="number" inputmode="decimal" value="'+w+'" placeholder="kg" style="width:100%;padding:5px 2px;font-size:.72rem;text-align:center" onchange="setGymSeriesWeight(\''+key+'\',\''+muscle+'\','+i+',this.value)">';
+    h+='<div style="display:flex;align-items:center;gap:2px">';
+    h+='<button style="flex:0 0 auto;width:18px;height:26px;padding:0;font-size:.7rem;border-radius:5px" onclick="adjustGymWeight(\''+key+'\',\''+muscle+'\','+i+',-2.5)">-</button>';
+    h+='<input type="number" inputmode="decimal" value="'+w+'" placeholder="kg" style="width:100%;padding:4px 1px;font-size:.68rem;text-align:center" onchange="setGymSeriesWeight(\''+key+'\',\''+muscle+'\','+i+',this.value)">';
+    h+='<button style="flex:0 0 auto;width:18px;height:26px;padding:0;font-size:.7rem;border-radius:5px" onclick="adjustGymWeight(\''+key+'\',\''+muscle+'\','+i+',2.5)">+</button>';
+    h+='</div>';
     h+='<button style="width:100%;padding:7px 2px;border-radius:8px;border:1px solid '+(on?'var(--good)':'var(--border)')+';background:'+(on?'rgba(100,245,180,.12)':'var(--card2)')+';color:'+(on?'var(--good)':'var(--muted)')+';font-size:.85rem;font-family:Syne,sans-serif;font-weight:700;cursor:pointer" onclick="toggleGymSeries(\''+key+'\',\''+muscle+'\','+i+')">'+(on?'\u2713':'-')+'</button>';
+    if(i>0)h+='<button style="width:100%;padding:4px 2px;border-radius:6px;border:1px solid var(--border);background:var(--card2);color:var(--accent);font-size:.62rem;font-weight:600;cursor:pointer" onclick="copyPrevWeight(\''+key+'\',\''+muscle+'\','+i+')">\u21ba igual</button>';
+    else h+='<div style="height:24px"></div>';
     h+='</div>';
   });
   h+='</div></div>';
   return h;
 }
 function setGymSeriesWeight(key,muscle,i,val){var day=gd(key);var g=getGymData(key,day);if(!Array.isArray(g.weights[muscle]))g.weights[muscle]=[null,null,null];var num=parseFloat(val);g.weights[muscle][i]=isNaN(num)?null:num;sd(key,day);}
+function adjustGymWeight(key,muscle,i,delta){var day=gd(key);var g=getGymData(key,day);if(!Array.isArray(g.weights[muscle]))g.weights[muscle]=[null,null,null];var base=g.weights[muscle][i]!=null?g.weights[muscle][i]:0;var nv=Math.max(0,Math.round((base+delta)*10)/10);g.weights[muscle][i]=nv;sd(key,day);renderGym(key,day);}
+function copyPrevWeight(key,muscle,i){var day=gd(key);var g=getGymData(key,day);if(!Array.isArray(g.weights[muscle]))g.weights[muscle]=[null,null,null];var prev=g.weights[muscle][i-1];if(prev==null)return;g.weights[muscle][i]=prev;sd(key,day);renderGym(key,day);}
+// muscleSessionHistory: sesiones pasadas de un musculo (peso mas pesado + si completo las 3 series), para sugerir sobrecarga progresiva.
+function muscleSessionHistory(muscle){
+  var s=ls();
+  var keys=Object.keys(s).filter(function(k){return /^\d{4}-\d{2}-\d{2}$/.test(k);}).sort();
+  var sessions=[];
+  keys.forEach(function(k){
+    var day=s[k];var type=gymTypeFor(k);
+    if(type==='libre')return;
+    var g=day.gym&&day.gymType===type?day.gym:null;
+    if(!g||!g.muscles||!g.muscles[muscle])return;
+    var arr=g.muscles[muscle];
+    var wArr=(g.weights&&Array.isArray(g.weights[muscle]))?g.weights[muscle]:[];
+    var vals=wArr.filter(function(v){return v!=null;});
+    if(!vals.length)return;
+    sessions.push({k:k,w:Math.max.apply(null,vals),complete:arr.filter(function(x){return x;}).length===3});
+  });
+  return sessions;
+}
+function progressiveOverloadHint(muscle){
+  var sessions=muscleSessionHistory(muscle);
+  if(sessions.length<3)return null;
+  var last3=sessions.slice(-3);
+  var allComplete=last3.every(function(x){return x.complete;});
+  var sameWeight=last3.every(function(x){return x.w===last3[0].w;});
+  if(allComplete&&sameWeight){return 'Llevas '+last3.length+' sesiones en '+last3[0].w+'kg - considera subir a '+(last3[0].w+2.5)+'kg';}
+  return null;
+}
 function toggleGymCardio(key,slot){var day=gd(key);var g=getGymData(key,day);g[slot]=!g[slot];sd(key,day);renderGym(key,day);}
 function toggleGymSeries(key,muscle,i){var day=gd(key);var g=getGymData(key,day);g.muscles[muscle][i]=!g.muscles[muscle][i];sd(key,day);renderGym(key,day);}
 function toggleGymRest(key){var day=gd(key);var g=getGymData(key,day);g.restDone=!g.restDone;sd(key,day);renderGym(key,day);}
@@ -1285,18 +1473,39 @@ function toggleRestDay(key){
 }
 function toggleMed(id,key){var day=gd(key);if(!day.mc)day.mc=[];var i=day.mc.indexOf(id);if(i>=0)day.mc.splice(i,1);else day.mc.push(id);sd(key,day);renderDia();}
 function toggleSuero(id,key){var day=gd(key);if(!day.sc)day.sc=[];var i=day.sc.indexOf(id);if(i>=0)day.sc.splice(i,1);else day.sc.push(id);sd(key,day);renderDia();}
-function toggleCheck(i,key){var day=gd(key);if(!day.ch)day.ch=[];var idx=day.ch.indexOf(i);if(idx>=0)day.ch.splice(idx,1);else day.ch.push(i);sd(key,day);renderDia();}
+function toggleCheck(i,key){if(i===6||i===7)return;var day=gd(key);if(!day.ch)day.ch=[];var idx=day.ch.indexOf(i);if(idx>=0)day.ch.splice(idx,1);else day.ch.push(i);sd(key,day);renderDia();}
 function saveWeight(){var v=parseFloat(document.getElementById('w-input').value);var key=keyOf(viewDate);if(isNaN(v)||v<30||v>300){toast('Peso invalido');return;}var wts=gw();var i=wts.findIndex(function(w){return w.date===key;});if(i>=0)wts[i].w=v;else wts.push({date:key,w:v});wts.sort(function(a,b){return a.date.localeCompare(b.date);});sw(wts);toast(v+'kg guardado');renderDia();renderDash();}
 var _g='',_mk2='',_mt=1,_key2='';
-function openFM(g,mk,mt,key){_g=g;_mk2=mk;_mt=mt;_key2=key;var day=gd(key);var curr=((day.mp&&day.mp[mk])||{})[g]||0;var mLabel=MO.filter(function(m){return m.k===mk;})[0].l;document.getElementById('fm-title').textContent=PT[g].l+' - '+mLabel;document.getElementById('fm-sub').textContent='Meta: '+mt+' - Registradas: '+curr;document.getElementById('man-amt').value='1';var items=EQ[g];var h='';if(Array.isArray(items)){var lastSec='';items.forEach(function(it){if(it.s&&it.s!==lastSec){h+='<div class="fsec" style="color:'+(it.s==='Muy bajo grasa'?'var(--good)':'var(--warn)')+'">'+it.s+'</div>';lastSec=it.s;}h+='<div class="fi" onclick="addFP(\''+g+'\',1,\''+it.n+'\')"><span class="fn">'+it.n+'</span><span class="fq">'+it.q+'</span><button class="fadd">+1</button></div>';});}document.getElementById('fm-list').innerHTML=h;document.getElementById('foodModal').style.display='block';}
+function openFM(g,mk,mt,key){_g=g;_mk2=mk;_mt=mt;_key2=key;var day=gd(key);var curr=((day.mp&&day.mp[mk])||{})[g]||0;var mLabel=MO.filter(function(m){return m.k===mk;})[0].l;document.getElementById('fm-title').textContent=PT[g].l+' - '+mLabel;document.getElementById('fm-sub').textContent='Meta: '+mt+' - Registradas: '+curr;
+  var dayTotal=(getTotals(day)[g]||0);var dayTarget=PT[g].t;
+  var warnEl=document.getElementById('fm-warn');
+  if(dayTotal>=dayTarget){warnEl.innerHTML='<div style="background:rgba(245,162,100,.1);border:1px solid rgba(245,162,100,.35);border-radius:9px;padding:8px 10px;margin-bottom:10px;font-size:.76rem;color:var(--warn)">Ya llevas '+dayTotal+'/'+dayTarget+' '+PT[g].l+' hoy - ajusta la proxima comida dentro del mismo grupo.</div>';}
+  else{warnEl.innerHTML='';}
+  document.getElementById('man-amt').value='1';var items=EQ[g];var h='';if(Array.isArray(items)){var lastSec='';items.forEach(function(it){if(it.s&&it.s!==lastSec){h+='<div class="fsec" style="color:'+(it.s==='Muy bajo grasa'?'var(--good)':'var(--warn)')+'">'+it.s+'</div>';lastSec=it.s;}h+='<div class="fi" onclick="addFP(\''+g+'\',1,\''+it.n+'\')"><span class="fn">'+it.n+'</span><span class="fq">'+it.q+'</span><button class="fadd">+1</button></div>';});}document.getElementById('fm-list').innerHTML=h;document.getElementById('foodModal').style.display='block';}
 function closeFM(e){if(e.target===document.getElementById('foodModal'))document.getElementById('foodModal').style.display='none';}
-function addFP(g,amt,name){var day=gd(_key2);if(!day.mp)day.mp={};if(!day.mp[_mk2])day.mp[_mk2]={};var newVal=Math.max(0,(day.mp[_mk2][g]||0)+amt);day.mp[_mk2][g]=newVal;if(amt>0&&name!=='-1'&&name!=='manual'){if(!day.foods)day.foods={};if(!day.foods[name])day.foods[name]={g:g,c:0};day.foods[name].c=(day.foods[name].c||0)+amt;}sd(_key2,day);var curr=day.mp[_mk2][g];document.getElementById('fm-sub').textContent='Meta: '+_mt+' - Registradas: '+curr;renderChips(_mk2,_key2,day);if(amt>0){if(curr>=_mt){toast(PT[g].l+' completo!');document.getElementById('foodModal').style.display='none';}else toast('+'+amt+' '+name);}else{toast('Quitada - total: '+curr);}}
+function addFP(g,amt,name){var day=gd(_key2);if(!day.mp)day.mp={};if(!day.mp[_mk2])day.mp[_mk2]={};var newVal=Math.max(0,(day.mp[_mk2][g]||0)+amt);day.mp[_mk2][g]=newVal;if(amt>0&&name!=='-1'&&name!=='manual'){if(!day.foods)day.foods={};if(!day.foods[name])day.foods[name]={g:g,c:0};day.foods[name].c=(day.foods[name].c||0)+amt;}syncAutoChecks(_key2,day);var curr=day.mp[_mk2][g];document.getElementById('fm-sub').textContent='Meta: '+_mt+' - Registradas: '+curr;
+  var dayTotal2=(getTotals(day)[g]||0);var dayTarget2=PT[g].t;var warnEl2=document.getElementById('fm-warn');
+  if(dayTotal2>=dayTarget2){warnEl2.innerHTML='<div style="background:rgba(245,162,100,.1);border:1px solid rgba(245,162,100,.35);border-radius:9px;padding:8px 10px;margin-bottom:10px;font-size:.76rem;color:var(--warn)">Ya llevas '+dayTotal2+'/'+dayTarget2+' '+PT[g].l+' hoy - ajusta la proxima comida dentro del mismo grupo.</div>';}
+  else{warnEl2.innerHTML='';}
+  renderChips(_mk2,_key2,day);if(amt>0){if(curr>=_mt){toast(PT[g].l+' completo!');document.getElementById('foodModal').style.display='none';}else toast('+'+amt+' '+name);}else{toast('Quitada - total: '+curr);}}
 function addManual(){var amt=parseFloat(document.getElementById('man-amt').value)||1;addFP(_g,amt,'manual');document.getElementById('foodModal').style.display='none';}
 function tacc(id){var b=document.getElementById('body-'+id);var a=document.getElementById('arr-'+id);var open=b.classList.contains('open');b.classList.toggle('open',!open);a.classList.toggle('open',!open);if(!open&&id==='sem')buildWP();}
 function showEq(id,btn){document.querySelectorAll('.eqb').forEach(function(e){e.style.display='none';});document.querySelectorAll('.etab').forEach(function(b){b.classList.remove('active');});document.getElementById(id).style.display='block';btn.classList.add('active');}
 function buildWP(){var wp=document.getElementById('wpt');if(!wp||wp.innerHTML!=='')return;var dows=[1,2,3,4,5,6,0];var names=['Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo'];var nd=new Date(new Date().toLocaleString('en-US',{timeZone:'America/Mexico_City'}));var tod=nd.getDay();var h='';dows.forEach(function(d,i){h+='<div class="wday" style="'+(d===tod?'border-left:2px solid var(--accent);padding-left:8px':'')+'"><div class="wdtitle">'+names[i]+(d===tod?' HOY':'')+'</div>';MO.forEach(function(m){h+='<div class="wrow"><div class="wlbl">'+m.l+'</div><div>'+WP[d][m.k]+'</div></div>';});h+='</div>';});wp.innerHTML=h;}
 
 var CHANGELOG=[
+  {v:'2.0.0',fecha:'2026-09-03',cambios:[
+    'Mi Dia se reorganizo en 3 sub-pestanas: Nutricion (Medicamento, Comidas, Agua), Salud (Peso, Checklist anti-reflujo, Suero, Fibra, Reflujo, Sueno) y Gimnasio (Entrenamiento) - mucho menos scroll',
+    'Checklist anti-reflujo: "Porciones moderadas" y "Buena hidratacion hoy" ya no se llenan a mano, ahora son 100% automaticas y bidireccionales - se marcan solas si cumples la meta y se desmarcan solas si te pasas o bajas del umbral',
+    'Peso por serie en el gimnasio: cada input tiene botones +2.5/-2.5, y un boton "igual" (debajo del check) para copiar el peso de la serie anterior',
+    'Sugerencia de sobrecarga progresiva por musculo: si llevas 3 sesiones seguidas con las 3 series completas al mismo peso, aparece un aviso para subir de peso',
+    'Aviso en tiempo real si ya te pasaste de la meta diaria de un grupo SMAE, al abrir el selector de alimentos',
+    'Dashboard: estados vacios unificados en las 6 tarjetas de metricas (Agua, Peso, Porciones, Medicamento, Gimnasio, Sueno) - muestran "-" cuando no hay registro ese dia, en vez de mezclar "-", "0.0L" y "sin datos"',
+    'Grafica de "Promedio de peso por tipo de rutina": corregidos los decimales raros del eje Y',
+    'Nueva barra de progreso semanal arriba de Entrenamiento: % de la rutina de la semana completada hasta hoy',
+    'Nueva recomendacion de dia de descanso debajo de la grafica de peso: si aun no tomas tu dia libre esta semana, sugiere el mejor dia restante (preferentemente justo despues de tu dia de pierna)',
+    'Reporte: nueva seccion que cruza reflujo con alimentos (que grupos SMAE se consumieron de mas en dias con sintomas vs sin sintomas)'
+  ]},
   {v:'1.11.0',fecha:'2026-09-03',cambios:['Cardio actualizado: ya no es sprint/20 pisos a tope. Ahora es eliptica a ritmo suave 5-7 min de calentamiento al inicio, y escaladora a ritmo caminado 5 min de enfriamiento al final','Cuadriceps (Frontal) ahora tiene 2 opciones de maquina: Leg Extension o Leg Press','Espalda (Trasera) ahora tiene 2 opciones de maquina: Lat Pulldown o Seated Row','Cada musculo ahora muestra todas sus opciones de maquina cuando hay mas de una disponible','Dashboard: la grafica de progreso de peso ya no tiene pestanas por musculo. Ahora es una sola grafica "Promedio de peso por tipo de rutina" con 3 lineas (Frontal, Trasera, Abdomen), cada una mostrando el promedio de peso de los musculos de ese tipo por dia entrenado']},
   {v:'1.10.1',fecha:'2026-09-02',cambios:['CORREGIDO: Torso Rotation no es una de las 2 maquinas de abdomen reales en tu Planet Fitness. Se reemplazo por Cable Rope Crunch (la maquina de polea con cuerda que si tienes), como segundo ejercicio del dia de Abdomen junto al Ab Crunch','Se propaga automaticamente a la grafica de Progreso de peso por musculo en Dashboard (la pestana ahora dice "Abdomen (cable)" en vez de "Oblicuos")']},
   {v:'1.10.0',fecha:'2026-09-02',cambios:['Dashboard: 2 tarjetas nuevas en la seccion de arriba (junto a Agua/Peso/Porciones/Medicamento): Gimnasio (horas de ejercicio) y Sueno (horas dormidas)','Mi Dia: la seccion de Sueno se movio hasta el final de la pagina, despues de Entrenamiento','Dashboard: nueva grafica "Progreso de peso por musculo" con tabs para elegir el musculo (Hombros, Pectorales, Biceps, Cuadriceps, Espalda, Triceps, Gluteo, Femorales, Pantorrillas, Abdomen, Oblicuos) - muestra el peso mas pesado de las 3 series registradas cada dia, con puntos verdes cuando subiste de peso y rojos cuando bajaste']},
