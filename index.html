@@ -172,7 +172,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
 </div>
 
 <div class="page active" id="page-dash">
-  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v1.10.1</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
+  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v1.11.0</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
   <div class="sec">
     <div class="ptabs">
       <div class="pt active" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
@@ -195,7 +195,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">Medicamento %</div><div class="ch"><canvas id="ch-meds"></canvas></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">Ejercicio (minutos)</div><div class="ch"><canvas id="ch-ex"></canvas></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">Sueno (horas)</div><div class="ch"><canvas id="ch-sleep"></canvas></div></div>
-    <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Progreso de peso por musculo</div><div id="muscleWeightTabs" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px"></div><div class="ch" id="ch-muscleweight-wrap"><canvas id="ch-muscleweight"></canvas></div></div>
+    <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Promedio de peso por tipo de rutina</div><div class="ch" id="ch-muscleweight-wrap"><canvas id="ch-muscleweight"></canvas></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Alimentos mas consumidos</div><div id="foodStatTabs" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px"></div><div id="foodStatList"></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Macros del dia (SMAE)</div><div id="macroCard"></div></div>
     <button class="expbtn" onclick="exportReport()" style="margin-bottom:8px">Exportar reporte</button>
@@ -575,28 +575,29 @@ var RC=['Comi 5-6 veces hoy','Comi despacio, mastique bien','No me acoste 2-3h d
 // la secuencia completa se recorre igual, solo que arranca el dia despues del que se marque como libre.
 var GYM_START='2026-08-31';
 // Cada musculo trae su maquina tipica de Planet Fitness (el equipo puede variar por sucursal - ajusta si tu gym tiene otra).
+// Cada musculo trae un arreglo de opciones de maquina (a veces hay mas de una disponible en Planet Fitness).
 var GYM_TYPES={
   frontal:{l:'Frontal',ico:'💪',muscles:[
-    {n:'Hombros',m:'Shoulder Press'},
-    {n:'Pectorales',m:'Chest Press'},
-    {n:'Biceps',m:'Bicep Curl'},
-    {n:'Cuadriceps',m:'Leg Extension'}
+    {n:'Hombros',m:['Shoulder Press']},
+    {n:'Pectorales',m:['Chest Press']},
+    {n:'Biceps',m:['Bicep Curl']},
+    {n:'Cuadriceps',m:['Leg Extension','Leg Press']}
   ]},
   trasera:{l:'Trasera',ico:'🏋️',muscles:[
-    {n:'Espalda',m:'Lat Pulldown'},
-    {n:'Triceps',m:'Tricep Extension (cable)'},
-    {n:'Gluteo',m:'Hip Abductor / Glute Kickback'},
-    {n:'Femorales',m:'Leg Curl'},
-    {n:'Pantorrillas',m:'Calf Raise / Smith Machine'}
+    {n:'Espalda',m:['Lat Pulldown','Seated Row']},
+    {n:'Triceps',m:['Tricep Extension (cable)']},
+    {n:'Gluteo',m:['Hip Abductor / Glute Kickback']},
+    {n:'Femorales',m:['Leg Curl']},
+    {n:'Pantorrillas',m:['Calf Raise / Smith Machine']}
   ]},
   abdomen:{l:'Abdomen',ico:'🔥',muscles:[
-    {n:'Abdomen',m:'Ab Crunch'},
-    {n:'Abdomen (cable)',m:'Cable Rope Crunch (polea con cuerda)'}
+    {n:'Abdomen',m:['Ab Crunch']},
+    {n:'Abdomen (cable)',m:['Cable Rope Crunch (polea con cuerda)']}
   ]}
 };
 var GYM_SERIES=[{l:'Serie 1',reps:15},{l:'Serie 2',reps:12},{l:'Serie 3',reps:10}];
-var GYM_CARDIO_INI='Sprint eliptica';
-var GYM_CARDIO_FIN='20 pisos escaladora';
+var GYM_CARDIO_INI='Eliptica ritmo suave - calentamiento 5-7 min';
+var GYM_CARDIO_FIN='Escaladora ritmo caminado - enfriamiento 5 min';
 
 // ── MEDS ──────────────────────────────────────────────────────────────────────
 // dateEnd: ultimo dia en que aplica (inclusive). A partir del dia siguiente ya no cuenta.
@@ -691,50 +692,45 @@ var MACROS={verduras:{p:2,l:0,h:4},frutas:{p:0,l:0,h:15},cereales:{p:2,l:0,h:15}
 function macrosOf(k){var s=ls();var t=getTotals(s[k]);var m={p:0,l:0,h:0};Object.keys(MACROS).forEach(function(g){var c=t[g]||0;m.p+=c*MACROS[g].p;m.l+=c*MACROS[g].l;m.h+=c*MACROS[g].h;});m.kcal=m.p*4+m.h*4+m.l*9;return m;}
 function macrosTarget(){var m={p:0,l:0,h:0};Object.keys(MACROS).forEach(function(g){var t=PT[g].t;m.p+=t*MACROS[g].p;m.l+=t*MACROS[g].l;m.h+=t*MACROS[g].h;});m.kcal=m.p*4+m.h*4+m.l*9;return m;}
 function renderMacros(days,n){var el=document.getElementById('macroCard');if(!el)return;var tgt=macrosTarget();var sum={p:0,l:0,h:0,kcal:0};days.forEach(function(k){var m=macrosOf(k);sum.p+=m.p;sum.l+=m.l;sum.h+=m.h;sum.kcal+=m.kcal;});var avg={p:sum.p/n,l:sum.l/n,h:sum.h/n,kcal:sum.kcal/n};var rows=[{lbl:'Proteina',v:avg.p,t:tgt.p,c:'var(--pink)'},{lbl:'Lipidos',v:avg.l,t:tgt.l,c:'var(--warn)'},{lbl:'Carbohidratos',v:avg.h,t:tgt.h,c:'var(--accent)'},{lbl:'Calorias',v:avg.kcal,t:tgt.kcal,c:'var(--blue)',kcal:true}];var h2='<div style="font-size:.72rem;color:var(--muted);margin-bottom:10px">'+(n===1?'Consumido hoy vs meta del plan':'Promedio diario ('+n+' dias) vs meta del plan')+' - estimado por intercambios SMAE</div>';rows.forEach(function(r){var pct=r.t?Math.min(100,r.v/r.t*100):0;h2+='<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:4px"><span>'+r.lbl+'</span><span style="font-family:Syne,sans-serif;font-weight:700">'+Math.round(r.v)+(r.kcal?'':'g')+' / '+Math.round(r.t)+(r.kcal?' kcal':'g')+'</span></div><div style="height:7px;background:var(--border);border-radius:999px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:'+r.c+';border-radius:999px;transition:width .4s"></div></div></div>';});el.innerHTML=h2;}
-// ── PROGRESO DE PESO POR MUSCULO (Dashboard) ───────────────────────────────────
-function allGymMuscleNames(){var names=[];['frontal','trasera','abdomen'].forEach(function(t){GYM_TYPES[t].muscles.forEach(function(mu){if(names.indexOf(mu.n)<0)names.push(mu.n);});});return names;}
-// Historial de peso (kg) de un musculo en el tiempo: para cada dia con datos usa el mas pesado de sus 3 series.
-function muscleWeightHistory(muscle){
+// ── PROMEDIO DE PESO POR TIPO DE RUTINA (Dashboard) ────────────────────────────
+// Para un dia y tipo dado: promedio del peso mas pesado de las 3 series de cada musculo entrenado ese dia.
+function typeAvgWeight(k,type){
   var s=ls();
-  var keys=Object.keys(s).filter(function(k){return /^\d{4}-\d{2}-\d{2}$/.test(k);}).sort();
-  var pts=[];
-  keys.forEach(function(k){
-    var day=s[k];
-    var type=gymTypeFor(k);
-    if(type==='libre')return;
-    var g=day.gym&&day.gymType===type?day.gym:null;
-    if(!g||!g.weights||!g.weights[muscle])return;
-    var vals=(Array.isArray(g.weights[muscle])?g.weights[muscle]:[]).filter(function(v){return v!==null&&v!==undefined;});
-    if(!vals.length)return;
-    pts.push({k:k,w:Math.max.apply(null,vals)});
+  var day=s[k];
+  if(!day)return null;
+  var g=day.gym&&day.gymType===type?day.gym:null;
+  if(!g||!g.weights)return null;
+  var vals=[];
+  Object.keys(g.weights).forEach(function(m){
+    var arr=g.weights[m];
+    var v=(Array.isArray(arr)?arr:[]).filter(function(x){return x!==null&&x!==undefined;});
+    if(v.length)vals.push(Math.max.apply(null,v));
   });
-  return pts;
+  if(!vals.length)return null;
+  return vals.reduce(function(a,b){return a+b;},0)/vals.length;
 }
-var activeMuscleTab='Hombros';
-function renderMuscleWeightTabs(){
-  var tabs=document.getElementById('muscleWeightTabs');
-  if(!tabs)return;
-  var names=allGymMuscleNames();
-  var h='';
-  names.forEach(function(nm){h+='<button style="background:var(--card2);border:1px solid '+(nm===activeMuscleTab?'var(--accent)':'var(--border)')+';border-radius:7px;padding:5px 10px;font-size:.72rem;cursor:pointer;font-family:Syne,sans-serif;font-weight:700;color:'+(nm===activeMuscleTab?'var(--text)':'var(--muted)')+';" onclick="setMuscleTab(\''+nm+'\')">'+nm+'</button>';});
-  tabs.innerHTML=h;
-}
-function setMuscleTab(name){activeMuscleTab=name;renderMuscleWeightTabs();renderMuscleWeightChart();}
 function renderMuscleWeightChart(){
   dc('ch-muscleweight');
   var wrapEl=document.getElementById('ch-muscleweight-wrap');
   if(!wrapEl)return;
-  var pts=muscleWeightHistory(activeMuscleTab);
-  if(!pts.length){
-    wrapEl.innerHTML='<div style="color:var(--muted);font-size:.8rem;text-align:center;padding:26px 0">Sin registros de peso para '+activeMuscleTab+' aun - anota el kg en Mi Dia</div>';
+  var s=ls();
+  var keys=Object.keys(s).filter(function(k){return /^\d{4}-\d{2}-\d{2}$/.test(k);}).sort();
+  var trainKeys=keys.filter(function(k){var type=gymTypeFor(k);if(type==='libre')return false;var day=s[k];return day.gym&&day.gymType===type&&day.gym.weights;});
+  if(!trainKeys.length){
+    wrapEl.innerHTML='<div style="color:var(--muted);font-size:.8rem;text-align:center;padding:26px 0">Sin registros de peso en el gimnasio aun - anota el kg en Mi Dia</div>';
     return;
   }
   wrapEl.innerHTML='<canvas id="ch-muscleweight"></canvas>';
-  var labels=pts.map(function(p){var d=new Date(p.k+'T12:00:00');return d.toLocaleDateString('es-MX',{month:'short',day:'numeric'});});
-  var vals=pts.map(function(p){return p.w;});
-  var ptColors=vals.map(function(v,i){if(i===0)return '#c8f564';return v>vals[i-1]?'#64f5b4':v<vals[i-1]?'#f56464':'#8888aa';});
-  var mopts={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#8888aa',maxRotation:45},grid:{color:'#2a2a38'}},y:{ticks:{color:'#8888aa',callback:function(v){return v+'kg';}},grid:{color:'#2a2a38'}}}};
-  charts['ch-muscleweight']=new Chart(document.getElementById('ch-muscleweight').getContext('2d'),{type:'line',data:{labels:labels,datasets:[{data:vals,borderColor:'#c8f564',backgroundColor:'rgba(200,245,100,.08)',fill:true,tension:0.3,pointBackgroundColor:ptColors,pointRadius:6}]},options:mopts});
+  var labels=trainKeys.map(function(k){var d=new Date(k+'T12:00:00');return d.toLocaleDateString('es-MX',{month:'short',day:'numeric'});});
+  var frontalData=trainKeys.map(function(k){return gymTypeFor(k)==='frontal'?typeAvgWeight(k,'frontal'):null;});
+  var traseraData=trainKeys.map(function(k){return gymTypeFor(k)==='trasera'?typeAvgWeight(k,'trasera'):null;});
+  var abdomenData=trainKeys.map(function(k){return gymTypeFor(k)==='abdomen'?typeAvgWeight(k,'abdomen'):null;});
+  var mopts={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{color:'#8888aa',font:{size:10},boxWidth:12}}},scales:{x:{ticks:{color:'#8888aa',maxRotation:45},grid:{color:'#2a2a38'}},y:{ticks:{color:'#8888aa',callback:function(v){return v+'kg';}},grid:{color:'#2a2a38'}}}};
+  charts['ch-muscleweight']=new Chart(document.getElementById('ch-muscleweight').getContext('2d'),{type:'line',data:{labels:labels,datasets:[
+    {label:'Frontal',data:frontalData,borderColor:'#c8f564',backgroundColor:'transparent',tension:0.3,pointRadius:4,spanGaps:true},
+    {label:'Trasera',data:traseraData,borderColor:'#f564b4',backgroundColor:'transparent',tension:0.3,pointRadius:4,spanGaps:true},
+    {label:'Abdomen',data:abdomenData,borderColor:'#64d4f5',backgroundColor:'transparent',tension:0.3,pointRadius:4,spanGaps:true}
+  ]},options:mopts});
 }
 function renderDash(){
   var n=period==='day'?1:period==='week'?7:30;
@@ -814,7 +810,7 @@ function renderDash(){
   charts['ch-ex']=new Chart(document.getElementById('ch-ex').getContext('2d'),{type:'bar',data:{labels:labels,datasets:[{data:exData,backgroundColor:exData.map(function(v,i){var rgb=v===0?'245,100,100':v<30?'245,162,100':'100,245,180';return isToday[i]?'rgba('+rgb+',1)':'rgba('+rgb+',.55)';}),borderRadius:6,borderSkipped:false}]},options:exOpts});
   dc('ch-sleep');var slData=chartDays.map(function(k){return s[k]&&s[k].sl||0;});var slOpts=JSON.parse(JSON.stringify(opts));slOpts.scales.y.min=0;slOpts.scales.y.max=12;slOpts.scales.y.ticks.callback=function(v){return v+'h';};
   charts['ch-sleep']=new Chart(document.getElementById('ch-sleep').getContext('2d'),{type:'bar',data:{labels:labels,datasets:[{data:slData,backgroundColor:slData.map(function(v,i){var rgb=v===0?'160,100,245':v<6?'245,100,100':v<7?'245,162,100':v<=9?'100,245,180':'245,162,100';return isToday[i]?'rgba('+rgb+',1)':'rgba('+rgb+',.55)';}),borderRadius:6,borderSkipped:false}]},options:slOpts});
-  renderWeightGoals();renderFoodStats(activeFoodGroup);renderMacros(days,n);renderMuscleWeightTabs();renderMuscleWeightChart();
+  renderWeightGoals();renderFoodStats(activeFoodGroup);renderMacros(days,n);renderMuscleWeightChart();
 }
 
 // ── exportReport: historial completo + estadisticas clinicas para Michelle ────
@@ -1090,7 +1086,8 @@ function exportReport(){
       txt+='  '+k+': '+GYM_TYPES[type].l+' - '+parts.join(', ')+' ('+pctDay+'% completado)\n';
     });
   }else{txt+='  Sin dias registrados aun\n';}
-  txt+='Como se calculo: cardio inicial = sprint en eliptica; cardio final = 20 pisos de escaladora;\n';
+  txt+='Como se calculo: cardio inicial = eliptica ritmo suave 5-7 min (calentamiento); cardio final =\n';
+  txt+='escaladora ritmo caminado 5 min (enfriamiento);\n';
   txt+='cada musculo son 3 series (15, 12 y 10 repeticiones en ese orden). El tipo de dia sigue la\n';
   txt+='secuencia fija Frontal, Trasera, Abdomen, Frontal, Trasera, Abdomen, Libre; el dia libre por\n';
   txt+='defecto es domingo pero se puede mover a otro dia de esa semana desde Mi Dia. El peso (kg) se\n';
@@ -1254,7 +1251,8 @@ function renderGymCardio(key,slot,label,itemLabel,val){
 function renderGymMuscle(key,muscle,machine,arr,weights){
   var doneCount=arr.filter(function(x){return x;}).length;
   if(!Array.isArray(weights))weights=[null,null,null];
-  var h='<div style="margin-bottom:14px"><div style="margin-bottom:6px"><span style="font-size:.83rem;font-weight:600">'+muscle+'</span><span style="font-size:.68rem;color:var(--accent)"> · '+machine+'</span><span style="font-size:.68rem;color:var(--muted)"> · '+doneCount+'/3</span></div>';
+  var machineDisplay=Array.isArray(machine)?machine.join(' o '):machine;
+  var h='<div style="margin-bottom:14px"><div style="margin-bottom:6px"><span style="font-size:.83rem;font-weight:600">'+muscle+'</span><span style="font-size:.68rem;color:var(--accent)"> · '+machineDisplay+'</span><span style="font-size:.68rem;color:var(--muted)"> · '+doneCount+'/3</span></div>';
   h+='<div style="display:flex;gap:6px">';
   GYM_SERIES.forEach(function(sr,i){
     var on=arr[i];var w=weights[i]!=null?weights[i]:'';
@@ -1299,6 +1297,7 @@ function showEq(id,btn){document.querySelectorAll('.eqb').forEach(function(e){e.
 function buildWP(){var wp=document.getElementById('wpt');if(!wp||wp.innerHTML!=='')return;var dows=[1,2,3,4,5,6,0];var names=['Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo'];var nd=new Date(new Date().toLocaleString('en-US',{timeZone:'America/Mexico_City'}));var tod=nd.getDay();var h='';dows.forEach(function(d,i){h+='<div class="wday" style="'+(d===tod?'border-left:2px solid var(--accent);padding-left:8px':'')+'"><div class="wdtitle">'+names[i]+(d===tod?' HOY':'')+'</div>';MO.forEach(function(m){h+='<div class="wrow"><div class="wlbl">'+m.l+'</div><div>'+WP[d][m.k]+'</div></div>';});h+='</div>';});wp.innerHTML=h;}
 
 var CHANGELOG=[
+  {v:'1.11.0',fecha:'2026-09-03',cambios:['Cardio actualizado: ya no es sprint/20 pisos a tope. Ahora es eliptica a ritmo suave 5-7 min de calentamiento al inicio, y escaladora a ritmo caminado 5 min de enfriamiento al final','Cuadriceps (Frontal) ahora tiene 2 opciones de maquina: Leg Extension o Leg Press','Espalda (Trasera) ahora tiene 2 opciones de maquina: Lat Pulldown o Seated Row','Cada musculo ahora muestra todas sus opciones de maquina cuando hay mas de una disponible','Dashboard: la grafica de progreso de peso ya no tiene pestanas por musculo. Ahora es una sola grafica "Promedio de peso por tipo de rutina" con 3 lineas (Frontal, Trasera, Abdomen), cada una mostrando el promedio de peso de los musculos de ese tipo por dia entrenado']},
   {v:'1.10.1',fecha:'2026-09-02',cambios:['CORREGIDO: Torso Rotation no es una de las 2 maquinas de abdomen reales en tu Planet Fitness. Se reemplazo por Cable Rope Crunch (la maquina de polea con cuerda que si tienes), como segundo ejercicio del dia de Abdomen junto al Ab Crunch','Se propaga automaticamente a la grafica de Progreso de peso por musculo en Dashboard (la pestana ahora dice "Abdomen (cable)" en vez de "Oblicuos")']},
   {v:'1.10.0',fecha:'2026-09-02',cambios:['Dashboard: 2 tarjetas nuevas en la seccion de arriba (junto a Agua/Peso/Porciones/Medicamento): Gimnasio (horas de ejercicio) y Sueno (horas dormidas)','Mi Dia: la seccion de Sueno se movio hasta el final de la pagina, despues de Entrenamiento','Dashboard: nueva grafica "Progreso de peso por musculo" con tabs para elegir el musculo (Hombros, Pectorales, Biceps, Cuadriceps, Espalda, Triceps, Gluteo, Femorales, Pantorrillas, Abdomen, Oblicuos) - muestra el peso mas pesado de las 3 series registradas cada dia, con puntos verdes cuando subiste de peso y rojos cuando bajaste']},
   {v:'1.9.0',fecha:'2026-08-31',cambios:['Se junto la seccion Ejercicio (minutos) con Entrenamiento en Mi Dia - ahora es una sola tarjeta mas ordenada, con el contador de minutos arriba y la rutina abajo','Peso (kg) ahora se registra por cada serie individual, no uno solo por musculo - pensado para cuando vas subiendo de peso entre series (ej. serie 1 mas ligera, serie 3 mas pesada)','Reporte: el detalle diario muestra los 3 pesos de cada musculo (serie1/serie2/serie3kg)','Progresion de peso por musculo ahora usa el mas pesado de las 3 series de cada dia como referencia','Los pesos ya guardados en v1.8.0 (un solo numero por musculo) se migran automaticamente a la Serie 1 la primera vez que abras ese dia; Series 2 y 3 quedan vacias para llenar']},
