@@ -172,7 +172,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
 </div>
 
 <div class="page active" id="page-dash">
-  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.0.0</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
+  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.1.0</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
   <div class="sec">
     <div class="ptabs">
       <div class="pt active" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
@@ -358,158 +358,154 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
           <button class="etab" onclick="showEq('eq-pp',this)">Prot.polvo</button>
         </div>
         <div class="eqb" id="eq-cer" style="display:block"><div class="eqgrid">
-          <div class="eqrow"><span>Arroz cocido</span><span>1/4 taza</span></div><div class="eqrow"><span>Avena hojuelas</span><span>1/3 taza</span></div>
-          <div class="eqrow"><span>Avena cocida</span><span>3/4 taza</span></div><div class="eqrow"><span>Pan integral</span><span>1 rebanada</span></div>
-          <div class="eqrow"><span>Pan masa madre</span><span>1 rebanada</span></div><div class="eqrow"><span>Pan pita integral</span><span>1/3 pieza</span></div>
-          <div class="eqrow"><span>Tortilla maiz</span><span>1 pieza</span></div><div class="eqrow"><span>Papa cocida</span><span>1/2 pieza</span></div>
-          <div class="eqrow"><span>Papa cambray</span><span>5 piezas</span></div><div class="eqrow"><span>Camote cocido</span><span>1/3 taza</span></div>
-          <div class="eqrow"><span>Quinoa</span><span>1/2 taza</span></div><div class="eqrow"><span>Arroz integral</span><span>1/3 taza</span></div>
-          <div class="eqrow"><span>Rice cake</span><span>2 piezas</span></div><div class="eqrow"><span>Tostada horneada</span><span>2 piezas</span></div>
-          <div class="eqrow"><span>Galleta salma</span><span>3 piezas</span></div><div class="eqrow"><span>Pasta cocida</span><span>1/2 taza</span></div>
-          <div class="eqrow"><span>Elote cocido</span><span>1.5 pieza</span></div><div class="eqrow"><span>Amaranto</span><span>1/4 taza</span></div>
+          <div class="eqrow"><span>Amaranto</span><span>1/4 taza</span></div><div class="eqrow"><span>Arroz cocido</span><span>1/4 taza</span></div>
+          <div class="eqrow"><span>Arroz integral</span><span>1/3 taza</span></div><div class="eqrow"><span>Avena cocida</span><span>3/4 taza</span></div>
+          <div class="eqrow"><span>Avena hojuelas</span><span>1/3 taza</span></div><div class="eqrow"><span>Camote amarillo horneado</span><span>1/3 taza</span></div>
+          <div class="eqrow"><span>Camote blanco cocido</span><span>1/3 taza</span></div><div class="eqrow"><span>Camote cocido</span><span>1/3 taza</span></div>
+          <div class="eqrow"><span>Cebada cocida</span><span>1/2 taza</span></div><div class="eqrow"><span>Elote cocido</span><span>1.5 pieza</span></div>
+          <div class="eqrow"><span>Elote en grano cocido</span><span>1/2 taza</span></div><div class="eqrow"><span>Galleta salma</span><span>3 piezas</span></div>
           <div class="eqrow"><span>Granola sin azucar</span><span>3 cdas</span></div><div class="eqrow"><span>Palomitas sin sal</span><span>2.5 tazas</span></div>
-          <div class="eqrow"><span>Platano macho cocido</span><span>1/3 pieza</span></div><div class="eqrow"><span>Yuca cocida</span><span>1/3 taza</span></div>
-          <div class="eqrow"><span>Camote amarillo horneado</span><span>1/3 taza</span></div><div class="eqrow"><span>Cebada cocida</span><span>1/2 taza</span></div>
-          <div class="eqrow"><span>Camote blanco cocido</span><span>1/3 taza</span></div><div class="eqrow"><span>Pasta integral cocida</span><span>1/2 taza</span></div>
-          <div class="eqrow"><span>Pan integral de centeno</span><span>1 rebanada</span></div><div class="eqrow"><span>Tortilla integral de trigo</span><span>1 pieza chica</span></div>
-          <div class="eqrow"><span>Elote en grano cocido</span><span>1/2 taza</span></div><div class="eqrow"><span>Pan bagel integral</span><span>1/2 pieza</span></div>
-          <div class="eqrow"><span>Tapioca cocida</span><span>1/4 taza</span></div><div class="eqrow"><span>Papa horneada</span><span>1/2 pieza</span></div>
+          <div class="eqrow"><span>Pan bagel integral</span><span>1/2 pieza</span></div><div class="eqrow"><span>Pan integral</span><span>1 rebanada</span></div>
+          <div class="eqrow"><span>Pan integral de centeno</span><span>1 rebanada</span></div><div class="eqrow"><span>Pan masa madre</span><span>1 rebanada</span></div>
+          <div class="eqrow"><span>Pan pita integral</span><span>1/3 pieza</span></div><div class="eqrow"><span>Papa cambray</span><span>5 piezas</span></div>
+          <div class="eqrow"><span>Papa cocida</span><span>1/2 pieza</span></div><div class="eqrow"><span>Papa horneada</span><span>1/2 pieza</span></div>
+          <div class="eqrow"><span>Pasta cocida</span><span>1/2 taza</span></div><div class="eqrow"><span>Pasta integral cocida</span><span>1/2 taza</span></div>
+          <div class="eqrow"><span>Platano macho cocido</span><span>1/3 pieza</span></div><div class="eqrow"><span>Quinoa</span><span>1/2 taza</span></div>
+          <div class="eqrow"><span>Rice cake</span><span>2 piezas</span></div><div class="eqrow"><span>Tapioca cocida</span><span>1/4 taza</span></div>
+          <div class="eqrow"><span>Tortilla de maiz</span><span>1 pieza</span></div><div class="eqrow"><span>Tortilla integral de trigo</span><span>1 pieza chica</span></div>
+          <div class="eqrow"><span>Tostada horneada</span><span>2 piezas</span></div><div class="eqrow"><span>Yuca cocida</span><span>1/3 taza</span></div>
         </div></div>
         <div class="eqb" id="eq-fru"><div class="eqgrid">
-          <div class="eqrow"><span>Platano</span><span>1/2 pieza</span></div><div class="eqrow"><span>Fresa rebanada</span><span>1 taza</span></div>
-          <div class="eqrow"><span>Uvas</span><span>18 piezas</span></div><div class="eqrow"><span>Kiwi</span><span>1.5 piezas</span></div>
-          <div class="eqrow"><span>Naranja</span><span>2 piezas</span></div><div class="eqrow"><span>Mandarina</span><span>2 piezas</span></div>
-          <div class="eqrow"><span>Pina picada</span><span>3/4 taza</span></div><div class="eqrow"><span>Papaya picada</span><span>1 taza</span></div>
-          <div class="eqrow"><span>Melon picado</span><span>1 taza</span></div><div class="eqrow"><span>Manzana cocida</span><span>1 pieza</span></div>
-          <div class="eqrow"><span>Pera cocida</span><span>1/2 pieza</span></div><div class="eqrow"><span>Blueberries</span><span>3/4 taza</span></div>
-          <div class="eqrow"><span>Frambuesa</span><span>1 taza</span></div><div class="eqrow"><span>Zarzamora</span><span>1 taza</span></div>
-          <div class="eqrow"><span>Moras</span><span>3/4 taza</span></div><div class="eqrow"><span>Durazno</span><span>2 piezas</span></div>
-          <div class="eqrow"><span>Mango ataulfo</span><span>1/2 pieza</span></div><div class="eqrow"><span>Sandia</span><span>1 taza</span></div>
-          <div class="eqrow"><span>Guayaba sin semillas</span><span>3 piezas</span></div><div class="eqrow"><span>Cereza natural</span><span>20 piezas</span></div>
-          <div class="eqrow"><span>Ciruela roja</span><span>3 piezas</span></div><div class="eqrow"><span>Arandanos frescos</span><span>1.5 taza</span></div>
-          <div class="eqrow"><span>Acai pulpa sin azucar</span><span>1/2 taza</span></div>
-          <div class="eqrow"><span>Higo fresco</span><span>2 piezas</span></div><div class="eqrow"><span>Chabacano</span><span>4 piezas</span></div>
-          <div class="eqrow"><span>Mamey</span><span>1/3 pieza</span></div><div class="eqrow"><span>Melon verde picado</span><span>1 taza</span></div>
-          <div class="eqrow"><span>Caqui (persimonio)</span><span>1/2 pieza</span></div><div class="eqrow"><span>Platano dominico</span><span>3 piezas</span></div>
-          <div class="eqrow"><span>Datiles</span><span>2 piezas</span></div><div class="eqrow"><span>Pasitas</span><span>10 piezas</span></div>
-          <div class="eqrow"><span>Tejocote cocido</span><span>4 piezas</span></div><div class="eqrow"><span>Ciruela amarilla</span><span>3 piezas</span></div><div class="eqrow"><span>Durazno en compota sin azucar</span><span>1/2 taza</span></div>
-          <div class="eqrow"><span>Zapote negro</span><span>1/4 taza</span></div><div class="eqrow"><span>Chicozapote</span><span>1/2 pieza chica</span></div>
-          <div class="eqrow"><span>Lichis</span><span>6 piezas</span></div>
-          <div class="eqrow"><span>Membrillo cocido</span><span>1/2 pieza</span></div><div class="eqrow"><span>Nectarina madura</span><span>1 pieza chica</span></div>
-          <div class="eqrow"><span>Higo seco</span><span>3 piezas</span></div><div class="eqrow"><span>Ciruela pasa</span><span>4 piezas</span></div>
-          <div class="eqrow"><span>Capulines</span><span>20 piezas</span></div>
+          <div class="eqrow"><span>Acai pulpa sin azucar</span><span>1/2 taza</span></div><div class="eqrow"><span>Arandanos frescos</span><span>1.5 taza</span></div>
+          <div class="eqrow"><span>Blueberries</span><span>3/4 taza</span></div><div class="eqrow"><span>Capulines</span><span>20 piezas</span></div>
+          <div class="eqrow"><span>Caqui (persimonio)</span><span>1/2 pieza</span></div><div class="eqrow"><span>Cereza natural</span><span>20 piezas</span></div>
+          <div class="eqrow"><span>Chabacano</span><span>4 piezas</span></div><div class="eqrow"><span>Chicozapote</span><span>1/2 pieza chica</span></div>
+          <div class="eqrow"><span>Ciruela amarilla</span><span>3 piezas</span></div><div class="eqrow"><span>Ciruela pasa</span><span>4 piezas</span></div>
+          <div class="eqrow"><span>Ciruela roja</span><span>3 piezas</span></div><div class="eqrow"><span>Datiles</span><span>2 piezas</span></div>
+          <div class="eqrow"><span>Durazno</span><span>2 piezas</span></div><div class="eqrow"><span>Durazno en compota sin azucar</span><span>1/2 taza</span></div>
+          <div class="eqrow"><span>Frambuesa</span><span>1 taza</span></div><div class="eqrow"><span>Fresa rebanada</span><span>1 taza</span></div>
+          <div class="eqrow"><span>Guayaba sin semillas</span><span>3 piezas</span></div><div class="eqrow"><span>Higo fresco</span><span>2 piezas</span></div>
+          <div class="eqrow"><span>Higo seco</span><span>3 piezas</span></div><div class="eqrow"><span>Kiwi</span><span>1.5 piezas</span></div>
+          <div class="eqrow"><span>Lichis</span><span>6 piezas</span></div><div class="eqrow"><span>Mamey</span><span>1/3 pieza</span></div>
+          <div class="eqrow"><span>Mandarina</span><span>2 piezas</span></div><div class="eqrow"><span>Mango ataulfo</span><span>1/2 pieza</span></div>
+          <div class="eqrow"><span>Manzana cocida</span><span>1 pieza</span></div><div class="eqrow"><span>Melon picado</span><span>1 taza</span></div>
+          <div class="eqrow"><span>Melon verde picado</span><span>1 taza</span></div><div class="eqrow"><span>Membrillo cocido</span><span>1/2 pieza</span></div>
+          <div class="eqrow"><span>Moras</span><span>3/4 taza</span></div><div class="eqrow"><span>Naranja</span><span>2 piezas</span></div>
+          <div class="eqrow"><span>Nectarina madura</span><span>1 pieza chica</span></div><div class="eqrow"><span>Papaya picada</span><span>1 taza</span></div>
+          <div class="eqrow"><span>Pasitas</span><span>10 piezas</span></div><div class="eqrow"><span>Pera cocida</span><span>1/2 pieza</span></div>
+          <div class="eqrow"><span>Pina picada</span><span>3/4 taza</span></div><div class="eqrow"><span>Platano</span><span>1/2 pieza</span></div>
+          <div class="eqrow"><span>Platano dominico</span><span>3 piezas</span></div><div class="eqrow"><span>Sandia</span><span>1 taza</span></div>
+          <div class="eqrow"><span>Tejocote cocido</span><span>4 piezas</span></div><div class="eqrow"><span>Uvas</span><span>18 piezas</span></div>
+          <div class="eqrow"><span>Zapote negro</span><span>1/4 taza</span></div><div class="eqrow"><span>Zarzamora</span><span>1 taza</span></div>
         </div></div>
         <div class="eqb" id="eq-ver"><div class="eqgrid">
-          <div class="eqrow"><span>Brocoli cocido</span><span>1/2 taza</span></div><div class="eqrow"><span>Calabacita cocida</span><span>1/2 taza</span></div>
-          <div class="eqrow"><span>Calabaza cocida</span><span>1/2 taza</span></div><div class="eqrow"><span>Champinon cocido</span><span>1/2 taza</span></div>
-          <div class="eqrow"><span>Chayote cocido</span><span>1/2 taza</span></div><div class="eqrow"><span>Ejotes cocidos</span><span>1/2 taza</span></div>
-          <div class="eqrow"><span>Espinaca cocida</span><span>1/2 taza</span></div><div class="eqrow"><span>Jitomate cocido</span><span>1 pieza</span></div>
-          <div class="eqrow"><span>Nopal cocido</span><span>1 taza</span></div><div class="eqrow"><span>Pepino</span><span>1 taza</span></div>
-          <div class="eqrow"><span>Pimiento morron cocido</span><span>1/2 taza</span></div><div class="eqrow"><span>Zanahoria cocida</span><span>1/2 taza</span></div>
-          <div class="eqrow"><span>Zanahoria cruda</span><span>1 pieza</span></div><div class="eqrow"><span>Berenjena cocida</span><span>1/2 taza</span></div>
-          <div class="eqrow"><span>Lechuga</span><span>2 tazas</span></div><div class="eqrow"><span>Acelga cocida</span><span>1/2 taza</span></div>
-          <div class="eqrow"><span>Coliflor cocida</span><span>1 taza</span></div><div class="eqrow"><span>Kale cocido</span><span>1/2 taza</span></div>
-          <div class="eqrow"><span>Seta cocida</span><span>1/2 taza</span></div><div class="eqrow"><span>Esparragos cocidos</span><span>6 pzas</span></div>
-          <div class="eqrow"><span>Nopales asados</span><span>1 taza</span></div><div class="eqrow"><span>Betabel cocido</span><span>1/4 pieza</span></div>
-          <div class="eqrow"><span>Col cocida</span><span>1/2 taza</span></div><div class="eqrow"><span>Calabaza de Castilla cocida</span><span>1/2 taza</span></div>
-          <div class="eqrow"><span>Portobello asado</span><span>1/2 taza</span></div><div class="eqrow"><span>Chicharos cocidos</span><span>1/2 taza</span></div>
-          <div class="eqrow"><span>Verdolagas cocidas</span><span>1 taza</span></div><div class="eqrow"><span>Quelites cocidos</span><span>1 taza</span></div>
-          <div class="eqrow"><span>Chilacayote cocido</span><span>1/2 taza</span></div><div class="eqrow"><span>Huauzontle cocido</span><span>1/2 taza</span></div>
-          <div class="eqrow"><span>Flor de calabaza cocida</span><span>1 taza</span></div><div class="eqrow"><span>Apio cocido</span><span>1 taza</span></div>
-          <div class="eqrow"><span>Jicama</span><span>1 taza</span></div><div class="eqrow"><span>Alcachofa cocida</span><span>1/2 pieza</span></div>
+          <div class="eqrow"><span>Acelga cocida</span><span>1/2 taza</span></div><div class="eqrow"><span>Alcachofa cocida</span><span>1/2 pieza</span></div>
+          <div class="eqrow"><span>Apio cocido</span><span>1 taza</span></div><div class="eqrow"><span>Berenjena cocida</span><span>1/2 taza</span></div>
+          <div class="eqrow"><span>Betabel cocido</span><span>1/4 pieza</span></div><div class="eqrow"><span>Brocoli cocido</span><span>1/2 taza</span></div>
+          <div class="eqrow"><span>Calabacita cocida</span><span>1/2 taza</span></div><div class="eqrow"><span>Calabaza cocida</span><span>1/2 taza</span></div>
+          <div class="eqrow"><span>Calabaza de Castilla cocida</span><span>1/2 taza</span></div><div class="eqrow"><span>Champinon cocido</span><span>1/2 taza</span></div>
+          <div class="eqrow"><span>Chayote cocido</span><span>1/2 taza</span></div><div class="eqrow"><span>Chicharos cocidos</span><span>1/2 taza</span></div>
+          <div class="eqrow"><span>Chilacayote cocido</span><span>1/2 taza</span></div><div class="eqrow"><span>Col cocida</span><span>1/2 taza</span></div>
+          <div class="eqrow"><span>Coliflor cocida</span><span>1 taza</span></div><div class="eqrow"><span>Ejotes cocidos</span><span>1/2 taza</span></div>
+          <div class="eqrow"><span>Esparragos cocidos</span><span>6 pzas</span></div><div class="eqrow"><span>Espinaca cocida</span><span>1/2 taza</span></div>
+          <div class="eqrow"><span>Flor de calabaza cocida</span><span>1 taza</span></div><div class="eqrow"><span>Huauzontle cocido</span><span>1/2 taza</span></div>
+          <div class="eqrow"><span>Jicama</span><span>1 taza</span></div><div class="eqrow"><span>Jitomate cocido</span><span>1 pieza</span></div>
+          <div class="eqrow"><span>Kale cocido</span><span>1/2 taza</span></div><div class="eqrow"><span>Lechuga</span><span>2 tazas</span></div>
+          <div class="eqrow"><span>Nopal cocido</span><span>1 taza</span></div><div class="eqrow"><span>Nopales asados</span><span>1 taza</span></div>
+          <div class="eqrow"><span>Pepino</span><span>1 taza</span></div><div class="eqrow"><span>Pimiento morron cocido</span><span>1/2 taza</span></div>
+          <div class="eqrow"><span>Portobello asado</span><span>1/2 taza</span></div><div class="eqrow"><span>Quelites cocidos</span><span>1 taza</span></div>
+          <div class="eqrow"><span>Seta cocida</span><span>1/2 taza</span></div><div class="eqrow"><span>Verdolagas cocidas</span><span>1 taza</span></div>
+          <div class="eqrow"><span>Zanahoria cocida</span><span>1/2 taza</span></div><div class="eqrow"><span>Zanahoria cruda</span><span>1 pieza</span></div>
         </div></div>
         <div class="eqb" id="eq-pro">
           <div class="fsec" style="color:var(--good)">Muy bajo grasa</div>
           <div class="eqgrid">
+            <div class="eqrow"><span>Almeja cocida</span><span>4 piezas</span></div><div class="eqrow"><span>Atun en agua</span><span>1/3 lata</span></div>
+            <div class="eqrow"><span>Atun fresco sellado</span><span>30g</span></div><div class="eqrow"><span>Bacalao</span><span>45g</span></div>
+            <div class="eqrow"><span>Calamar cocido</span><span>45g</span></div><div class="eqrow"><span>Callo de hacha</span><span>45g</span></div>
+            <div class="eqrow"><span>Camaron cocido</span><span>5 piezas</span></div><div class="eqrow"><span>Camaron crudo curtido</span><span>5 piezas</span></div>
+            <div class="eqrow"><span>Camaron crudo sin curtir</span><span>5 piezas</span></div><div class="eqrow"><span>Camarones zarandeados</span><span>5 piezas</span></div>
+            <div class="eqrow"><span>Chobani 20G (prot. extra)</span><span>1/2 botella</span></div><div class="eqrow"><span>Clara de huevo</span><span>30g</span></div>
+            <div class="eqrow"><span>Codorniz cocida</span><span>40g</span></div><div class="eqrow"><span>Conejo cocido</span><span>30g</span></div>
+            <div class="eqrow"><span>Corvina</span><span>40g</span></div><div class="eqrow"><span>Filete de lenguado</span><span>40g</span></div>
+            <div class="eqrow"><span>Filete de mero</span><span>40g</span></div><div class="eqrow"><span>Filete pescado blanco</span><span>40g</span></div>
+            <div class="eqrow"><span>Huachinango</span><span>40g</span></div><div class="eqrow"><span>Jaiba cocida</span><span>30g</span></div>
+            <div class="eqrow"><span>Langosta cocida</span><span>45g</span></div><div class="eqrow"><span>Mejillon cocido</span><span>5 piezas</span></div>
+            <div class="eqrow"><span>Milanesa de pollo a la plancha sin empanizar</span><span>30g</span></div><div class="eqrow"><span>Ostion cocido</span><span>6 piezas</span></div>
+            <div class="eqrow"><span>Pavo molido</span><span>30g</span></div><div class="eqrow"><span>Pechuga de pavo</span><span>1.5 reb.</span></div>
             <div class="eqrow"><span>Pechuga pollo asada</span><span>30g</span></div><div class="eqrow"><span>Pechuga pollo deshebrada</span><span>30g</span></div>
-            <div class="eqrow"><span>Pechuga de pavo</span><span>1.5 reb.</span></div><div class="eqrow"><span>Atun en agua</span><span>1/3 lata</span></div>
-            <div class="eqrow"><span>Filete pescado blanco</span><span>40g</span></div><div class="eqrow"><span>Pescado zarandeado</span><span>40g</span></div>
-            <div class="eqrow"><span>Camaron crudo curtido</span><span>5 piezas</span></div><div class="eqrow"><span>Camaron crudo sin curtir</span><span>5 piezas</span></div>
-            <div class="eqrow"><span>Camarones zarandeados</span><span>5 piezas</span></div><div class="eqrow"><span>Camaron cocido</span><span>5 piezas</span></div>
-            <div class="eqrow"><span>Salmon</span><span>30g</span></div><div class="eqrow"><span>Bacalao</span><span>45g</span></div>
-            <div class="eqrow"><span>Clara de huevo</span><span>30g</span></div><div class="eqrow"><span>Requeson</span><span>2 cditas</span></div>
-            <div class="eqrow"><span>Queso cottage bajo grasa</span><span>3 cdas</span></div>
-            <div class="eqrow"><span>Pulpo cocido</span><span>45g</span></div><div class="eqrow"><span>Calamar cocido</span><span>45g</span></div>
-            <div class="eqrow"><span>Jaiba cocida</span><span>30g</span></div><div class="eqrow"><span>Almeja cocida</span><span>4 piezas</span></div>
-            <div class="eqrow"><span>Ostion cocido</span><span>6 piezas</span></div><div class="eqrow"><span>Mejillon cocido</span><span>5 piezas</span></div>
-            <div class="eqrow"><span>Callo de hacha</span><span>45g</span></div><div class="eqrow"><span>Langosta cocida</span><span>45g</span></div>
-            <div class="eqrow"><span>Tilapia</span><span>40g</span></div><div class="eqrow"><span>Huachinango</span><span>40g</span></div>
-            <div class="eqrow"><span>Robalo</span><span>40g</span></div><div class="eqrow"><span>Trucha</span><span>40g</span></div>
-            <div class="eqrow"><span>Atun fresco sellado</span><span>30g</span></div>
-            <div class="eqrow"><span>Chobani 20G (prot. extra)</span><span>1/2 botella</span></div>
-            <div class="eqrow"><span>Filete de mero</span><span>40g</span></div><div class="eqrow"><span>Filete de lenguado</span><span>40g</span></div>
-            <div class="eqrow"><span>Corvina</span><span>40g</span></div><div class="eqrow"><span>Conejo cocido</span><span>30g</span></div>
-            <div class="eqrow"><span>Codorniz cocida</span><span>40g</span></div><div class="eqrow"><span>Pavo molido</span><span>30g</span></div>
-            <div class="eqrow"><span>Milanesa de pollo a la plancha sin empanizar</span><span>30g</span></div>
+            <div class="eqrow"><span>Pescado zarandeado</span><span>40g</span></div><div class="eqrow"><span>Pulpo cocido</span><span>45g</span></div>
+            <div class="eqrow"><span>Queso cottage bajo grasa</span><span>3 cdas</span></div><div class="eqrow"><span>Requeson</span><span>2 cditas</span></div>
+            <div class="eqrow"><span>Robalo</span><span>40g</span></div><div class="eqrow"><span>Salmon</span><span>30g</span></div>
+            <div class="eqrow"><span>Tilapia</span><span>40g</span></div><div class="eqrow"><span>Trucha</span><span>40g</span></div>
           </div>
           <div class="fsec" style="color:var(--warn)">Bajo grasa</div>
           <div class="eqgrid">
-            <div class="eqrow"><span>Huevo entero</span><span>1 pieza</span></div><div class="eqrow"><span>Queso panela</span><span>40g</span></div>
-            <div class="eqrow"><span>Queso oaxaca</span><span>30g</span></div><div class="eqrow"><span>Arrachera</span><span>30g</span></div>
-            <div class="eqrow"><span>Carne molida magra</span><span>30g</span></div><div class="eqrow"><span>Carne roja max 3x sem</span><span>30g</span></div>
-            <div class="eqrow"><span>Carne deshebrada magra</span><span>30g</span></div><div class="eqrow"><span>Lomo de res</span><span>40g</span></div>
-            <div class="eqrow"><span>Maciza de res</span><span>25g</span></div><div class="eqrow"><span>Bistec de res</span><span>30g</span></div>
-            <div class="eqrow"><span>Muslo pollo sin piel</span><span>1/2 pieza</span></div>
-            <div class="eqrow"><span>Cecina de res</span><span>30g</span></div>
-            <div class="eqrow"><span>Chuleta de cerdo magra</span><span>30g</span></div><div class="eqrow"><span>Jamon de pavo bajo en grasa</span><span>40g</span></div>
-            <div class="eqrow"><span>Falda de res magra</span><span>30g</span></div><div class="eqrow"><span>Costilla de cerdo sin grasa visible</span><span>30g</span></div>
-            <div class="eqrow"><span>Milanesa de res a la plancha sin empanizar</span><span>30g</span></div>
+            <div class="eqrow"><span>Arrachera</span><span>30g</span></div><div class="eqrow"><span>Bistec de res</span><span>30g</span></div>
+            <div class="eqrow"><span>Carne deshebrada magra</span><span>30g</span></div><div class="eqrow"><span>Carne molida magra</span><span>30g</span></div>
+            <div class="eqrow"><span>Carne roja max 3x sem</span><span>30g</span></div><div class="eqrow"><span>Cecina de res</span><span>30g</span></div>
+            <div class="eqrow"><span>Chuleta de cerdo magra</span><span>30g</span></div><div class="eqrow"><span>Costilla de cerdo sin grasa visible</span><span>30g</span></div>
+            <div class="eqrow"><span>Falda de res magra</span><span>30g</span></div><div class="eqrow"><span>Huevo entero</span><span>1 pieza</span></div>
+            <div class="eqrow"><span>Jamon de pavo bajo en grasa</span><span>40g</span></div><div class="eqrow"><span>Lomo de res</span><span>40g</span></div>
+            <div class="eqrow"><span>Maciza de res</span><span>25g</span></div><div class="eqrow"><span>Milanesa de res a la plancha sin empanizar</span><span>30g</span></div>
+            <div class="eqrow"><span>Muslo pollo sin piel</span><span>1/2 pieza</span></div><div class="eqrow"><span>Queso oaxaca</span><span>30g</span></div>
+            <div class="eqrow"><span>Queso panela</span><span>40g</span></div>
           </div>
         </div>
         <div class="eqb" id="eq-lac"><div class="eqgrid">
-          <div class="eqrow"><span>Yogurt griego Oikos</span><span>1/2 envase</span></div><div class="eqrow"><span>Yogurt natural sin azucar</span><span>1 taza</span></div>
-          <div class="eqrow"><span>Leche deslactosada</span><span>1 taza</span></div><div class="eqrow"><span>Leche de almendra</span><span>1 taza</span></div>
-          <div class="eqrow"><span>Leche de avena</span><span>1 taza</span></div><div class="eqrow"><span>Leche de arroz</span><span>1 taza</span></div>
-          <div class="eqrow"><span>Leche de coco sin azucar</span><span>1 taza</span></div><div class="eqrow"><span>Leche evap. semidescremada</span><span>1/2 taza</span></div>
-          <div class="eqrow"><span>Queso panela</span><span>40g</span></div><div class="eqrow"><span>Queso oaxaca</span><span>30g</span></div>
-          <div class="eqrow"><span>Queso fresco blanco</span><span>40g</span></div><div class="eqrow"><span>Requeson</span><span>2 cditas</span></div>
-          <div class="eqrow"><span>Queso cottage bajo grasa</span><span>3 cdas</span></div>
-          <div class="eqrow"><span>Kefir natural bajo grasa</span><span>1 taza</span></div><div class="eqrow"><span>Chobani 20G deslactosado</span><span>1 botella</span></div>
-          <div class="eqrow"><span>Yogurt griego natural generico</span><span>3/4 taza</span></div><div class="eqrow"><span>Yogurt bebible light</span><span>1 taza</span></div>
-          <div class="eqrow"><span>Leche de soya sin azucar</span><span>1 taza</span></div><div class="eqrow"><span>Leche semidescremada</span><span>1 taza</span></div>
+          <div class="eqrow"><span>Chobani 20G deslactosado</span><span>1 botella</span></div><div class="eqrow"><span>Jocoque sin grasa</span><span>1 taza</span></div>
+          <div class="eqrow"><span>Kefir natural bajo grasa</span><span>1 taza</span></div><div class="eqrow"><span>Leche de almendra</span><span>1 taza</span></div>
+          <div class="eqrow"><span>Leche de almendra con proteina</span><span>1 taza</span></div><div class="eqrow"><span>Leche de arroz</span><span>1 taza</span></div>
+          <div class="eqrow"><span>Leche de avena</span><span>1 taza</span></div><div class="eqrow"><span>Leche de coco sin azucar</span><span>1 taza</span></div>
+          <div class="eqrow"><span>Leche de soya sin azucar</span><span>1 taza</span></div><div class="eqrow"><span>Leche deslactosada</span><span>1 taza</span></div>
+          <div class="eqrow"><span>Leche evap. semidescremada</span><span>1/2 taza</span></div><div class="eqrow"><span>Leche light 2%</span><span>1 taza</span></div>
+          <div class="eqrow"><span>Leche semidescremada</span><span>1 taza</span></div><div class="eqrow"><span>Queso asadero bajo en grasa</span><span>30g</span></div>
+          <div class="eqrow"><span>Queso cottage bajo grasa</span><span>3 cdas</span></div><div class="eqrow"><span>Queso fresco blanco</span><span>40g</span></div>
           <div class="eqrow"><span>Queso manchego bajo en grasa</span><span>30g</span></div><div class="eqrow"><span>Queso mozzarella light</span><span>30g</span></div>
-          <div class="eqrow"><span>Queso ricotta</span><span>3 cdas</span></div><div class="eqrow"><span>Jocoque sin grasa</span><span>1 taza</span></div>
-          <div class="eqrow"><span>Leche light 2%</span><span>1 taza</span></div><div class="eqrow"><span>Leche de almendra con proteina</span><span>1 taza</span></div>
-          <div class="eqrow"><span>Yogurt natural light sabor vainilla</span><span>3/4 taza</span></div><div class="eqrow"><span>Queso asadero bajo en grasa</span><span>30g</span></div>
+          <div class="eqrow"><span>Queso oaxaca</span><span>30g</span></div><div class="eqrow"><span>Queso panela</span><span>40g</span></div>
+          <div class="eqrow"><span>Queso ricotta</span><span>3 cdas</span></div><div class="eqrow"><span>Requeson</span><span>2 cditas</span></div>
+          <div class="eqrow"><span>Yogurt bebible light</span><span>1 taza</span></div><div class="eqrow"><span>Yogurt griego Oikos</span><span>1/2 envase</span></div>
+          <div class="eqrow"><span>Yogurt griego natural generico</span><span>3/4 taza</span></div><div class="eqrow"><span>Yogurt natural light sabor vainilla</span><span>3/4 taza</span></div>
+          <div class="eqrow"><span>Yogurt natural sin azucar</span><span>1 taza</span></div>
         </div></div>
         <div class="eqb" id="eq-gsp"><div class="eqgrid">
-          <div class="eqrow"><span>Aceite de oliva</span><span>1 cdita</span></div><div class="eqrow"><span>Aguacate</span><span>1/3 pieza</span></div>
-          <div class="eqrow"><span>Guacamole sin chile</span><span>2 cdas</span></div><div class="eqrow"><span>Ghee / Mantequilla</span><span>1.5 cdita</span></div>
-          <div class="eqrow"><span>Mayonesa light</span><span>1 cdita</span></div><div class="eqrow"><span>Aceitunas</span><span>5 piezas</span></div>
-          <div class="eqrow"><span>Aceite de coco</span><span>1 cdita</span></div>
-          <div class="eqrow"><span>Aceite de aguacate</span><span>1 cdita</span></div><div class="eqrow"><span>Aceite de canola</span><span>1 cdita</span></div>
-          <div class="eqrow"><span>Aceite de ajonjoli</span><span>1 cdita</span></div><div class="eqrow"><span>Aceite de girasol</span><span>1 cdita</span></div>
-          <div class="eqrow"><span>Aceite de linaza</span><span>1 cdita</span></div>
-          <div class="eqrow"><span>Aceite de maiz</span><span>1 cdita</span></div><div class="eqrow"><span>Margarina light</span><span>1 cdita</span></div>
-          <div class="eqrow"><span>Crema para batir light</span><span>1 cda</span></div><div class="eqrow"><span>Crema acida light</span><span>2 cdas</span></div>
-          <div class="eqrow"><span>Aceitunas negras</span><span>5 piezas</span></div><div class="eqrow"><span>Mayonesa de aguacate</span><span>1 cdita</span></div>
+          <div class="eqrow"><span>Aceite de aguacate</span><span>1 cdita</span></div><div class="eqrow"><span>Aceite de ajonjoli</span><span>1 cdita</span></div>
+          <div class="eqrow"><span>Aceite de canola</span><span>1 cdita</span></div><div class="eqrow"><span>Aceite de coco</span><span>1 cdita</span></div>
+          <div class="eqrow"><span>Aceite de girasol</span><span>1 cdita</span></div><div class="eqrow"><span>Aceite de linaza</span><span>1 cdita</span></div>
+          <div class="eqrow"><span>Aceite de maiz</span><span>1 cdita</span></div><div class="eqrow"><span>Aceite de oliva</span><span>1 cdita</span></div>
+          <div class="eqrow"><span>Aceitunas</span><span>5 piezas</span></div><div class="eqrow"><span>Aceitunas negras</span><span>5 piezas</span></div>
+          <div class="eqrow"><span>Aguacate</span><span>1/3 pieza</span></div><div class="eqrow"><span>Crema acida light</span><span>2 cdas</span></div>
+          <div class="eqrow"><span>Crema para batir light</span><span>1 cda</span></div><div class="eqrow"><span>Ghee Mantequilla</span><span>1.5 cdita</span></div>
+          <div class="eqrow"><span>Guacamole sin chile</span><span>2 cdas</span></div><div class="eqrow"><span>Margarina light</span><span>1 cdita</span></div>
+          <div class="eqrow"><span>Mayonesa de aguacate</span><span>1 cdita</span></div><div class="eqrow"><span>Mayonesa light</span><span>1 cdita</span></div>
         </div></div>
         <div class="eqb" id="eq-gcp"><div class="eqgrid">
-          <div class="eqrow"><span>Almendra</span><span>10 piezas</span></div><div class="eqrow"><span>Nuez en mitad</span><span>7 mitades</span></div>
-          <div class="eqrow"><span>Cacahuate tostado</span><span>14 piezas</span></div><div class="eqrow"><span>Pistaches</span><span>18 piezas</span></div>
-          <div class="eqrow"><span>Crema de cacahuate</span><span>2 cditas</span></div><div class="eqrow"><span>Crema de almendras</span><span>2 cditas</span></div>
-          <div class="eqrow"><span>Chia</span><span>7 cdas</span></div><div class="eqrow"><span>Semillas de girasol</span><span>4 cditas</span></div>
-          <div class="eqrow"><span>Ajonjoli tostado</span><span>5 cdas</span></div><div class="eqrow"><span>Pepitas</span><span>60 piezas</span></div>
+          <div class="eqrow"><span>Ajonjoli tostado</span><span>5 cdas</span></div><div class="eqrow"><span>Almendra</span><span>10 piezas</span></div>
+          <div class="eqrow"><span>Avellanas</span><span>8 piezas</span></div><div class="eqrow"><span>Botana de nueces y semillas sin sal</span><span>2 cdas</span></div>
+          <div class="eqrow"><span>Cacahuate tostado</span><span>14 piezas</span></div><div class="eqrow"><span>Chia</span><span>7 cdas</span></div>
+          <div class="eqrow"><span>Coco rallado sin azucar</span><span>2 cdas</span></div><div class="eqrow"><span>Crema de almendras</span><span>2 cditas</span></div>
+          <div class="eqrow"><span>Crema de cacahuate</span><span>2 cditas</span></div><div class="eqrow"><span>Crema de nuez de la India</span><span>2 cditas</span></div>
+          <div class="eqrow"><span>Crema de semillas de girasol</span><span>2 cditas</span></div><div class="eqrow"><span>Linaza molida</span><span>2 cdas</span></div>
           <div class="eqrow"><span>Nuez de la India</span><span>8 piezas</span></div><div class="eqrow"><span>Nuez de macadamia</span><span>6 piezas</span></div>
-          <div class="eqrow"><span>Pinones</span><span>1 cda</span></div>
-          <div class="eqrow"><span>Linaza molida</span><span>2 cdas</span></div><div class="eqrow"><span>Crema de nuez de la India</span><span>2 cditas</span></div>
-          <div class="eqrow"><span>Crema de semillas de girasol</span><span>2 cditas</span></div><div class="eqrow"><span>Avellanas</span><span>8 piezas</span></div>
-          <div class="eqrow"><span>Botana de nueces y semillas sin sal</span><span>2 cdas</span></div><div class="eqrow"><span>Coco rallado sin azucar</span><span>2 cdas</span></div>
-          <div class="eqrow"><span>Semillas de canamo</span><span>2 cdas</span></div><div class="eqrow"><span>Semillas de amapola</span><span>2 cdas</span></div>
+          <div class="eqrow"><span>Nuez en mitad</span><span>7 mitades</span></div><div class="eqrow"><span>Pepitas</span><span>60 piezas</span></div>
+          <div class="eqrow"><span>Pinones</span><span>1 cda</span></div><div class="eqrow"><span>Pistaches</span><span>18 piezas</span></div>
+          <div class="eqrow"><span>Semillas de amapola</span><span>2 cdas</span></div><div class="eqrow"><span>Semillas de canamo</span><span>2 cdas</span></div>
+          <div class="eqrow"><span>Semillas de girasol</span><span>4 cditas</span></div>
         </div></div>
         <div class="eqb" id="eq-pp"><div class="eqgrid">
-          <div class="eqrow"><span>Isopur Platano + agua</span><span>1 scoop</span></div><div class="eqrow"><span>Isopur Platano + almendra</span><span>1 scoop</span></div>
-          <div class="eqrow"><span>Isopur Platano + coco</span><span>1 scoop</span></div><div class="eqrow"><span>Isopur Platano + avena</span><span>1 scoop</span></div>
-          <div class="eqrow"><span>Isopur Cookies + agua</span><span>1 scoop</span></div><div class="eqrow"><span>Isopur Cookies + almendra</span><span>1 scoop</span></div>
-          <div class="eqrow"><span>Isopur Cookies + coco</span><span>1 scoop</span></div><div class="eqrow"><span>Whey Vainilla + agua</span><span>1 scoop</span></div>
-          <div class="eqrow"><span>Whey Vainilla + almendra</span><span>1 scoop</span></div><div class="eqrow"><span>Whey Vainilla + coco</span><span>1 scoop</span></div>
-          <div class="eqrow"><span>Whey Vainilla + avena</span><span>1 scoop</span></div><div class="eqrow"><span>Proteina otro + agua</span><span>1 scoop</span></div>
-          <div class="eqrow"><span>Whey Chocolate + agua</span><span>1 scoop</span></div><div class="eqrow"><span>Whey Chocolate + leche almendra</span><span>1 scoop</span></div>
-          <div class="eqrow"><span>Whey Chocolate + leche avena</span><span>1 scoop</span></div><div class="eqrow"><span>Proteina vegetal (chicharo/arroz) + agua</span><span>1 scoop</span></div>
-          <div class="eqrow"><span>Proteina vegetal (chicharo/arroz) + leche almendra</span><span>1 scoop</span></div><div class="eqrow"><span>Colageno hidrolizado con proteina + agua</span><span>1 scoop</span></div>
-          <div class="eqrow"><span>Isopur Cookies + avena</span><span>1 scoop</span></div><div class="eqrow"><span>Whey Vainilla + leche deslactosada</span><span>1 scoop</span></div>
-          <div class="eqrow"><span>Proteina otro + coco</span><span>1 scoop</span></div><div class="eqrow"><span>Proteina otro + avena</span><span>1 scoop</span></div>
-          <div class="eqrow"><span>Clara de huevo en polvo + agua</span><span>1 scoop</span></div><div class="eqrow"><span>Caseina micelar + leche deslactosada</span><span>1 scoop</span></div>
+          <div class="eqrow"><span>Caseina micelar + leche deslactosada</span><span>1 scoop</span></div><div class="eqrow"><span>Clara de huevo en polvo + agua</span><span>1 scoop</span></div>
+          <div class="eqrow"><span>Colageno hidrolizado con proteina + agua</span><span>1 scoop</span></div><div class="eqrow"><span>Isopur Cookies + agua</span><span>1 scoop</span></div>
+          <div class="eqrow"><span>Isopur Cookies + almendra</span><span>1 scoop</span></div><div class="eqrow"><span>Isopur Cookies + avena</span><span>1 scoop</span></div>
+          <div class="eqrow"><span>Isopur Cookies + coco</span><span>1 scoop</span></div><div class="eqrow"><span>Isopur Platano + agua</span><span>1 scoop</span></div>
+          <div class="eqrow"><span>Isopur Platano + almendra</span><span>1 scoop</span></div><div class="eqrow"><span>Isopur Platano + avena</span><span>1 scoop</span></div>
+          <div class="eqrow"><span>Isopur Platano + coco</span><span>1 scoop</span></div><div class="eqrow"><span>Proteina otro + agua</span><span>1 scoop</span></div>
+          <div class="eqrow"><span>Proteina otro + almendra</span><span>1 scoop</span></div><div class="eqrow"><span>Proteina otro + avena</span><span>1 scoop</span></div>
+          <div class="eqrow"><span>Proteina otro + coco</span><span>1 scoop</span></div><div class="eqrow"><span>Proteina vegetal (chicharo/arroz) + agua</span><span>1 scoop</span></div>
+          <div class="eqrow"><span>Proteina vegetal (chicharo/arroz) + leche almendra</span><span>1 scoop</span></div><div class="eqrow"><span>Whey Chocolate + agua</span><span>1 scoop</span></div>
+          <div class="eqrow"><span>Whey Chocolate + leche almendra</span><span>1 scoop</span></div><div class="eqrow"><span>Whey Chocolate + leche avena</span><span>1 scoop</span></div>
+          <div class="eqrow"><span>Whey Vainilla + agua</span><span>1 scoop</span></div><div class="eqrow"><span>Whey Vainilla + almendra</span><span>1 scoop</span></div>
+          <div class="eqrow"><span>Whey Vainilla + avena</span><span>1 scoop</span></div><div class="eqrow"><span>Whey Vainilla + coco</span><span>1 scoop</span></div>
+          <div class="eqrow"><span>Whey Vainilla + leche deslactosada</span><span>1 scoop</span></div>
         </div></div>
       </div>
     </div>
@@ -634,7 +630,7 @@ var RF_START='2026-07-03';
 var FIB_START='2026-07-05';
 var FIB_START='2026-07-05';
 var SUEROS=[{id:'su0',day:1,l:'Lunes'},{id:'su1',day:3,l:'Miercoles'},{id:'su2',day:5,l:'Viernes'}];
-var EQ={verduras:[{n:'Brocoli cocido',q:'1/2 taza'},{n:'Calabacita cocida',q:'1/2 taza'},{n:'Calabaza cocida',q:'1/2 taza'},{n:'Champinon cocido',q:'1/2 taza'},{n:'Chayote cocido',q:'1/2 taza'},{n:'Ejotes cocidos',q:'1/2 taza'},{n:'Espinaca cocida',q:'1/2 taza'},{n:'Jitomate cocido',q:'1 pieza'},{n:'Nopal cocido',q:'1 taza'},{n:'Pepino',q:'1 taza'},{n:'Pimiento morron cocido',q:'1/2 taza'},{n:'Zanahoria cocida',q:'1/2 taza'},{n:'Zanahoria cruda',q:'1 pieza'},{n:'Berenjena cocida',q:'1/2 taza'},{n:'Lechuga',q:'2 tazas'},{n:'Acelga cocida',q:'1/2 taza'},{n:'Coliflor cocida',q:'1 taza'},{n:'Kale cocido',q:'1/2 taza'},{n:'Seta cocida',q:'1/2 taza'},{n:'Esparragos cocidos',q:'6 pzas'},{n:'Nopales asados',q:'1 taza'},{n:'Betabel cocido',q:'1/4 pieza'},{n:'Col cocida',q:'1/2 taza'},{n:'Calabaza de Castilla cocida',q:'1/2 taza'},{n:'Portobello asado',q:'1/2 taza'},{n:'Chicharos cocidos',q:'1/2 taza'},{n:'Verdolagas cocidas',q:'1 taza'},{n:'Quelites cocidos',q:'1 taza'},{n:'Chilacayote cocido',q:'1/2 taza'},{n:'Huauzontle cocido',q:'1/2 taza'},{n:'Flor de calabaza cocida',q:'1 taza'},{n:'Apio cocido',q:'1 taza'},{n:'Jicama',q:'1 taza'},{n:'Alcachofa cocida',q:'1/2 pieza'}],frutas:[{n:'Platano',q:'1/2 pieza'},{n:'Fresa rebanada',q:'1 taza'},{n:'Uvas',q:'18 piezas'},{n:'Kiwi',q:'1.5 piezas'},{n:'Naranja',q:'2 piezas'},{n:'Mandarina',q:'2 piezas'},{n:'Pina picada',q:'3/4 taza'},{n:'Papaya picada',q:'1 taza'},{n:'Melon picado',q:'1 taza'},{n:'Manzana cocida',q:'1 pieza'},{n:'Pera cocida',q:'1/2 pieza'},{n:'Blueberries',q:'3/4 taza'},{n:'Frambuesa',q:'1 taza'},{n:'Zarzamora',q:'1 taza'},{n:'Moras',q:'3/4 taza'},{n:'Durazno',q:'2 piezas'},{n:'Mango ataulfo',q:'1/2 pieza'},{n:'Sandia',q:'1 taza'},{n:'Guayaba sin semillas',q:'3 piezas'},{n:'Cereza natural',q:'20 piezas'},{n:'Ciruela roja',q:'3 piezas'},{n:'Arandanos frescos',q:'1.5 taza'},{n:'Acai pulpa sin azucar',q:'1/2 taza'},{n:'Higo fresco',q:'2 piezas'},{n:'Chabacano',q:'4 piezas'},{n:'Mamey',q:'1/3 pieza'},{n:'Melon verde picado',q:'1 taza'},{n:'Caqui (persimonio)',q:'1/2 pieza'},{n:'Platano dominico',q:'3 piezas'},{n:'Datiles',q:'2 piezas'},{n:'Pasitas',q:'10 piezas'},{n:'Tejocote cocido',q:'4 piezas'},{n:'Ciruela amarilla',q:'3 piezas'},{n:'Durazno en compota sin azucar',q:'1/2 taza'},{n:'Zapote negro',q:'1/4 taza'},{n:'Chicozapote',q:'1/2 pieza chica'},{n:'Lichis',q:'6 piezas'},{n:'Membrillo cocido',q:'1/2 pieza'},{n:'Nectarina madura',q:'1 pieza chica'},{n:'Higo seco',q:'3 piezas'},{n:'Ciruela pasa',q:'4 piezas'},{n:'Capulines',q:'20 piezas'}],cereales:[{n:'Arroz cocido',q:'1/4 taza'},{n:'Arroz integral',q:'1/3 taza'},{n:'Avena hojuelas',q:'1/3 taza'},{n:'Avena cocida',q:'3/4 taza'},{n:'Pan integral',q:'1 rebanada'},{n:'Pan masa madre',q:'1 rebanada'},{n:'Pan pita integral',q:'1/3 pieza'},{n:'Papa cocida',q:'1/2 pieza'},{n:'Papa cambray',q:'5 piezas'},{n:'Camote cocido',q:'1/3 taza'},{n:'Quinoa',q:'1/2 taza'},{n:'Rice cake',q:'2 piezas'},{n:'Tortilla de maiz',q:'1 pieza'},{n:'Tostada horneada',q:'2 piezas'},{n:'Galleta salma',q:'3 piezas'},{n:'Pasta cocida',q:'1/2 taza'},{n:'Elote cocido',q:'1.5 pieza'},{n:'Amaranto',q:'1/4 taza'},{n:'Granola sin azucar',q:'3 cdas'},{n:'Palomitas sin sal',q:'2.5 tazas'},{n:'Platano macho cocido',q:'1/3 pieza'},{n:'Yuca cocida',q:'1/3 taza'},{n:'Camote amarillo horneado',q:'1/3 taza'},{n:'Cebada cocida',q:'1/2 taza'},{n:'Camote blanco cocido',q:'1/3 taza'},{n:'Pasta integral cocida',q:'1/2 taza'},{n:'Pan integral de centeno',q:'1 rebanada'},{n:'Tortilla integral de trigo',q:'1 pieza chica'},{n:'Elote en grano cocido',q:'1/2 taza'},{n:'Pan bagel integral',q:'1/2 pieza'},{n:'Tapioca cocida',q:'1/4 taza'},{n:'Papa horneada',q:'1/2 pieza'}],proteina:[{n:'Pechuga pollo asada',q:'30g',s:'Muy bajo grasa'},{n:'Pechuga pollo deshebrada',q:'30g',s:'Muy bajo grasa'},{n:'Pechuga de pavo',q:'1.5 reb.',s:'Muy bajo grasa'},{n:'Atun en agua',q:'1/3 lata',s:'Muy bajo grasa'},{n:'Filete pescado blanco',q:'40g',s:'Muy bajo grasa'},{n:'Pescado zarandeado',q:'40g',s:'Muy bajo grasa'},{n:'Camaron crudo curtido',q:'5 piezas',s:'Muy bajo grasa'},{n:'Camaron crudo sin curtir',q:'5 piezas',s:'Muy bajo grasa'},{n:'Camarones zarandeados',q:'5 piezas',s:'Muy bajo grasa'},{n:'Camaron cocido',q:'5 piezas',s:'Muy bajo grasa'},{n:'Salmon',q:'30g',s:'Muy bajo grasa'},{n:'Bacalao',q:'45g',s:'Muy bajo grasa'},{n:'Clara de huevo',q:'30g',s:'Muy bajo grasa'},{n:'Requeson',q:'2 cditas',s:'Muy bajo grasa'},{n:'Queso cottage bajo grasa',q:'3 cdas',s:'Muy bajo grasa'},{n:'Pulpo cocido',q:'45g',s:'Muy bajo grasa'},{n:'Calamar cocido',q:'45g',s:'Muy bajo grasa'},{n:'Jaiba cocida',q:'30g',s:'Muy bajo grasa'},{n:'Almeja cocida',q:'4 piezas',s:'Muy bajo grasa'},{n:'Ostion cocido',q:'6 piezas',s:'Muy bajo grasa'},{n:'Mejillon cocido',q:'5 piezas',s:'Muy bajo grasa'},{n:'Callo de hacha',q:'45g',s:'Muy bajo grasa'},{n:'Langosta cocida',q:'45g',s:'Muy bajo grasa'},{n:'Tilapia',q:'40g',s:'Muy bajo grasa'},{n:'Huachinango',q:'40g',s:'Muy bajo grasa'},{n:'Robalo',q:'40g',s:'Muy bajo grasa'},{n:'Trucha',q:'40g',s:'Muy bajo grasa'},{n:'Atun fresco sellado',q:'30g',s:'Muy bajo grasa'},{n:'Chobani 20G (prot. extra)',q:'1/2 botella',s:'Muy bajo grasa'},{n:'Filete de mero',q:'40g',s:'Muy bajo grasa'},{n:'Filete de lenguado',q:'40g',s:'Muy bajo grasa'},{n:'Corvina',q:'40g',s:'Muy bajo grasa'},{n:'Conejo cocido',q:'30g',s:'Muy bajo grasa'},{n:'Codorniz cocida',q:'40g',s:'Muy bajo grasa'},{n:'Pavo molido',q:'30g',s:'Muy bajo grasa'},{n:'Milanesa de pollo a la plancha sin empanizar',q:'30g',s:'Muy bajo grasa'},{n:'Huevo entero',q:'1 pieza',s:'Bajo grasa'},{n:'Queso panela',q:'40g',s:'Bajo grasa'},{n:'Queso oaxaca',q:'30g',s:'Bajo grasa'},{n:'Arrachera',q:'30g',s:'Bajo grasa'},{n:'Carne molida magra',q:'30g',s:'Bajo grasa'},{n:'Carne roja max 3x sem',q:'30g',s:'Bajo grasa'},{n:'Carne deshebrada magra',q:'30g',s:'Bajo grasa'},{n:'Lomo de res',q:'40g',s:'Bajo grasa'},{n:'Maciza de res',q:'25g',s:'Bajo grasa'},{n:'Bistec de res',q:'30g',s:'Bajo grasa'},{n:'Muslo pollo sin piel',q:'1/2 pieza',s:'Bajo grasa'},{n:'Cecina de res',q:'30g',s:'Bajo grasa'},{n:'Chuleta de cerdo magra',q:'30g',s:'Bajo grasa'},{n:'Jamon de pavo bajo en grasa',q:'40g',s:'Bajo grasa'},{n:'Falda de res magra',q:'30g',s:'Bajo grasa'},{n:'Costilla de cerdo sin grasa visible',q:'30g',s:'Bajo grasa'},{n:'Milanesa de res a la plancha sin empanizar',q:'30g',s:'Bajo grasa'}],lacteos:[{n:'Yogurt griego Oikos',q:'1/2 envase'},{n:'Yogurt natural sin azucar',q:'1 taza'},{n:'Leche deslactosada',q:'1 taza'},{n:'Leche de almendra',q:'1 taza'},{n:'Leche de avena',q:'1 taza'},{n:'Leche de arroz',q:'1 taza'},{n:'Leche de coco sin azucar',q:'1 taza'},{n:'Leche evap. semidescremada',q:'1/2 taza'},{n:'Queso panela',q:'40g'},{n:'Queso oaxaca',q:'30g'},{n:'Queso fresco blanco',q:'40g'},{n:'Requeson',q:'2 cditas'},{n:'Queso cottage bajo grasa',q:'3 cdas'},{n:'Kefir natural bajo grasa',q:'1 taza'},{n:'Chobani 20G deslactosado',q:'1 botella'},{n:'Yogurt griego natural generico',q:'3/4 taza'},{n:'Yogurt bebible light',q:'1 taza'},{n:'Leche de soya sin azucar',q:'1 taza'},{n:'Leche semidescremada',q:'1 taza'},{n:'Queso manchego bajo en grasa',q:'30g'},{n:'Queso mozzarella light',q:'30g'},{n:'Queso ricotta',q:'3 cdas'},{n:'Jocoque sin grasa',q:'1 taza'},{n:'Leche light 2%',q:'1 taza'},{n:'Leche de almendra con proteina',q:'1 taza'},{n:'Yogurt natural light sabor vainilla',q:'3/4 taza'},{n:'Queso asadero bajo en grasa',q:'30g'}],grasas_sin:[{n:'Aceite de oliva',q:'1 cdita'},{n:'Aguacate',q:'1/3 pieza'},{n:'Guacamole sin chile',q:'2 cdas'},{n:'Ghee Mantequilla',q:'1.5 cdita'},{n:'Mayonesa light',q:'1 cdita'},{n:'Aceitunas',q:'5 piezas'},{n:'Aceite de coco',q:'1 cdita'},{n:'Aceite de aguacate',q:'1 cdita'},{n:'Aceite de canola',q:'1 cdita'},{n:'Aceite de ajonjoli',q:'1 cdita'},{n:'Aceite de girasol',q:'1 cdita'},{n:'Aceite de linaza',q:'1 cdita'},{n:'Aceite de maiz',q:'1 cdita'},{n:'Margarina light',q:'1 cdita'},{n:'Crema para batir light',q:'1 cda'},{n:'Crema acida light',q:'2 cdas'},{n:'Aceitunas negras',q:'5 piezas'},{n:'Mayonesa de aguacate',q:'1 cdita'}],grasas_con:[{n:'Almendra',q:'10 piezas'},{n:'Nuez en mitad',q:'7 mitades'},{n:'Cacahuate tostado',q:'14 piezas'},{n:'Pistaches',q:'18 piezas'},{n:'Crema de cacahuate',q:'2 cditas'},{n:'Crema de almendras',q:'2 cditas'},{n:'Chia',q:'7 cdas'},{n:'Semillas de girasol',q:'4 cditas'},{n:'Ajonjoli tostado',q:'5 cdas'},{n:'Pepitas',q:'60 piezas'},{n:'Nuez de la India',q:'8 piezas'},{n:'Nuez de macadamia',q:'6 piezas'},{n:'Pinones',q:'1 cda'},{n:'Linaza molida',q:'2 cdas'},{n:'Crema de nuez de la India',q:'2 cditas'},{n:'Crema de semillas de girasol',q:'2 cditas'},{n:'Avellanas',q:'8 piezas'},{n:'Botana de nueces y semillas sin sal',q:'2 cdas'},{n:'Coco rallado sin azucar',q:'2 cdas'},{n:'Semillas de canamo',q:'2 cdas'},{n:'Semillas de amapola',q:'2 cdas'}],proteina_polvo:[{n:'Isopur Platano + agua',q:'1 scoop'},{n:'Isopur Platano + almendra',q:'1 scoop'},{n:'Isopur Platano + coco',q:'1 scoop'},{n:'Isopur Platano + avena',q:'1 scoop'},{n:'Isopur Cookies + agua',q:'1 scoop'},{n:'Isopur Cookies + almendra',q:'1 scoop'},{n:'Isopur Cookies + coco',q:'1 scoop'},{n:'Whey Vainilla + agua',q:'1 scoop'},{n:'Whey Vainilla + almendra',q:'1 scoop'},{n:'Whey Vainilla + coco',q:'1 scoop'},{n:'Whey Vainilla + avena',q:'1 scoop'},{n:'Proteina otro + agua',q:'1 scoop'},{n:'Proteina otro + almendra',q:'1 scoop'},{n:'Whey Chocolate + agua',q:'1 scoop'},{n:'Whey Chocolate + leche almendra',q:'1 scoop'},{n:'Whey Chocolate + leche avena',q:'1 scoop'},{n:'Proteina vegetal (chicharo/arroz) + agua',q:'1 scoop'},{n:'Proteina vegetal (chicharo/arroz) + leche almendra',q:'1 scoop'},{n:'Colageno hidrolizado con proteina + agua',q:'1 scoop'},{n:'Isopur Cookies + avena',q:'1 scoop'},{n:'Whey Vainilla + leche deslactosada',q:'1 scoop'},{n:'Proteina otro + coco',q:'1 scoop'},{n:'Proteina otro + avena',q:'1 scoop'},{n:'Clara de huevo en polvo + agua',q:'1 scoop'},{n:'Caseina micelar + leche deslactosada',q:'1 scoop'}]};
+var EQ={verduras:[{n:'Acelga cocida',q:'1/2 taza'},{n:'Alcachofa cocida',q:'1/2 pieza'},{n:'Apio cocido',q:'1 taza'},{n:'Berenjena cocida',q:'1/2 taza'},{n:'Betabel cocido',q:'1/4 pieza'},{n:'Brocoli cocido',q:'1/2 taza'},{n:'Calabacita cocida',q:'1/2 taza'},{n:'Calabaza cocida',q:'1/2 taza'},{n:'Calabaza de Castilla cocida',q:'1/2 taza'},{n:'Champinon cocido',q:'1/2 taza'},{n:'Chayote cocido',q:'1/2 taza'},{n:'Chicharos cocidos',q:'1/2 taza'},{n:'Chilacayote cocido',q:'1/2 taza'},{n:'Col cocida',q:'1/2 taza'},{n:'Coliflor cocida',q:'1 taza'},{n:'Ejotes cocidos',q:'1/2 taza'},{n:'Esparragos cocidos',q:'6 pzas'},{n:'Espinaca cocida',q:'1/2 taza'},{n:'Flor de calabaza cocida',q:'1 taza'},{n:'Huauzontle cocido',q:'1/2 taza'},{n:'Jicama',q:'1 taza'},{n:'Jitomate cocido',q:'1 pieza'},{n:'Kale cocido',q:'1/2 taza'},{n:'Lechuga',q:'2 tazas'},{n:'Nopal cocido',q:'1 taza'},{n:'Nopales asados',q:'1 taza'},{n:'Pepino',q:'1 taza'},{n:'Pimiento morron cocido',q:'1/2 taza'},{n:'Portobello asado',q:'1/2 taza'},{n:'Quelites cocidos',q:'1 taza'},{n:'Seta cocida',q:'1/2 taza'},{n:'Verdolagas cocidas',q:'1 taza'},{n:'Zanahoria cocida',q:'1/2 taza'},{n:'Zanahoria cruda',q:'1 pieza'}],frutas:[{n:'Acai pulpa sin azucar',q:'1/2 taza'},{n:'Arandanos frescos',q:'1.5 taza'},{n:'Blueberries',q:'3/4 taza'},{n:'Capulines',q:'20 piezas'},{n:'Caqui (persimonio)',q:'1/2 pieza'},{n:'Cereza natural',q:'20 piezas'},{n:'Chabacano',q:'4 piezas'},{n:'Chicozapote',q:'1/2 pieza chica'},{n:'Ciruela amarilla',q:'3 piezas'},{n:'Ciruela pasa',q:'4 piezas'},{n:'Ciruela roja',q:'3 piezas'},{n:'Datiles',q:'2 piezas'},{n:'Durazno',q:'2 piezas'},{n:'Durazno en compota sin azucar',q:'1/2 taza'},{n:'Frambuesa',q:'1 taza'},{n:'Fresa rebanada',q:'1 taza'},{n:'Guayaba sin semillas',q:'3 piezas'},{n:'Higo fresco',q:'2 piezas'},{n:'Higo seco',q:'3 piezas'},{n:'Kiwi',q:'1.5 piezas'},{n:'Lichis',q:'6 piezas'},{n:'Mamey',q:'1/3 pieza'},{n:'Mandarina',q:'2 piezas'},{n:'Mango ataulfo',q:'1/2 pieza'},{n:'Manzana cocida',q:'1 pieza'},{n:'Melon picado',q:'1 taza'},{n:'Melon verde picado',q:'1 taza'},{n:'Membrillo cocido',q:'1/2 pieza'},{n:'Moras',q:'3/4 taza'},{n:'Naranja',q:'2 piezas'},{n:'Nectarina madura',q:'1 pieza chica'},{n:'Papaya picada',q:'1 taza'},{n:'Pasitas',q:'10 piezas'},{n:'Pera cocida',q:'1/2 pieza'},{n:'Pina picada',q:'3/4 taza'},{n:'Platano',q:'1/2 pieza'},{n:'Platano dominico',q:'3 piezas'},{n:'Sandia',q:'1 taza'},{n:'Tejocote cocido',q:'4 piezas'},{n:'Uvas',q:'18 piezas'},{n:'Zapote negro',q:'1/4 taza'},{n:'Zarzamora',q:'1 taza'}],cereales:[{n:'Amaranto',q:'1/4 taza'},{n:'Arroz cocido',q:'1/4 taza'},{n:'Arroz integral',q:'1/3 taza'},{n:'Avena cocida',q:'3/4 taza'},{n:'Avena hojuelas',q:'1/3 taza'},{n:'Camote amarillo horneado',q:'1/3 taza'},{n:'Camote blanco cocido',q:'1/3 taza'},{n:'Camote cocido',q:'1/3 taza'},{n:'Cebada cocida',q:'1/2 taza'},{n:'Elote cocido',q:'1.5 pieza'},{n:'Elote en grano cocido',q:'1/2 taza'},{n:'Galleta salma',q:'3 piezas'},{n:'Granola sin azucar',q:'3 cdas'},{n:'Palomitas sin sal',q:'2.5 tazas'},{n:'Pan bagel integral',q:'1/2 pieza'},{n:'Pan integral',q:'1 rebanada'},{n:'Pan integral de centeno',q:'1 rebanada'},{n:'Pan masa madre',q:'1 rebanada'},{n:'Pan pita integral',q:'1/3 pieza'},{n:'Papa cambray',q:'5 piezas'},{n:'Papa cocida',q:'1/2 pieza'},{n:'Papa horneada',q:'1/2 pieza'},{n:'Pasta cocida',q:'1/2 taza'},{n:'Pasta integral cocida',q:'1/2 taza'},{n:'Platano macho cocido',q:'1/3 pieza'},{n:'Quinoa',q:'1/2 taza'},{n:'Rice cake',q:'2 piezas'},{n:'Tapioca cocida',q:'1/4 taza'},{n:'Tortilla de maiz',q:'1 pieza'},{n:'Tortilla integral de trigo',q:'1 pieza chica'},{n:'Tostada horneada',q:'2 piezas'},{n:'Yuca cocida',q:'1/3 taza'}],proteina:[{n:'Almeja cocida',q:'4 piezas',s:'Muy bajo grasa'},{n:'Atun en agua',q:'1/3 lata',s:'Muy bajo grasa'},{n:'Atun fresco sellado',q:'30g',s:'Muy bajo grasa'},{n:'Bacalao',q:'45g',s:'Muy bajo grasa'},{n:'Calamar cocido',q:'45g',s:'Muy bajo grasa'},{n:'Callo de hacha',q:'45g',s:'Muy bajo grasa'},{n:'Camaron cocido',q:'5 piezas',s:'Muy bajo grasa'},{n:'Camaron crudo curtido',q:'5 piezas',s:'Muy bajo grasa'},{n:'Camaron crudo sin curtir',q:'5 piezas',s:'Muy bajo grasa'},{n:'Camarones zarandeados',q:'5 piezas',s:'Muy bajo grasa'},{n:'Chobani 20G (prot. extra)',q:'1/2 botella',s:'Muy bajo grasa'},{n:'Clara de huevo',q:'30g',s:'Muy bajo grasa'},{n:'Codorniz cocida',q:'40g',s:'Muy bajo grasa'},{n:'Conejo cocido',q:'30g',s:'Muy bajo grasa'},{n:'Corvina',q:'40g',s:'Muy bajo grasa'},{n:'Filete de lenguado',q:'40g',s:'Muy bajo grasa'},{n:'Filete de mero',q:'40g',s:'Muy bajo grasa'},{n:'Filete pescado blanco',q:'40g',s:'Muy bajo grasa'},{n:'Huachinango',q:'40g',s:'Muy bajo grasa'},{n:'Jaiba cocida',q:'30g',s:'Muy bajo grasa'},{n:'Langosta cocida',q:'45g',s:'Muy bajo grasa'},{n:'Mejillon cocido',q:'5 piezas',s:'Muy bajo grasa'},{n:'Milanesa de pollo a la plancha sin empanizar',q:'30g',s:'Muy bajo grasa'},{n:'Ostion cocido',q:'6 piezas',s:'Muy bajo grasa'},{n:'Pavo molido',q:'30g',s:'Muy bajo grasa'},{n:'Pechuga de pavo',q:'1.5 reb.',s:'Muy bajo grasa'},{n:'Pechuga pollo asada',q:'30g',s:'Muy bajo grasa'},{n:'Pechuga pollo deshebrada',q:'30g',s:'Muy bajo grasa'},{n:'Pescado zarandeado',q:'40g',s:'Muy bajo grasa'},{n:'Pulpo cocido',q:'45g',s:'Muy bajo grasa'},{n:'Queso cottage bajo grasa',q:'3 cdas',s:'Muy bajo grasa'},{n:'Requeson',q:'2 cditas',s:'Muy bajo grasa'},{n:'Robalo',q:'40g',s:'Muy bajo grasa'},{n:'Salmon',q:'30g',s:'Muy bajo grasa'},{n:'Tilapia',q:'40g',s:'Muy bajo grasa'},{n:'Trucha',q:'40g',s:'Muy bajo grasa'},{n:'Arrachera',q:'30g',s:'Bajo grasa'},{n:'Bistec de res',q:'30g',s:'Bajo grasa'},{n:'Carne deshebrada magra',q:'30g',s:'Bajo grasa'},{n:'Carne molida magra',q:'30g',s:'Bajo grasa'},{n:'Carne roja max 3x sem',q:'30g',s:'Bajo grasa'},{n:'Cecina de res',q:'30g',s:'Bajo grasa'},{n:'Chuleta de cerdo magra',q:'30g',s:'Bajo grasa'},{n:'Costilla de cerdo sin grasa visible',q:'30g',s:'Bajo grasa'},{n:'Falda de res magra',q:'30g',s:'Bajo grasa'},{n:'Huevo entero',q:'1 pieza',s:'Bajo grasa'},{n:'Jamon de pavo bajo en grasa',q:'40g',s:'Bajo grasa'},{n:'Lomo de res',q:'40g',s:'Bajo grasa'},{n:'Maciza de res',q:'25g',s:'Bajo grasa'},{n:'Milanesa de res a la plancha sin empanizar',q:'30g',s:'Bajo grasa'},{n:'Muslo pollo sin piel',q:'1/2 pieza',s:'Bajo grasa'},{n:'Queso oaxaca',q:'30g',s:'Bajo grasa'},{n:'Queso panela',q:'40g',s:'Bajo grasa'}],lacteos:[{n:'Chobani 20G deslactosado',q:'1 botella'},{n:'Jocoque sin grasa',q:'1 taza'},{n:'Kefir natural bajo grasa',q:'1 taza'},{n:'Leche de almendra',q:'1 taza'},{n:'Leche de almendra con proteina',q:'1 taza'},{n:'Leche de arroz',q:'1 taza'},{n:'Leche de avena',q:'1 taza'},{n:'Leche de coco sin azucar',q:'1 taza'},{n:'Leche de soya sin azucar',q:'1 taza'},{n:'Leche deslactosada',q:'1 taza'},{n:'Leche evap. semidescremada',q:'1/2 taza'},{n:'Leche light 2%',q:'1 taza'},{n:'Leche semidescremada',q:'1 taza'},{n:'Queso asadero bajo en grasa',q:'30g'},{n:'Queso cottage bajo grasa',q:'3 cdas'},{n:'Queso fresco blanco',q:'40g'},{n:'Queso manchego bajo en grasa',q:'30g'},{n:'Queso mozzarella light',q:'30g'},{n:'Queso oaxaca',q:'30g'},{n:'Queso panela',q:'40g'},{n:'Queso ricotta',q:'3 cdas'},{n:'Requeson',q:'2 cditas'},{n:'Yogurt bebible light',q:'1 taza'},{n:'Yogurt griego Oikos',q:'1/2 envase'},{n:'Yogurt griego natural generico',q:'3/4 taza'},{n:'Yogurt natural light sabor vainilla',q:'3/4 taza'},{n:'Yogurt natural sin azucar',q:'1 taza'}],grasas_sin:[{n:'Aceite de aguacate',q:'1 cdita'},{n:'Aceite de ajonjoli',q:'1 cdita'},{n:'Aceite de canola',q:'1 cdita'},{n:'Aceite de coco',q:'1 cdita'},{n:'Aceite de girasol',q:'1 cdita'},{n:'Aceite de linaza',q:'1 cdita'},{n:'Aceite de maiz',q:'1 cdita'},{n:'Aceite de oliva',q:'1 cdita'},{n:'Aceitunas',q:'5 piezas'},{n:'Aceitunas negras',q:'5 piezas'},{n:'Aguacate',q:'1/3 pieza'},{n:'Crema acida light',q:'2 cdas'},{n:'Crema para batir light',q:'1 cda'},{n:'Ghee Mantequilla',q:'1.5 cdita'},{n:'Guacamole sin chile',q:'2 cdas'},{n:'Margarina light',q:'1 cdita'},{n:'Mayonesa de aguacate',q:'1 cdita'},{n:'Mayonesa light',q:'1 cdita'}],grasas_con:[{n:'Ajonjoli tostado',q:'5 cdas'},{n:'Almendra',q:'10 piezas'},{n:'Avellanas',q:'8 piezas'},{n:'Botana de nueces y semillas sin sal',q:'2 cdas'},{n:'Cacahuate tostado',q:'14 piezas'},{n:'Chia',q:'7 cdas'},{n:'Coco rallado sin azucar',q:'2 cdas'},{n:'Crema de almendras',q:'2 cditas'},{n:'Crema de cacahuate',q:'2 cditas'},{n:'Crema de nuez de la India',q:'2 cditas'},{n:'Crema de semillas de girasol',q:'2 cditas'},{n:'Linaza molida',q:'2 cdas'},{n:'Nuez de la India',q:'8 piezas'},{n:'Nuez de macadamia',q:'6 piezas'},{n:'Nuez en mitad',q:'7 mitades'},{n:'Pepitas',q:'60 piezas'},{n:'Pinones',q:'1 cda'},{n:'Pistaches',q:'18 piezas'},{n:'Semillas de amapola',q:'2 cdas'},{n:'Semillas de canamo',q:'2 cdas'},{n:'Semillas de girasol',q:'4 cditas'}],proteina_polvo:[{n:'Caseina micelar + leche deslactosada',q:'1 scoop'},{n:'Clara de huevo en polvo + agua',q:'1 scoop'},{n:'Colageno hidrolizado con proteina + agua',q:'1 scoop'},{n:'Isopur Cookies + agua',q:'1 scoop'},{n:'Isopur Cookies + almendra',q:'1 scoop'},{n:'Isopur Cookies + avena',q:'1 scoop'},{n:'Isopur Cookies + coco',q:'1 scoop'},{n:'Isopur Platano + agua',q:'1 scoop'},{n:'Isopur Platano + almendra',q:'1 scoop'},{n:'Isopur Platano + avena',q:'1 scoop'},{n:'Isopur Platano + coco',q:'1 scoop'},{n:'Proteina otro + agua',q:'1 scoop'},{n:'Proteina otro + almendra',q:'1 scoop'},{n:'Proteina otro + avena',q:'1 scoop'},{n:'Proteina otro + coco',q:'1 scoop'},{n:'Proteina vegetal (chicharo/arroz) + agua',q:'1 scoop'},{n:'Proteina vegetal (chicharo/arroz) + leche almendra',q:'1 scoop'},{n:'Whey Chocolate + agua',q:'1 scoop'},{n:'Whey Chocolate + leche almendra',q:'1 scoop'},{n:'Whey Chocolate + leche avena',q:'1 scoop'},{n:'Whey Vainilla + agua',q:'1 scoop'},{n:'Whey Vainilla + almendra',q:'1 scoop'},{n:'Whey Vainilla + avena',q:'1 scoop'},{n:'Whey Vainilla + coco',q:'1 scoop'},{n:'Whey Vainilla + leche deslactosada',q:'1 scoop'}]};
 
 function todayKey(){var nd=new Date(new Date().toLocaleString('en-US',{timeZone:'America/Mexico_City'}));return nd.getFullYear()+'-'+String(nd.getMonth()+1).padStart(2,'0')+'-'+String(nd.getDate()).padStart(2,'0');}
 function keyOf(d){var nd=new Date(d.toLocaleString('en-US',{timeZone:'America/Mexico_City'}));return nd.getFullYear()+'-'+String(nd.getMonth()+1).padStart(2,'0')+'-'+String(nd.getDate()).padStart(2,'0');}
@@ -795,7 +791,7 @@ function renderRestDayHint(){
   var rec=recommendedRestDay();
   if(!rec){el.textContent='';return;}
   if(rec.done){el.innerHTML='\u2705 Ya tomaste tu dia de descanso esta semana.';return;}
-  el.innerHTML='\uD83D\uDCA4 Aun no tomas tu dia libre esta semana - te recomendamos descansar el <strong style="color:var(--accent)">'+rec.dow+'</strong>'+(rec.ideal?' (justo despues de tu dia de pierna, para que se recupere)':'.');
+  el.innerHTML='\uD83D\uDCA4 Aun no tomas tu dia libre esta semana - te recomendamos descansar el <strong style="color:var(--accent)">'+rec.dow+'</strong>'+(rec.ideal?' (justo despues de tu dia Frontal, para que las piernas se recuperen)':'.');
 }
 function renderDash(){
   var n=period==='day'?1:period==='week'?7:30;
@@ -1336,6 +1332,9 @@ function renderSleep(day){var h=day.sl||0;var el=document.getElementById('sl-num
 function renderReflux(key,day){var el=document.getElementById('day-reflux');if(!el)return;var items=[{f:'rfn',l:'Tuve reflujo la noche anterior'},{f:'rfd',l:'Tuve reflujo durante el dia'}];var h='';items.forEach(function(it){var on=!!day[it.f];h+='<div class="ci" onclick="toggleReflux(\''+it.f+'\',\''+key+'\')"><div class="cbox" style="background:'+(on?'var(--bad)':'transparent')+';border-color:'+(on?'var(--bad)':'var(--border)')+'">'+(on?'!':'')+'</div><span class="clbl" style="'+(on?'color:var(--bad)':'')+'">'+it.l+'</span></div>';});h+='<div style="font-size:.72rem;color:var(--muted);margin-top:8px">Marca solo si hubo sintomas - se incluye en el reporte para Michelle</div>';el.innerHTML=h;}
 function toggleReflux(f,key){var day=gd(key);day[f]=!day[f];sd(key,day);renderReflux(key,day);}
 // weekProgress: % completado de la rutina de la semana actual, contando solo los dias que ya pasaron o es hoy.
+// weekProgress: % completado de TODA la semana (Lun-Dom), incluyendo los dias que aun no llegan
+// (cuentan como pendientes, 0 de su total, hasta que se registren) - asi el % solo llega a 100
+// cuando de verdad se completo la semana completa, no solo lo que ya paso.
 function weekProgress(){
   var todayK=todayKey();
   var wk=weekKeyOf(todayK);
@@ -1345,7 +1344,6 @@ function weekProgress(){
   for(var i=0;i<7;i++){
     var d=new Date(mon);d.setDate(mon.getDate()+i);
     var k=fmtYMD(d);
-    if(k>todayK)break;
     var type=gymTypeFor(k);
     var day=s[k];
     if(type==='libre'){
@@ -1494,6 +1492,15 @@ function showEq(id,btn){document.querySelectorAll('.eqb').forEach(function(e){e.
 function buildWP(){var wp=document.getElementById('wpt');if(!wp||wp.innerHTML!=='')return;var dows=[1,2,3,4,5,6,0];var names=['Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo'];var nd=new Date(new Date().toLocaleString('en-US',{timeZone:'America/Mexico_City'}));var tod=nd.getDay();var h='';dows.forEach(function(d,i){h+='<div class="wday" style="'+(d===tod?'border-left:2px solid var(--accent);padding-left:8px':'')+'"><div class="wdtitle">'+names[i]+(d===tod?' HOY':'')+'</div>';MO.forEach(function(m){h+='<div class="wrow"><div class="wlbl">'+m.l+'</div><div>'+WP[d][m.k]+'</div></div>';});h+='</div>';});wp.innerHTML=h;}
 
 var CHANGELOG=[
+  {v:'2.1.0',fecha:'2026-09-04',cambios:[
+    'Los 252 alimentos de las 8 secciones SMAE ahora estan ordenados alfabeticamente - tanto en el selector de "+" en Mi Dia como en las tablas de Equivalencias SMAE en Mi Plan',
+    'Proteina conserva sus 2 sub-secciones (Muy bajo grasa y Bajo grasa), cada una ordenada alfabeticamente por dentro',
+    'Ningun alimento se agrego, quito ni cambio de cantidad - solo se reordenaron'
+  ]},
+  {v:'2.0.1',fecha:'2026-09-03',cambios:[
+    'CORREGIDO (importante): la barra "Rutina de la semana" llegaba a 100% a mitad de semana porque solo contaba los dias ya pasados, ignorando los dias de entrenamiento que aun faltaban. Ahora cuenta la semana completa (Lun-Dom) y los dias futuros pesan como pendientes hasta que se completen',
+    'Corregido texto de la recomendacion de descanso: decia "tu dia de pierna" pero Frontal incluye hombros, pectorales y biceps ademas de cuadriceps, y hay 2 dias Frontal por semana. Ahora dice "tu dia Frontal"'
+  ]},
   {v:'2.0.0',fecha:'2026-09-03',cambios:[
     'Mi Dia se reorganizo en 3 sub-pestanas: Nutricion (Medicamento, Comidas, Agua), Salud (Peso, Checklist anti-reflujo, Suero, Fibra, Reflujo, Sueno) y Gimnasio (Entrenamiento) - mucho menos scroll',
     'Checklist anti-reflujo: "Porciones moderadas" y "Buena hidratacion hoy" ya no se llenan a mano, ahora son 100% automaticas y bidireccionales - se marcan solas si cumples la meta y se desmarcan solas si te pasas o bajas del umbral',
