@@ -172,7 +172,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
 </div>
 
 <div class="page active" id="page-dash">
-  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.1.0</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
+  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.2.1</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
   <div class="sec">
     <div class="ptabs">
       <div class="pt active" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
@@ -696,10 +696,32 @@ function weekKeyOf(key){var d=new Date(key+'T12:00:00');var dow=d.getDay();var d
 function restDowForWeek(key){var wk=weekKeyOf(key);var s=ls();var override=null;Object.keys(s).forEach(function(k){if(s[k]&&s[k].restWeek&&weekKeyOf(k)===wk){override=new Date(k+'T12:00:00').getDay();}});return override===null?0:override;}
 // gymTypeFor: 'frontal'|'trasera'|'abdomen'|'libre' segun la secuencia fija, arrancando el dia despues del libre.
 function gymTypeFor(key){var d=new Date(key+'T12:00:00');var dow=d.getDay();var restDow=restDowForWeek(key);var diff=(dow-restDow+7)%7;if(diff===0)return 'libre';if(diff===1||diff===4)return 'frontal';if(diff===2||diff===5)return 'trasera';return 'abdomen';}
-function gymDefaultsFor(type){var g={cardioI:false,cardioF:false,muscles:{},weights:{}};if(GYM_TYPES[type]){GYM_TYPES[type].muscles.forEach(function(mu){g.muscles[mu.n]=[false,false,false];g.weights[mu.n]=[null,null,null];});}if(type==='libre')g.restDone=false;return g;}
+// lastWeightsForType: busca hacia atras (antes de la fecha dada) el registro mas reciente de este
+// tipo de rutina y devuelve sus pesos, para usarlos como punto de partida de la nueva sesion.
+function lastWeightsForType(beforeKey,type){
+  var s=ls();
+  var keys=Object.keys(s).filter(function(k){return /^\d{4}-\d{2}-\d{2}$/.test(k)&&k<beforeKey;}).sort();
+  for(var i=keys.length-1;i>=0;i--){
+    var day=s[keys[i]];
+    if(day&&day.gym&&day.gymType===type&&day.gym.weights)return day.gym.weights;
+  }
+  return null;
+}
+function gymDefaultsFor(type,key){
+  var g={cardioI:false,cardioF:false,muscles:{},weights:{}};
+  var lastW=key?lastWeightsForType(key,type):null;
+  if(GYM_TYPES[type]){
+    GYM_TYPES[type].muscles.forEach(function(mu){
+      g.muscles[mu.n]=[false,false,false];
+      g.weights[mu.n]=(lastW&&Array.isArray(lastW[mu.n]))?lastW[mu.n].slice():[null,null,null];
+    });
+  }
+  if(type==='libre')g.restDone=false;
+  return g;
+}
 // getGymData: crea o regenera los datos de la rutina del dia si el tipo cambio (p.ej. al mover el dia libre).
 // Tambien normaliza pesos viejos (v1.8.0 guardaba un solo numero por musculo) al nuevo formato de 3 series.
-function getGymData(key,day){var type=gymTypeFor(key);if(!day.gym||day.gymType!==type){day.gym=gymDefaultsFor(type);day.gymType=type;}if(!day.gym.weights)day.gym.weights={};Object.keys(day.gym.muscles||{}).forEach(function(m){var w=day.gym.weights[m];if(!Array.isArray(w))day.gym.weights[m]=(w!==null&&w!==undefined)?[w,null,null]:[null,null,null];});return day.gym;}
+function getGymData(key,day){var type=gymTypeFor(key);if(!day.gym||day.gymType!==type){day.gym=gymDefaultsFor(type,key);day.gymType=type;}if(!day.gym.weights)day.gym.weights={};Object.keys(day.gym.muscles||{}).forEach(function(m){var w=day.gym.weights[m];if(!Array.isArray(w))day.gym.weights[m]=(w!==null&&w!==undefined)?[w,null,null]:[null,null,null];});return day.gym;}
 
 var activeFoodGroup='verduras';
 function getFoodCounts(){var s=ls();var counts={};Object.keys(PT).forEach(function(g){counts[g]={};});Object.keys(s).forEach(function(dk){var dayFoods=s[dk]&&s[dk].foods||{};Object.keys(dayFoods).forEach(function(fn){var grp=dayFoods[fn].g;var cnt=dayFoods[fn].c||0;if(grp&&counts[grp])counts[grp][fn]=(counts[grp][fn]||0)+cnt;});});return counts;}
@@ -1379,11 +1401,16 @@ function renderGym(key,day){
   var type=gymTypeFor(key);
   var g=getGymData(key,day);
   var typeLbl=type==='libre'?'Dia libre - dar gracias':GYM_TYPES[type].l+' '+GYM_TYPES[type].ico;
-  hdr.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span style="font-family:Syne,sans-serif;font-weight:800;font-size:.95rem">'+typeLbl+'</span><label style="display:flex;align-items:center;gap:6px;font-size:.7rem;color:var(--muted);cursor:pointer;white-space:nowrap"><input type="checkbox" '+(day.restWeek?'checked':'')+' onchange="toggleRestDay(\''+key+'\')" style="width:auto">Dia libre esta semana</label></div>';
+  if(type==='libre'){
+    hdr.innerHTML='<div style="font-family:Syne,sans-serif;font-weight:800;font-size:.95rem">'+typeLbl+'</div>';
+  } else {
+    hdr.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span style="font-family:Syne,sans-serif;font-weight:800;font-size:.95rem">'+typeLbl+'</span><label style="display:flex;align-items:center;gap:6px;font-size:.7rem;color:var(--muted);cursor:pointer;white-space:nowrap"><input type="checkbox" '+(day.restWeek?'checked':'')+' onchange="toggleRestDay(\''+key+'\')" style="width:auto">Dia libre esta semana</label></div>';
+  }
   var h='';
   if(type==='libre'){
     h+='<div style="text-align:center;padding:14px 0"><div style="font-size:2rem">\uD83D\uDE4F</div><div style="font-size:.85rem;color:var(--muted);margin-top:6px">Hoy toca descansar y dar gracias</div></div>';
     h+='<div class="ci" onclick="toggleGymRest(\''+key+'\')"><div class="cbox" style="background:'+(g.restDone?'var(--good)':'transparent')+';border-color:'+(g.restDone?'var(--good)':'var(--border)')+'">'+(g.restDone?'v':'')+'</div><span class="clbl '+(g.restDone?'done':'')+'">Descanso completado</span></div>';
+    if(day.restWeek){h+='<div style="font-size:.68rem;color:var(--muted);margin-top:10px;text-align:center">Moviste tu dia libre aqui esta semana. Para regresarlo a domingo, marca "Dia libre esta semana" en el domingo de esta semana.</div>';}
   } else {
     h+=renderGymCardio(key,'cardioI','Cardio inicial',GYM_CARDIO_INI,g.cardioI);
     h+='<div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:12px 0 6px">Musculos - '+GYM_TYPES[type].l+'</div>';
@@ -1403,15 +1430,17 @@ function renderGymMuscle(key,muscle,machine,arr,weights){
   var machineDisplay=Array.isArray(machine)?machine.join(' o '):machine;
   var h='<div style="margin-bottom:14px"><div style="margin-bottom:6px"><span style="font-size:.83rem;font-weight:600">'+muscle+'</span><span style="font-size:.68rem;color:var(--accent)"> · '+machineDisplay+'</span><span style="font-size:.68rem;color:var(--muted)"> · '+doneCount+'/3</span></div>';
   var hint=progressiveOverloadHint(muscle);
-  if(hint)h+='<div style="background:rgba(200,245,100,.08);border:1px solid rgba(200,245,100,.3);border-radius:8px;padding:6px 9px;margin-bottom:8px;font-size:.7rem;color:var(--accent)">\u2191 '+hint+'</div>';
+  var needsIncrease=!!hint;
+  if(hint)h+='<div style="background:rgba(245,100,100,.1);border:1px solid rgba(245,100,100,.4);border-radius:8px;padding:6px 9px;margin-bottom:8px;font-size:.7rem;color:var(--bad)">\u26A0 Es momento de incrementar peso - '+hint+'</div>';
   h+='<div style="display:flex;gap:6px">';
   GYM_SERIES.forEach(function(sr,i){
     var on=arr[i];var w=weights[i]!=null?weights[i]:'';
+    var inputStyle='width:100%;padding:4px 1px;font-size:.68rem;text-align:center'+(needsIncrease?';color:var(--bad);border-color:var(--bad);font-weight:700':'');
     h+='<div style="flex:1;display:flex;flex-direction:column;gap:3px">';
     h+='<div style="font-size:.65rem;color:var(--muted);text-align:center;line-height:1.25">'+sr.l+'<br>'+sr.reps+' reps</div>';
     h+='<div style="display:flex;align-items:center;gap:2px">';
     h+='<button style="flex:0 0 auto;width:18px;height:26px;padding:0;font-size:.7rem;border-radius:5px" onclick="adjustGymWeight(\''+key+'\',\''+muscle+'\','+i+',-2.5)">-</button>';
-    h+='<input type="number" inputmode="decimal" value="'+w+'" placeholder="kg" style="width:100%;padding:4px 1px;font-size:.68rem;text-align:center" onchange="setGymSeriesWeight(\''+key+'\',\''+muscle+'\','+i+',this.value)">';
+    h+='<input type="number" inputmode="decimal" value="'+w+'" placeholder="kg" style="'+inputStyle+'" onchange="setGymSeriesWeight(\''+key+'\',\''+muscle+'\','+i+',this.value)">';
     h+='<button style="flex:0 0 auto;width:18px;height:26px;padding:0;font-size:.7rem;border-radius:5px" onclick="adjustGymWeight(\''+key+'\',\''+muscle+'\','+i+',2.5)">+</button>';
     h+='</div>';
     h+='<button style="width:100%;padding:7px 2px;border-radius:8px;border:1px solid '+(on?'var(--good)':'var(--border)')+';background:'+(on?'rgba(100,245,180,.12)':'var(--card2)')+';color:'+(on?'var(--good)':'var(--muted)')+';font-size:.85rem;font-family:Syne,sans-serif;font-weight:700;cursor:pointer" onclick="toggleGymSeries(\''+key+'\',\''+muscle+'\','+i+')">'+(on?'\u2713':'-')+'</button>';
@@ -1485,6 +1514,7 @@ function addFP(g,amt,name){var day=gd(_key2);if(!day.mp)day.mp={};if(!day.mp[_mk
   var dayTotal2=(getTotals(day)[g]||0);var dayTarget2=PT[g].t;var warnEl2=document.getElementById('fm-warn');
   if(dayTotal2>=dayTarget2){warnEl2.innerHTML='<div style="background:rgba(245,162,100,.1);border:1px solid rgba(245,162,100,.35);border-radius:9px;padding:8px 10px;margin-bottom:10px;font-size:.76rem;color:var(--warn)">Ya llevas '+dayTotal2+'/'+dayTarget2+' '+PT[g].l+' hoy - ajusta la proxima comida dentro del mismo grupo.</div>';}
   else{warnEl2.innerHTML='';}
+  renderChecklist(_key2,day);
   renderChips(_mk2,_key2,day);if(amt>0){if(curr>=_mt){toast(PT[g].l+' completo!');document.getElementById('foodModal').style.display='none';}else toast('+'+amt+' '+name);}else{toast('Quitada - total: '+curr);}}
 function addManual(){var amt=parseFloat(document.getElementById('man-amt').value)||1;addFP(_g,amt,'manual');document.getElementById('foodModal').style.display='none';}
 function tacc(id){var b=document.getElementById('body-'+id);var a=document.getElementById('arr-'+id);var open=b.classList.contains('open');b.classList.toggle('open',!open);a.classList.toggle('open',!open);if(!open&&id==='sem')buildWP();}
@@ -1492,6 +1522,17 @@ function showEq(id,btn){document.querySelectorAll('.eqb').forEach(function(e){e.
 function buildWP(){var wp=document.getElementById('wpt');if(!wp||wp.innerHTML!=='')return;var dows=[1,2,3,4,5,6,0];var names=['Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo'];var nd=new Date(new Date().toLocaleString('en-US',{timeZone:'America/Mexico_City'}));var tod=nd.getDay();var h='';dows.forEach(function(d,i){h+='<div class="wday" style="'+(d===tod?'border-left:2px solid var(--accent);padding-left:8px':'')+'"><div class="wdtitle">'+names[i]+(d===tod?' HOY':'')+'</div>';MO.forEach(function(m){h+='<div class="wrow"><div class="wlbl">'+m.l+'</div><div>'+WP[d][m.k]+'</div></div>';});h+='</div>';});wp.innerHTML=h;}
 
 var CHANGELOG=[
+  {v:'2.2.1',fecha:'2026-09-06',cambios:[
+    'Quitado el checkbox "Dia libre esta semana" del dia que YA es tu descanso - era redundante con "Descanso completado" (dos checks para lo mismo). Ese checkbox solo aparece ahora en dias de entrenamiento (Frontal/Trasera/Abdomen), que es donde tiene sentido usarlo para mover el descanso hacia ahi',
+    'Si moviste tu dia libre a un dia distinto de domingo, aparece una nota chiquita explicando como regresarlo (marcando el checkbox en el domingo de esa semana)'
+  ]},
+  {v:'2.2.0',fecha:'2026-09-06',cambios:[
+    'Los pesos de cada musculo ahora se copian solos de la ultima vez que tocó ese tipo de rutina (Frontal/Trasera/Abdomen) - si hoy hiciste Hombros en 12/14/16kg, la proxima vez que te toque Frontal esos numeros ya apareceran precargados como punto de partida (las series si empiezan sin marcar, listas para hoy)',
+    'Cuando ya llevas 3 sesiones seguidas con las 3 series completas al mismo peso, los inputs de peso de ese musculo se pintan en rojo y la leyenda ahora dice "Es momento de incrementar peso" (antes era un aviso verde mas discreto)'
+  ]},
+  {v:'2.1.1',fecha:'2026-09-04',cambios:[
+    'CORREGIDO: al registrar comida, el checklist automatico (Porciones moderadas / Buena hidratacion) SI se guardaba correctamente en el fondo, pero la pantalla del checklist no se refrescaba hasta salir y volver a entrar a Mi Dia - por eso parecia que no se guardaba al cambiar de sub-pestana (Nutricion/Salud/Gimnasio). No hubo perdida de datos en ningun momento, era solo un problema de que la pantalla no se actualizaba sola'
+  ]},
   {v:'2.1.0',fecha:'2026-09-04',cambios:[
     'Los 252 alimentos de las 8 secciones SMAE ahora estan ordenados alfabeticamente - tanto en el selector de "+" en Mi Dia como en las tablas de Equivalencias SMAE en Mi Plan',
     'Proteina conserva sus 2 sub-secciones (Muy bajo grasa y Bajo grasa), cada una ordenada alfabeticamente por dentro',
