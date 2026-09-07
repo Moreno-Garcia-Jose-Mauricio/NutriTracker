@@ -94,6 +94,15 @@ button{font-family:inherit;}
 .clbl.done{text-decoration:line-through;color:var(--muted);}
 .wr{display:flex;gap:8px;align-items:center;}
 input[type=number],input[type=date],input[type=text],input[type=password]{background:var(--card2);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:11px 13px;font-family:'DM Sans',sans-serif;font-size:16px;width:100%;}
+select{background:var(--card2);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:11px 13px;font-family:'DM Sans',sans-serif;font-size:16px;width:100%;-webkit-appearance:none;appearance:none;}
+.val-lbl{display:block;font-size:.76rem;color:var(--muted);margin-bottom:4px;font-family:'Syne',sans-serif;font-weight:700;}
+.val-note{font-size:.7rem;color:var(--muted);margin:4px 0 10px;line-height:1.4;padding-left:2px;border-left:2px solid var(--border);padding-left:8px;}
+.val-check{display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--text);padding:6px 0;cursor:pointer;}
+.val-rangebtns{display:flex;gap:6px;margin-bottom:4px;}
+.val-rangebtn{flex:1;text-align:center;padding:9px 4px;border-radius:10px;border:1px solid var(--border);background:var(--card2);color:var(--muted);cursor:pointer;transition:all .15s;}
+.val-rangebtn .t{font-size:.76rem;font-weight:700;font-family:'Syne',sans-serif;display:block;}
+.val-rangebtn .r{font-size:.62rem;font-weight:400;opacity:.8;display:block;margin-top:2px;}
+.val-rangebtn.active{background:var(--accent);color:#000;border-color:var(--accent);box-shadow:0 4px 14px -6px rgba(200,245,100,.5);}
 input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(200,245,100,.12);}
 .savebtn{background:var(--accent);color:#000;border:none;border-radius:12px;padding:11px 18px;font-family:'Syne',sans-serif;font-weight:800;font-size:.88rem;cursor:pointer;white-space:nowrap;box-shadow:0 6px 18px -8px rgba(200,245,100,.55);}
 .sum-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:.83rem;}
@@ -172,7 +181,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
 </div>
 
 <div class="page active" id="page-dash">
-  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.2.1</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
+  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.4.1</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
   <div class="sec">
     <div class="ptabs">
       <div class="pt active" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
@@ -298,7 +307,13 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
 
 <div class="page" id="page-plan">
   <div class="ph" style="margin-bottom:14px"><div class="ptitle">Mi <span style="color:var(--accent)">Plan</span></div><div class="pill">Michelle Ocampo</div></div>
-  <div style="padding:0 18px">
+  <div style="padding:0 18px 14px">
+    <div class="ptabs">
+      <div class="pt active" id="mp-tab-plan" onclick="setMiPlanTab('plan',this)">Plan</div>
+      <div class="pt" id="mp-tab-validador" onclick="setMiPlanTab('validador',this)">Validador</div>
+    </div>
+  </div>
+  <div id="miplan-plan" style="padding:0 18px">
     <div class="acc-item"><div class="acc-h" onclick="tacc('gen')"><span>📋 Recomendaciones generales</span><i class="acc-arr" id="arr-gen">▾</i></div>
       <div class="acc-b" id="body-gen"><div style="font-size:.83rem;color:var(--muted);line-height:1.8">
         <div>Comer 5-6 veces al dia</div><div>Comer despacio y masticar bien</div>
@@ -543,6 +558,89 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
       </table></div></div>
     </div>
   </div>
+
+  <div id="miplan-validador" style="padding:0 18px;display:none">
+    <div class="card">
+      <div class="stitle" style="margin-bottom:4px">Calculador de porciones y validador</div>
+      <div style="font-size:.74rem;color:var(--muted);margin-bottom:14px;line-height:1.5">Esto NO se guarda en tu registro diario, es solo una calculadora de referencia.</div>
+      <input type="text" id="val-nombre" placeholder="Nombre del producto (opcional)" style="margin-bottom:10px">
+      <div class="val-rangebtns" id="val-tipo-group" style="margin-bottom:10px">
+        <div class="val-rangebtn active" data-v="solido" onclick="valPick('tipo',this)"><span class="t">Solido</span></div>
+        <div class="val-rangebtn" data-v="liquido" onclick="valPick('tipo',this)"><span class="t">Liquido</span></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:4px">
+        <input type="number" inputmode="decimal" id="val-bolsa-g" placeholder="Peso total del empaque (g)">
+        <input type="number" inputmode="decimal" id="val-porcion-g" placeholder="1 porcion (g/ml)">
+      </div>
+      <div style="font-size:.68rem;color:var(--muted);margin-bottom:16px">Estos 2 copialos tal cual de la etiqueta.</div>
+
+      <div class="stitle" style="margin-bottom:4px">Sellos que ves en el empaque</div>
+      <div class="val-note" style="margin-top:0">Son los octagonos negros que ya trae el frente por ley - solo marca los que veas, no calcules nada.</div>
+      <label class="val-check"><input type="checkbox" id="val-s-kcal" style="width:auto">EXCESO CALORIAS</label>
+      <label class="val-check"><input type="checkbox" id="val-s-azucar" style="width:auto">EXCESO AZUCARES</label>
+      <label class="val-check"><input type="checkbox" id="val-s-grasasat" style="width:auto">EXCESO GRASAS SATURADAS</label>
+      <label class="val-check"><input type="checkbox" id="val-s-grasatrans" style="width:auto">EXCESO GRASAS TRANS</label>
+      <label class="val-check"><input type="checkbox" id="val-s-sodio" style="width:auto">EXCESO SODIO</label>
+      <label class="val-check"><input type="checkbox" id="val-s-cafeina" style="width:auto">CONTIENE CAFEINA</label>
+      <label class="val-check"><input type="checkbox" id="val-s-edulcorante" style="width:auto">CONTIENE EDULCORANTES</label>
+      <div class="val-note">Si el empaque no trae ningun octagono (o es un producto sin etiqueta, como fruta suelta), deja todo sin marcar.</div>
+
+      <div class="stitle" style="margin:16px 0 4px">Para calcular tus porciones SMAE</div>
+      <div class="val-note" style="margin-top:0">Esto si necesito estimarlo, porque no viene en ningun sello - elige el rango de la tabla nutrimental (columna "por 100g" o "por 100ml").</div>
+
+      <div style="margin-bottom:14px"><label class="val-lbl">Carbohidratos totales</label>
+      <div class="val-rangebtns" id="val-carb-group">
+        <div class="val-rangebtn" data-v="bajo" onclick="valPick('carb',this)"><span class="t">Bajo</span><span class="r">&lt;10g</span></div>
+        <div class="val-rangebtn active" data-v="moderado" onclick="valPick('carb',this)"><span class="t">Moderado</span><span class="r">10-20g</span></div>
+        <div class="val-rangebtn" data-v="alto" onclick="valPick('carb',this)"><span class="t">Alto</span><span class="r">&gt;20g</span></div>
+      </div></div>
+
+      <div style="margin-bottom:14px"><label class="val-lbl">Proteina</label>
+      <div class="val-rangebtns" id="val-proteina-group">
+        <div class="val-rangebtn" data-v="bajo" onclick="valPick('proteina',this)"><span class="t">Bajo</span><span class="r">&lt;5g</span></div>
+        <div class="val-rangebtn active" data-v="moderado" onclick="valPick('proteina',this)"><span class="t">Moderado</span><span class="r">5-20g</span></div>
+        <div class="val-rangebtn" data-v="alto" onclick="valPick('proteina',this)"><span class="t">Alto</span><span class="r">&gt;20g \ud83d\udc4d</span></div>
+      </div></div>
+
+      <div style="margin-bottom:14px"><label class="val-lbl">Grasas totales</label>
+      <div class="val-rangebtns" id="val-grasa-group">
+        <div class="val-rangebtn" data-v="bajo" onclick="valPick('grasa',this)"><span class="t">Bajo</span><span class="r">&lt;3g</span></div>
+        <div class="val-rangebtn active" data-v="moderado" onclick="valPick('grasa',this)"><span class="t">Moderado</span><span class="r">3-17g</span></div>
+        <div class="val-rangebtn" data-v="alto" onclick="valPick('grasa',this)"><span class="t">Alto</span><span class="r">&gt;17g</span></div>
+      </div></div>
+
+      <div style="margin-bottom:4px"><label class="val-lbl">Fibra</label>
+      <div class="val-rangebtns" id="val-fibra-group">
+        <div class="val-rangebtn" data-v="bajo" onclick="valPick('fibra',this)"><span class="t">Bajo</span><span class="r">&lt;3g</span></div>
+        <div class="val-rangebtn active" data-v="moderado" onclick="valPick('fibra',this)"><span class="t">Moderado</span><span class="r">3-6g</span></div>
+        <div class="val-rangebtn" data-v="alto" onclick="valPick('fibra',this)"><span class="t">Alto</span><span class="r">&gt;6g \ud83d\udc4d</span></div>
+      </div></div>
+      <div class="val-note">No hay sello de fibra (es a tu favor, no en contra) pero la uso para tu meta de intestino.</div>
+
+      <div class="stitle" style="margin:16px 0 8px">Tipos de azucar presentes (marca los que apliquen)</div>
+      <label class="val-check"><input type="checkbox" id="val-az-clasica" style="width:auto">Azucar, azucar morena, mascabado</label>
+      <label class="val-check"><input type="checkbox" id="val-az-jarabes" style="width:auto">Jarabe de maiz (incl. alta fructosa), agave, miel, melaza, piloncillo</label>
+      <label class="val-check"><input type="checkbox" id="val-az-tecnica" style="width:auto">Dextrosa, glucosa, fructosa, sacarosa, maltosa, lactosa</label>
+      <label class="val-check"><input type="checkbox" id="val-az-malto" style="width:auto">Maltodextrina</label>
+      <div class="val-note">La maltodextrina no siempre aparece como "azucar" en la tabla, pero tu cuerpo la absorbe casi igual de rapido - cuenta como azucar oculta.</div>
+      <label class="val-check"><input type="checkbox" id="val-az-jugo" style="width:auto">Concentrado o jugo de fruta concentrado</label>
+
+      <div class="stitle" style="margin:16px 0 8px">¿Que tipo de edulcorante trae?</div>
+      <label class="val-check"><input type="checkbox" id="val-ed-artificial" style="width:auto">Sucralosa, aspartame, acesulfame K, sacarina, neotame</label>
+      <div class="val-note">Aceptables en general para tu meta de bajar grasa - no cuentan como azucar.</div>
+      <label class="val-check"><input type="checkbox" id="val-ed-stevia" style="width:auto">Stevia (glucosidos de esteviol)</label>
+      <div class="val-note">Edulcorante natural, aceptable.</div>
+      <label class="val-check"><input type="checkbox" id="val-ed-poliol" style="width:auto">Eritritol o xilitol</label>
+      <div class="val-note">En exceso pueden tener efecto laxante - relevante para tu contador de bano.</div>
+
+      <div class="stitle" style="margin:16px 0 8px">Irritantes en ingredientes (opcional)</div>
+      <textarea id="val-ingredientes" placeholder="Pega la lista de ingredientes solo si quieres que revise chile, cebolla, ajo, chocolate, tomate, etc" style="width:100%;min-height:54px;background:var(--card2);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:11px 13px;font-size:.85rem;font-family:'DM Sans',sans-serif"></textarea>
+
+      <button class="savebtn" style="width:100%;margin-top:14px" onclick="validarProducto()">Validar</button>
+    </div>
+    <div id="val-resultado"></div>
+
+  </div>
 </div>
 
 <div id="foodModal" onclick="closeFM(event)">
@@ -663,6 +761,12 @@ function setDiaTab(tab,el){
   document.querySelectorAll('#page-dia .sec[data-diagroup]').forEach(function(sec){
     sec.style.display=(sec.dataset.diagroup===tab)?'':'none';
   });
+}
+function setMiPlanTab(tab,el){
+  document.querySelectorAll('#page-plan .pt').forEach(function(b){b.classList.remove('active');});
+  if(el)el.classList.add('active');
+  document.getElementById('miplan-plan').style.display=(tab==='plan')?'':'none';
+  document.getElementById('miplan-validador').style.display=(tab==='validador')?'':'none';
 }
 var period='day';
 function setPeriod(p,el){period=p;document.querySelectorAll('.pt').forEach(function(t){t.classList.remove('active');});el.classList.add('active');renderDash();}
@@ -1521,7 +1625,237 @@ function tacc(id){var b=document.getElementById('body-'+id);var a=document.getEl
 function showEq(id,btn){document.querySelectorAll('.eqb').forEach(function(e){e.style.display='none';});document.querySelectorAll('.etab').forEach(function(b){b.classList.remove('active');});document.getElementById(id).style.display='block';btn.classList.add('active');}
 function buildWP(){var wp=document.getElementById('wpt');if(!wp||wp.innerHTML!=='')return;var dows=[1,2,3,4,5,6,0];var names=['Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo'];var nd=new Date(new Date().toLocaleString('en-US',{timeZone:'America/Mexico_City'}));var tod=nd.getDay();var h='';dows.forEach(function(d,i){h+='<div class="wday" style="'+(d===tod?'border-left:2px solid var(--accent);padding-left:8px':'')+'"><div class="wdtitle">'+names[i]+(d===tod?' HOY':'')+'</div>';MO.forEach(function(m){h+='<div class="wrow"><div class="wlbl">'+m.l+'</div><div>'+WP[d][m.k]+'</div></div>';});h+='</div>';});wp.innerHTML=h;}
 
+// ══════════════════════════════════════════════════════════════════════════
+// VALIDADOR DE PRODUCTOS EMPACADOS - Mi Plan > Validador
+// Combina 3 fuentes: (1) umbrales oficiales NOM-051-SCFI/SSA1-2010 (DOF 27-mar-2020),
+// (2) recomendaciones OMS/FAO e ISSN, (3) las restricciones especificas de tu plan con Michelle.
+// Diseno "selectivo": eliges rangos y marcas checkboxes en vez de escribir numeros exactos.
+// No toca localStorage, no se guarda en tu historial - es una calculadora de un solo uso.
+// ══════════════════════════════════════════════════════════════════════════
+
+// Diseno "checkboxes de sello + solo 4 rangos": los sellos NOM-051 se leen directo de los
+// octagonos que el usuario ya ve en el empaque (exactos, sin estimar). Los rangos de
+// carbohidratos/proteina/grasa/fibra son solo para calcular el equivalente en porciones SMAE,
+// que no viene marcado en ningun sello.
+// ══════════════════════════════════════════════════════════════════════════
+
+// Valor representativo de cada rango (para poder pasar de "rango elegido" a gramos aproximados)
+var VAL_REP={
+  carb:{bajo:5,moderado:15,alto:30},
+  proteina:{bajo:2.5,moderado:12,alto:28},
+  grasa:{bajo:1.5,moderado:10,alto:25},
+  fibra:{bajo:1.5,moderado:4.5,alto:9}
+};
+
+// Ingredientes que chocan con tu plan anti-reflujo (segun lo que ya tienes marcado como NO recomendado)
+var VAL_IRRITANTES=['chile','picante','cebolla','ajo','menta','chocolate','cafeina','alcohol','vinagre','tomate','jitomate','gas carbonico','carbonatado','cafe'];
+
+function _valNorm(s){return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');}
+
+// Estado de los botones de rango (reemplaza a los <select> - todo se elige en la misma pantalla)
+var valState={tipo:'solido',carb:'moderado',proteina:'moderado',grasa:'moderado',fibra:'moderado'};
+function valPick(group,btn){
+  valState[group]=btn.dataset.v;
+  var group_el=btn.parentElement;
+  group_el.querySelectorAll('.val-rangebtn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+}
+
+function validarProducto(){
+  var nombre=document.getElementById('val-nombre').value.trim()||'este producto';
+  var tipo=valState.tipo;
+  var bolsaG=parseFloat(document.getElementById('val-bolsa-g').value)||0;
+  var porcionG=parseFloat(document.getElementById('val-porcion-g').value)||0;
+
+  // ── 1. Sellos: se leen directo de los checkboxes (lo que el usuario YA ve en el paquete) ──
+  var sellos=[];
+  if(document.getElementById('val-s-kcal').checked)sellos.push('Exceso calorias');
+  if(document.getElementById('val-s-azucar').checked)sellos.push('Exceso azucares');
+  if(document.getElementById('val-s-grasasat').checked)sellos.push('Exceso grasas saturadas');
+  if(document.getElementById('val-s-grasatrans').checked)sellos.push('Exceso grasas trans');
+  if(document.getElementById('val-s-sodio').checked)sellos.push('Exceso sodio');
+  var tieneCafeina=document.getElementById('val-s-cafeina').checked;
+  var tieneEdulcoranteSello=document.getElementById('val-s-edulcorante').checked;
+  var semaforo=sellos.length===0?'verde':sellos.length===1?'amarillo':'rojo';
+  var semColor=semaforo==='verde'?'var(--good)':semaforo==='amarillo'?'var(--warn)':'var(--bad)';
+  var semEmoji=semaforo==='verde'?'\ud83d\udfe2':semaforo==='amarillo'?'\ud83d\udfe1':'\ud83d\udd34';
+
+  // ── 2. Rangos para calcular porciones SMAE (esto no viene en ningun sello) ──
+  var carbB=valState.carb;
+  var proteinaB=valState.proteina;
+  var grasaB=valState.grasa;
+  var fibraB=valState.fibra;
+
+  var azClasica=document.getElementById('val-az-clasica').checked;
+  var azJarabes=document.getElementById('val-az-jarabes').checked;
+  var azTecnica=document.getElementById('val-az-tecnica').checked;
+  var azMalto=document.getElementById('val-az-malto').checked;
+  var azJugo=document.getElementById('val-az-jugo').checked;
+  var edArtificial=document.getElementById('val-ed-artificial').checked;
+  var edStevia=document.getElementById('val-ed-stevia').checked;
+  var edPoliol=document.getElementById('val-ed-poliol').checked;
+  var ingredientesTxt=document.getElementById('val-ingredientes').value;
+
+  if(porcionG<=0){
+    document.getElementById('val-resultado').innerHTML='<div class="card" style="border-color:var(--bad)"><div style="color:var(--bad);font-size:.85rem">Necesito el tamano de la porcion (g/ml) para poder calcular las porciones SMAE.</div></div>';
+    return;
+  }
+
+  // ── 3. Porciones SMAE: 3 lecturas por macro, se SUMAN entre si (son nutrientes distintos),
+  //    pero Carbohidratos se cuenta como cereal O como fruta, nunca las 2 al mismo tiempo ──
+  var carb100=VAL_REP.carb[carbB], proteina100=VAL_REP.proteina[proteinaB], grasa100=VAL_REP.grasa[grasaB];
+  var carbPorcion=carb100*porcionG/100, proteinaPorcion=proteina100*porcionG/100, grasaPorcion=grasa100*porcionG/100;
+  var exCarb=carbPorcion/15, exProt=proteinaPorcion/7, exGrasa=grasaPorcion/5;
+
+  // ── 4. Azucares/edulcorantes + escaneo de irritantes en ingredientes (opcional) ──
+  var azucarasOcultas=[];
+  if(azClasica)azucarasOcultas.push('azucar/mascabado');
+  if(azJarabes)azucarasOcultas.push('jarabes/miel/agave');
+  if(azTecnica)azucarasOcultas.push('dextrosa/glucosa/fructosa/etc');
+  if(azMalto)azucarasOcultas.push('maltodextrina');
+  if(azJugo)azucarasOcultas.push('jugo concentrado');
+  var edulcorantesEnc=[];
+  if(edArtificial)edulcorantesEnc.push('artificiales (sucralosa/aspartame/etc)');
+  if(edStevia)edulcorantesEnc.push('stevia');
+  if(edPoliol)edulcorantesEnc.push('eritritol/xilitol');
+  if(tieneEdulcoranteSello&&!edulcorantesEnc.length)edulcorantesEnc.push('tipo no especificado (marca cual arriba si lo sabes)');
+  var ingN=_valNorm(ingredientesTxt);
+  var irritantesEnc=VAL_IRRITANTES.filter(function(w){return ingN.indexOf(w)>=0;});
+
+  // ── 5. Horario recomendado ──
+  var horario='';
+  if(tieneCafeina){horario='Evita despues de las 3-4pm (cafeina + reflujo = mala combinacion para dormir).';}
+  else if(sellos.indexOf('Exceso azucares')>=0){horario='Mejor en la manana o cerca de tu entrenamiento, no en la noche.';}
+  else if(grasaB==='alto'){horario='Si lo comes, hazlo al menos 2-3h antes de dormir (grasa + acostarte = riesgo de reflujo).';}
+  else{horario='No hay una restriccion de horario fuerte para este producto segun sus datos.';}
+
+  // ── 6. Veredicto para tus 2 metas ──
+  var okDefinicion=(sellos.length<=1)&&(proteinaB!=='bajo')&&(sellos.indexOf('Exceso azucares')<0)&&(sellos.indexOf('Exceso grasas saturadas')<0);
+  var veredictoGrasa=okDefinicion?'Encaja bien con tu meta de bajar grasa y marcar.':(sellos.length>=2?'No ayuda a tu meta de definicion - mucho azucar/grasa/sodio junto para lo que buscas.':'Es aceptable con moderacion, no es lo ideal para definicion.');
+  var veredictoIntestino=fibraB==='alto'?'Buen aporte de fibra, ayuda a tu transito intestinal.':(fibraB==='moderado'?'Aporte moderado de fibra.':'Fibra baja - no aporta mucho a tu meta de mejorar el intestino.');
+  if(edPoliol){veredictoIntestino+=' Ojo: trae eritritol/xilitol, en exceso pueden darte efecto laxante - relevante para tu tracker de bano.';}
+
+  // ── 7. Recomendacion final ──
+  var bloqueaPlan=irritantesEnc.length>0;
+  var veredictoFinal,veredictoColor;
+  if(bloqueaPlan){veredictoFinal='Cuidado - contiene ingredientes que tu plan anti-reflujo marca para evitar ('+irritantesEnc.join(', ')+'). Confirma con Michelle antes de comerlo seguido.';veredictoColor='var(--bad)';}
+  else if(semaforo==='rojo'){veredictoFinal='Evitalo mientras buscas bajar grasa - trae '+sellos.length+' sellos de exceso.';veredictoColor='var(--bad)';}
+  else if(semaforo==='amarillo'){veredictoFinal='Con moderacion - revisa cual sello trae y en que cantidad lo comes.';veredictoColor='var(--warn)';}
+  else{veredictoFinal='Buena opcion segun sus sellos - sin excesos marcados por NOM-051.';veredictoColor='var(--good)';}
+
+  renderValResultado({
+    nombre:nombre,tipo:tipo,bolsaG:bolsaG,porcionG:porcionG,
+    sellos:sellos,semaforo:semaforo,semColor:semColor,semEmoji:semEmoji,
+    exCarb:exCarb,exProt:exProt,exGrasa:exGrasa,fibraB:fibraB,proteinaB:proteinaB,
+    azucarasOcultas:azucarasOcultas,edulcorantesEnc:edulcorantesEnc,irritantesEnc:irritantesEnc,
+    horario:horario,veredictoGrasa:veredictoGrasa,veredictoIntestino:veredictoIntestino,
+    veredictoFinal:veredictoFinal,veredictoColor:veredictoColor
+  });
+}
+
+function renderValResultado(d){
+  var h='<div class="card">';
+
+  // Semaforo + sellos
+  h+='<div style="text-align:center;padding:6px 0 14px">';
+  h+='<div style="font-size:2.4rem">'+d.semEmoji+'</div>';
+  h+='<div style="font-family:Syne,sans-serif;font-weight:800;font-size:1rem;color:'+d.semColor+';margin-top:4px">'+d.sellos.length+' sello'+(d.sellos.length===1?'':'s')+' NOM-051</div>';
+  h+='</div>';
+  if(d.sellos.length){
+    h+='<div style="margin-bottom:14px">';
+    d.sellos.forEach(function(s){h+='<div class="ci"><div class="cbox" style="background:var(--bad);border-color:var(--bad)">!</div><span class="clbl">'+s+'</span></div>';});
+    h+='</div>';
+  }
+
+  // Veredicto final
+  h+='<div style="background:rgba(255,255,255,.03);border:1px solid '+d.veredictoColor+';border-radius:10px;padding:10px 12px;margin-bottom:14px;font-size:.82rem;color:'+d.veredictoColor+'">'+d.veredictoFinal+'</div>';
+
+  // ── Porciones SMAE: 3 lecturas claras que se SUMAN, con nota anti-confusion ──
+  var hayAlgo=(d.exCarb>=0.3||d.exProt>=0.3||d.exGrasa>=0.3);
+  h+='<div class="stitle" style="margin-bottom:6px">A cuantas porciones SMAE equivale</div>';
+  if(hayAlgo){
+    var nn=(d.exCarb>=0.3?1:0)+(d.exProt>=0.3?1:0)+(d.exGrasa>=0.3?1:0);
+    h+='<div style="background:rgba(100,212,245,.08);border:1px solid rgba(100,212,245,.3);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:.74rem;color:var(--blue);line-height:1.5">Este producto se cuenta como '+nn+' nutrientes que <b>SE SUMAN</b> (son cosas distintas: carbohidrato + proteina + grasa). Dentro de carbohidratos, elige <b>una sola</b> forma de contarlo.</div>';
+    var numI=0;
+    if(d.exCarb>=0.3){
+      numI++;
+      var perExC=d.porcionG/d.exCarb;
+      h+='<div style="display:flex;gap:10px;margin-bottom:12px">';
+      h+='<div style="flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#000;display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:800;font-size:.75rem">'+numI+'</div>';
+      h+='<div style="flex:1"><div style="font-size:.83rem;font-weight:700;margin-bottom:2px">Carbohidratos \u2248'+(Math.round(d.exCarb*10)/10)+' porciones</div>';
+      h+='<div style="font-size:.68rem;color:var(--muted);margin-bottom:6px">'+[1,2,3].map(function(n){return n+'p='+Math.round(perExC*n)+(d.tipo==='solido'?'g':'ml');}).join(' \u00b7 ')+'</div>';
+      h+='<div style="font-size:.7rem;color:var(--warn);margin-bottom:4px">Elige UNA opcion (no las 2):</div>';
+      h+='<div style="font-size:.76rem;padding:6px 8px;background:var(--card2);border-radius:8px;margin-bottom:4px">\u25cb Como <b>Cereal</b> - ej. Tortilla de maiz, Rice cake</div>';
+      h+='<div style="font-size:.76rem;padding:6px 8px;background:var(--card2);border-radius:8px">\u25cb Como <b>Fruta</b> - ej. Platano, Fresa</div>';
+      h+='</div></div>';
+    }
+    if(d.exProt>=0.3){
+      numI++;
+      var perExP=d.porcionG/d.exProt;
+      h+='<div style="display:flex;gap:10px;margin-bottom:12px">';
+      h+='<div style="flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#000;display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:800;font-size:.75rem">'+numI+'</div>';
+      h+='<div style="flex:1"><div style="font-size:.83rem;font-weight:700;margin-bottom:2px">Proteina \u2248'+(Math.round(d.exProt*10)/10)+' porciones</div>';
+      h+='<div style="font-size:.68rem;color:var(--muted);margin-bottom:4px">'+[1,2,3].map(function(n){return n+'p='+Math.round(perExP*n)+(d.tipo==='solido'?'g':'ml');}).join(' \u00b7 ')+'</div>';
+      h+='<div style="font-size:.76rem;padding:6px 8px;background:var(--card2);border-radius:8px">Ej. Pechuga de pollo asada, Huevo entero</div>';
+      h+='</div></div>';
+    }
+    if(d.exGrasa>=0.3){
+      numI++;
+      var perExG=d.porcionG/d.exGrasa;
+      h+='<div style="display:flex;gap:10px;margin-bottom:12px">';
+      h+='<div style="flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#000;display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:800;font-size:.75rem">'+numI+'</div>';
+      h+='<div style="flex:1"><div style="font-size:.83rem;font-weight:700;margin-bottom:2px">Grasas \u2248'+(Math.round(d.exGrasa*10)/10)+' porciones</div>';
+      h+='<div style="font-size:.68rem;color:var(--muted);margin-bottom:4px">'+[1,2,3].map(function(n){return n+'p='+Math.round(perExG*n)+(d.tipo==='solido'?'g':'ml');}).join(' \u00b7 ')+'</div>';
+      h+='<div style="font-size:.76rem;padding:6px 8px;background:var(--card2);border-radius:8px">Ej. Almendra, Aceite de oliva</div>';
+      h+='</div></div>';
+    }
+    h+='<div style="font-size:.68rem;color:var(--muted);margin-bottom:6px">Estimacion automatica por rangos - no reemplaza confirmar con Michelle si lo quieres agregar formalmente a tu lista.</div>';
+  } else {
+    h+='<div style="font-size:.78rem;color:var(--muted);margin-bottom:10px">Sus macros son muy bajos para equivaler a una porcion completa de algun grupo.</div>';
+  }
+
+  // Ingredientes
+  if(d.azucarasOcultas.length||d.edulcorantesEnc.length||d.irritantesEnc.length){
+    h+='<div class="stitle" style="margin:16px 0 8px">Ingredientes marcados</div>';
+    if(d.azucarasOcultas.length)h+='<div class="ptrow bad"><div>Tipos de azucar</div><div>'+d.azucarasOcultas.join(', ')+'</div></div>';
+    if(d.edulcorantesEnc.length)h+='<div class="ptrow"><div>Edulcorantes</div><div>'+d.edulcorantesEnc.join(', ')+'</div></div>';
+    if(d.irritantesEnc.length)h+='<div class="ptrow bad"><div>Posibles irritantes</div><div>'+d.irritantesEnc.join(', ')+'</div></div>';
+  }
+
+  // Horario y veredictos de meta
+  h+='<div class="stitle" style="margin:16px 0 8px">Horario recomendado</div><div style="font-size:.82rem;color:var(--muted);margin-bottom:14px">'+d.horario+'</div>';
+  h+='<div class="stitle" style="margin-bottom:8px">Para tus metas</div>';
+  h+='<div style="font-size:.82rem;color:var(--muted);margin-bottom:6px">\ud83d\udd25 Bajar grasa: '+d.veredictoGrasa+'</div>';
+  h+='<div style="font-size:.82rem;color:var(--muted)">\ud83e\udea0 Intestino/fibra: '+d.veredictoIntestino+'</div>';
+
+  h+='</div>';
+  document.getElementById('val-resultado').innerHTML=h;
+}
 var CHANGELOG=[
+  {v:'2.4.1',fecha:'2026-09-07',cambios:[
+    'Los 5 select desplegables del Validador (Tipo, Carbohidratos, Proteina, Grasa, Fibra) se cambiaron por botones que se eligen directo en la pantalla, sin abrir ningun menu aparte - mismo estilo que las pestanas de Equivalencias SMAE en Mi Plan',
+    'CORREGIDO (confusion): la seccion de equivalencias ahora numera cada nutriente (1, 2, 3) con una nota explicita arriba: "se cuenta como X nutrientes que SE SUMAN". Dentro de Carbohidratos, "Como Cereal" y "Como Fruta" ahora se muestran como 2 opciones separadas con la instruccion "Elige UNA opcion (no las 2)" en vez de una sola linea combinada que se prestaba a confusion'
+  ]},
+  {v:'2.4.0',fecha:'2026-09-07',cambios:[
+    'Validador: rediseno de UX para que sea mas rapido y menos confuso',
+    'Los sellos NOM-051 ya no se estiman con rangos - ahora son 7 checkboxes que copian directo los octagonos negros y leyendas que ya vienen en el frente del empaque (Exceso calorias/azucares/grasas saturadas/grasas trans/sodio, Contiene cafeina, Contiene edulcorantes). Mas rapido y mas exacto, porque es lo que el fabricante ya calculo y esta obligado a mostrar',
+    'De 9 selects de rango se bajo a solo 4 (Carbohidratos, Proteina, Grasas, Fibra) - los unicos que de verdad hacen falta para calcular las porciones SMAE, ya que no vienen en ningun sello',
+    'CORREGIDO (confusion importante): antes se mostraban 5 categorias de porciones (Cereal, Fruta, Proteina, Grasa, Lacteo) sin explicar que Cereal y Fruta salen del mismo calculo de carbohidratos - parecia que habia que sumar las 5. Ahora son 3 lecturas claras (Carbohidratos, Proteina, Grasas) con una nota explicando que estas 3 SI se suman entre si, pero que Carbohidratos se cuenta como cereal O como fruta, nunca las 2 juntas. Se quito la categoria Lacteos, que generaba mas confusion que ayuda'
+  ]},
+  {v:'2.3.1',fecha:'2026-09-07',cambios:[
+    'Validador rediseñado para ser mas rapido de llenar: los 8 campos de nutrientes (calorias, carbohidratos, azucares, grasas, grasas saturadas, grasas trans, proteina, fibra, sodio) ahora son selects de rango (Bajo/Moderado/Alto) en vez de pedir el numero exacto - eliges el rango que mas se acerca a la etiqueta',
+    'Nuevos checkboxes de tipos de azucar (azucar/mascabado, jarabes/miel/agave, dextrosa/glucosa/etc, maltodextrina, jugo concentrado) y tipos de edulcorante (artificiales, stevia, eritritol/xilitol), cada uno con su nota explicativa visible (ej. la nota de eritritol/xilitol y su posible efecto laxante)',
+    'Ya no depende de que pegues la lista completa de ingredientes para detectar azucares/edulcorantes - el texto de ingredientes ahora es opcional y solo se usa para detectar irritantes especificos (chile, cebolla, ajo, etc)',
+    'Los rangos estan calibrados para coincidir exactamente con los cortes oficiales de NOM-051 (ej. calorias "alto" = 275kcal o mas, que es justo el umbral del sello)'
+  ]},
+  {v:'2.3.0',fecha:'2026-09-06',cambios:[
+    'Nueva pestana "Validador" arriba de Mi Plan: calculadora de porciones y validador de productos empacados',
+    'Llena los datos de la tabla nutrimental (por porcion, como viene en la etiqueta) y calcula: sellos NOM-051 (formulas oficiales de %energia, DOF 27-mar-2020), clasificacion de cada nutriente (bajo/moderado/alto), a cuantas porciones SMAE equivale con desglose de gramos para 1/2/3 porciones, y a que alimento de tu lista se parece',
+    'Escanea la lista de ingredientes que pegues: detecta azucares con nombre disfrazado (jarabe de maiz, dextrosa, maltodextrina, etc), edulcorantes, y posibles irritantes segun tu plan anti-reflujo (chile, cebolla, ajo, chocolate, cafeina, etc)',
+    'Da recomendacion de horario, veredicto para bajar grasa y para salud intestinal/fibra, y una recomendacion final combinando sellos + tus restricciones especificas',
+    'Basado en 3 fuentes: umbrales oficiales NOM-051-SCFI/SSA1-2010, recomendaciones OMS/FAO e ISSN, y las restricciones de tu plan con Michelle',
+    'Es solo una calculadora de referencia - NO se guarda en tu historial ni afecta tus porciones del dia, tus graficas ni tus reportes'
+  ]},
   {v:'2.2.1',fecha:'2026-09-06',cambios:[
     'Quitado el checkbox "Dia libre esta semana" del dia que YA es tu descanso - era redundante con "Descanso completado" (dos checks para lo mismo). Ese checkbox solo aparece ahora en dias de entrenamiento (Frontal/Trasera/Abdomen), que es donde tiene sentido usarlo para mover el descanso hacia ahi',
     'Si moviste tu dia libre a un dia distinto de domingo, aparece una nota chiquita explicando como regresarlo (marcando el checkbox en el domingo de esa semana)'
