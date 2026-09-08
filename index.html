@@ -103,6 +103,11 @@ select{background:var(--card2);border:1px solid var(--border);color:var(--text);
 .val-rangebtn .t{font-size:.76rem;font-weight:700;font-family:'Syne',sans-serif;display:block;}
 .val-rangebtn .r{font-size:.62rem;font-weight:400;opacity:.8;display:block;margin-top:2px;}
 .val-rangebtn.active{background:var(--accent);color:#000;border-color:var(--accent);box-shadow:0 4px 14px -6px rgba(200,245,100,.5);}
+.val-chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px;}
+.val-chip{padding:9px 13px;border-radius:20px;border:1px solid var(--border);background:var(--card2);color:var(--muted);font-size:.76rem;cursor:pointer;font-family:'Syne',sans-serif;font-weight:600;transition:all .15s;}
+.val-chip.active{background:var(--bad);color:#fff;border-color:var(--bad);}
+.val-nonebtn{display:block;text-align:center;padding:9px;border-radius:10px;border:1px solid var(--border);background:var(--card2);color:var(--muted);font-size:.78rem;cursor:pointer;font-family:'Syne',sans-serif;font-weight:700;}
+.val-nonebtn.active{background:var(--good);color:#000;border-color:var(--good);}
 input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(200,245,100,.12);}
 .savebtn{background:var(--accent);color:#000;border:none;border-radius:12px;padding:11px 18px;font-family:'Syne',sans-serif;font-weight:800;font-size:.88rem;cursor:pointer;white-space:nowrap;box-shadow:0 6px 18px -8px rgba(200,245,100,.55);}
 .sum-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:.83rem;}
@@ -181,7 +186,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
 </div>
 
 <div class="page active" id="page-dash">
-  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.4.1</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
+  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.5.2</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
   <div class="sec">
     <div class="ptabs">
       <div class="pt active" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
@@ -576,61 +581,93 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
 
       <div class="stitle" style="margin-bottom:4px">Sellos que ves en el empaque</div>
       <div class="val-note" style="margin-top:0">Son los octagonos negros que ya trae el frente por ley - solo marca los que veas, no calcules nada.</div>
-      <label class="val-check"><input type="checkbox" id="val-s-kcal" style="width:auto">EXCESO CALORIAS</label>
-      <label class="val-check"><input type="checkbox" id="val-s-azucar" style="width:auto">EXCESO AZUCARES</label>
-      <label class="val-check"><input type="checkbox" id="val-s-grasasat" style="width:auto">EXCESO GRASAS SATURADAS</label>
-      <label class="val-check"><input type="checkbox" id="val-s-grasatrans" style="width:auto">EXCESO GRASAS TRANS</label>
-      <label class="val-check"><input type="checkbox" id="val-s-sodio" style="width:auto">EXCESO SODIO</label>
-      <label class="val-check"><input type="checkbox" id="val-s-cafeina" style="width:auto">CONTIENE CAFEINA</label>
-      <label class="val-check"><input type="checkbox" id="val-s-edulcorante" style="width:auto">CONTIENE EDULCORANTES</label>
-      <div class="val-note">Si el empaque no trae ningun octagono (o es un producto sin etiqueta, como fruta suelta), deja todo sin marcar.</div>
+
+      <div class="val-chips" id="val-sellos-chips">
+        <div class="val-chip" data-v="s-kcal" onclick="valToggleSello(this)">Exceso calorias</div>
+        <div class="val-chip" data-v="s-azucar" onclick="valToggleSello(this)">Exceso azucares</div>
+        <div class="val-chip" data-v="s-grasasat" onclick="valToggleSello(this)">Exceso grasas saturadas</div>
+        <div class="val-chip" data-v="s-grasatrans" onclick="valToggleSello(this)">Exceso grasas trans</div>
+        <div class="val-chip" data-v="s-sodio" onclick="valToggleSello(this)">Exceso sodio</div>
+        <div class="val-chip" data-v="s-cafeina" onclick="valToggleSello(this)">Contiene cafeina</div>
+        <div class="val-chip" data-v="s-edulcorante" onclick="valToggleSello(this)">Contiene edulcorantes</div>
+      </div>
+      <div class="val-nonebtn active" id="val-sellos-none" onclick="valNoSellos()">No tiene sellos</div>
+      <div class="val-note">Toca cada sello que veas en el paquete (se pueden marcar varios) - si no trae ninguno, deja "No tiene sellos" activo.</div>
+
+      <div class="stitle" style="margin:16px 0 4px">¿Quieres el numero exacto? (opcional)</div>
+      <div class="val-note" style="margin-top:0">El sello ya te dice si "excede o no", pero si te importa el numero preciso de calorias o azucar, escribelo aqui - lo uso para darte mas detalle.</div>
+      <input type="number" inputmode="decimal" id="val-kcal-exacto" placeholder="Energia exacta (kcal por porcion)" style="margin-bottom:8px">
+      <input type="number" inputmode="decimal" id="val-azucar-total-exacto" placeholder="Azucares totales exactos (g por porcion)" style="margin-bottom:8px">
+      <input type="number" inputmode="decimal" id="val-azucar-anadido-exacto" placeholder="Azucares añadidos exactos (g por porcion)">
+      <div class="val-note">Azucares totales incluye los naturales (de fruta/leche); azucares añadidos es solo lo que el fabricante agrego - la OMS solo pone limite a los añadidos (25g/dia).</div>
 
       <div class="stitle" style="margin:16px 0 4px">Para calcular tus porciones SMAE</div>
       <div class="val-note" style="margin-top:0">Esto si necesito estimarlo, porque no viene en ningun sello - elige el rango de la tabla nutrimental (columna "por 100g" o "por 100ml").</div>
 
       <div style="margin-bottom:14px"><label class="val-lbl">Carbohidratos totales</label>
       <div class="val-rangebtns" id="val-carb-group">
+        <div class="val-rangebtn active" data-v="notiene" onclick="valPick('carb',this)"><span class="t">No tiene</span><span class="r">0g</span></div>
         <div class="val-rangebtn" data-v="bajo" onclick="valPick('carb',this)"><span class="t">Bajo</span><span class="r">&lt;10g</span></div>
-        <div class="val-rangebtn active" data-v="moderado" onclick="valPick('carb',this)"><span class="t">Moderado</span><span class="r">10-20g</span></div>
+        <div class="val-rangebtn" data-v="moderado" onclick="valPick('carb',this)"><span class="t">Moderado</span><span class="r">10-20g</span></div>
         <div class="val-rangebtn" data-v="alto" onclick="valPick('carb',this)"><span class="t">Alto</span><span class="r">&gt;20g</span></div>
       </div></div>
 
       <div style="margin-bottom:14px"><label class="val-lbl">Proteina</label>
       <div class="val-rangebtns" id="val-proteina-group">
+        <div class="val-rangebtn active" data-v="notiene" onclick="valPick('proteina',this)"><span class="t">No tiene</span><span class="r">0g</span></div>
         <div class="val-rangebtn" data-v="bajo" onclick="valPick('proteina',this)"><span class="t">Bajo</span><span class="r">&lt;5g</span></div>
-        <div class="val-rangebtn active" data-v="moderado" onclick="valPick('proteina',this)"><span class="t">Moderado</span><span class="r">5-20g</span></div>
+        <div class="val-rangebtn" data-v="moderado" onclick="valPick('proteina',this)"><span class="t">Moderado</span><span class="r">5-20g</span></div>
         <div class="val-rangebtn" data-v="alto" onclick="valPick('proteina',this)"><span class="t">Alto</span><span class="r">&gt;20g \ud83d\udc4d</span></div>
       </div></div>
 
       <div style="margin-bottom:14px"><label class="val-lbl">Grasas totales</label>
+      <div class="val-note" style="margin-top:0">Usa solo el numero de "Grasas totales" de la tabla - no necesitas separar saturadas/trans/etc, eso ya lo cubriste arriba con los sellos.</div>
       <div class="val-rangebtns" id="val-grasa-group">
+        <div class="val-rangebtn active" data-v="notiene" onclick="valPick('grasa',this)"><span class="t">No tiene</span><span class="r">0g</span></div>
         <div class="val-rangebtn" data-v="bajo" onclick="valPick('grasa',this)"><span class="t">Bajo</span><span class="r">&lt;3g</span></div>
-        <div class="val-rangebtn active" data-v="moderado" onclick="valPick('grasa',this)"><span class="t">Moderado</span><span class="r">3-17g</span></div>
+        <div class="val-rangebtn" data-v="moderado" onclick="valPick('grasa',this)"><span class="t">Moderado</span><span class="r">3-17g</span></div>
         <div class="val-rangebtn" data-v="alto" onclick="valPick('grasa',this)"><span class="t">Alto</span><span class="r">&gt;17g</span></div>
       </div></div>
 
       <div style="margin-bottom:4px"><label class="val-lbl">Fibra</label>
       <div class="val-rangebtns" id="val-fibra-group">
+        <div class="val-rangebtn active" data-v="notiene" onclick="valPick('fibra',this)"><span class="t">No tiene</span><span class="r">0g</span></div>
         <div class="val-rangebtn" data-v="bajo" onclick="valPick('fibra',this)"><span class="t">Bajo</span><span class="r">&lt;3g</span></div>
-        <div class="val-rangebtn active" data-v="moderado" onclick="valPick('fibra',this)"><span class="t">Moderado</span><span class="r">3-6g</span></div>
+        <div class="val-rangebtn" data-v="moderado" onclick="valPick('fibra',this)"><span class="t">Moderado</span><span class="r">3-6g</span></div>
         <div class="val-rangebtn" data-v="alto" onclick="valPick('fibra',this)"><span class="t">Alto</span><span class="r">&gt;6g \ud83d\udc4d</span></div>
       </div></div>
       <div class="val-note">No hay sello de fibra (es a tu favor, no en contra) pero la uso para tu meta de intestino.</div>
 
-      <div class="stitle" style="margin:16px 0 8px">Tipos de azucar presentes (marca los que apliquen)</div>
-      <label class="val-check"><input type="checkbox" id="val-az-clasica" style="width:auto">Azucar, azucar morena, mascabado</label>
-      <label class="val-check"><input type="checkbox" id="val-az-jarabes" style="width:auto">Jarabe de maiz (incl. alta fructosa), agave, miel, melaza, piloncillo</label>
-      <label class="val-check"><input type="checkbox" id="val-az-tecnica" style="width:auto">Dextrosa, glucosa, fructosa, sacarosa, maltosa, lactosa</label>
-      <label class="val-check"><input type="checkbox" id="val-az-malto" style="width:auto">Maltodextrina</label>
-      <div class="val-note">La maltodextrina no siempre aparece como "azucar" en la tabla, pero tu cuerpo la absorbe casi igual de rapido - cuenta como azucar oculta.</div>
-      <label class="val-check"><input type="checkbox" id="val-az-jugo" style="width:auto">Concentrado o jugo de fruta concentrado</label>
+      <div class="stitle" style="margin:16px 0 8px">Ingrediente principal de azucar (marca si aplica)</div>
+      <div class="val-note" style="margin-top:0">No busques el nombre exacto - solo checa si es de las comunes o de las "disfrazadas".</div>
+
+      <div style="margin-bottom:10px"><label class="val-lbl">Azucar/es (azucar, jarabe de maiz, miel, agave, piloncillo, dextrosa, fructosa, etc)</label>
+      <div class="val-rangebtns" id="val-az-comun-group">
+        <div class="val-rangebtn active" data-v="no" onclick="valPick('az-comun',this)"><span class="t">No tiene</span></div>
+        <div class="val-rangebtn" data-v="si" onclick="valPick('az-comun',this)"><span class="t">Si tiene</span></div>
+      </div></div>
+
+      <div style="margin-bottom:4px"><label class="val-lbl">Maltodextrina o jugo/concentrado de fruta</label>
+      <div class="val-rangebtns" id="val-az-oculta-group">
+        <div class="val-rangebtn active" data-v="no" onclick="valPick('az-oculta',this)"><span class="t">No tiene</span></div>
+        <div class="val-rangebtn" data-v="si" onclick="valPick('az-oculta',this)"><span class="t">Si tiene</span></div>
+      </div></div>
+      <div class="val-note">Estas 2 no siempre dicen "azucar" en la tabla, pero tu cuerpo las absorbe casi igual de rapido - cuentan como azucar oculta.</div>
 
       <div class="stitle" style="margin:16px 0 8px">¿Que tipo de edulcorante trae?</div>
-      <label class="val-check"><input type="checkbox" id="val-ed-artificial" style="width:auto">Sucralosa, aspartame, acesulfame K, sacarina, neotame</label>
+
+      <div style="margin-bottom:10px"><label class="val-lbl">Sucralosa, aspartame, stevia, acesulfame K, sacarina (cualquier edulcorante sin calorias)</label>
+      <div class="val-rangebtns" id="val-ed-comun-group">
+        <div class="val-rangebtn active" data-v="no" onclick="valPick('ed-comun',this)"><span class="t">No tiene</span></div>
+        <div class="val-rangebtn" data-v="si" onclick="valPick('ed-comun',this)"><span class="t">Si tiene</span></div>
+      </div></div>
       <div class="val-note">Aceptables en general para tu meta de bajar grasa - no cuentan como azucar.</div>
-      <label class="val-check"><input type="checkbox" id="val-ed-stevia" style="width:auto">Stevia (glucosidos de esteviol)</label>
-      <div class="val-note">Edulcorante natural, aceptable.</div>
-      <label class="val-check"><input type="checkbox" id="val-ed-poliol" style="width:auto">Eritritol o xilitol</label>
+
+      <div style="margin-bottom:4px"><label class="val-lbl">Eritritol o xilitol</label>
+      <div class="val-rangebtns" id="val-ed-poliol-group">
+        <div class="val-rangebtn active" data-v="no" onclick="valPick('ed-poliol',this)"><span class="t">No tiene</span></div>
+        <div class="val-rangebtn" data-v="si" onclick="valPick('ed-poliol',this)"><span class="t">Si tiene</span></div>
+      </div></div>
       <div class="val-note">En exceso pueden tener efecto laxante - relevante para tu contador de bano.</div>
 
       <div class="stitle" style="margin:16px 0 8px">Irritantes en ingredientes (opcional)</div>
@@ -733,7 +770,7 @@ var EQ={verduras:[{n:'Acelga cocida',q:'1/2 taza'},{n:'Alcachofa cocida',q:'1/2 
 function todayKey(){var nd=new Date(new Date().toLocaleString('en-US',{timeZone:'America/Mexico_City'}));return nd.getFullYear()+'-'+String(nd.getMonth()+1).padStart(2,'0')+'-'+String(nd.getDate()).padStart(2,'0');}
 function keyOf(d){var nd=new Date(d.toLocaleString('en-US',{timeZone:'America/Mexico_City'}));return nd.getFullYear()+'-'+String(nd.getMonth()+1).padStart(2,'0')+'-'+String(nd.getDate()).padStart(2,'0');}
 function ls(){try{return JSON.parse(localStorage.getItem('nt4')||'{}');}catch(e){return {};}}
-function ss(s){localStorage.setItem('nt4',JSON.stringify(s));}
+function ss(s){localStorage.setItem('nt4',JSON.stringify(s));localStorage.setItem('nt4_updated',new Date().toISOString());}
 function gcfg(){try{return JSON.parse(localStorage.getItem('ntcfg')||'{}');}catch(e){return {};}}
 function scfg(c){localStorage.setItem('ntcfg',JSON.stringify(c));}
 function gd(k){var s=ls();if(!s[k])s[k]={water:0,mp:{},mc:[],sc:[],ch:[],foods:{},ex:0,sl:0};if(!s[k].foods)s[k].foods={};if(s[k].ex===undefined)s[k].ex=0;if(s[k].sl===undefined)s[k].sl=0;if(s[k].rfd===undefined)s[k].rfd=false;if(s[k].rfn===undefined)s[k].rfn=false;return s[k];}
@@ -744,7 +781,7 @@ function gw(){try{return JSON.parse(localStorage.getItem('wts')||'[]');}catch(e)
 function sw(w){localStorage.setItem('wts',JSON.stringify(w));autoSync();}
 function updateCloudUI(state){var dot=document.getElementById('cloudDot');var txt=document.getElementById('cloudTxt');if(!dot)return;if(state==='ok'){dot.style.background='var(--good)';txt.textContent='nube OK';}else if(state==='sync'){dot.style.background='var(--warn)';txt.textContent='sincronizando...';}else if(state==='err'){dot.style.background='var(--bad)';txt.textContent='error nube';}else{dot.style.background='var(--muted)';txt.textContent='sin nube';}}
 function cloudSync(){var cfg=gcfg();if(!cfg.token||!cfg.gist){toast('Configura la nube primero');showSetup();return;}updateCloudUI('sync');var data={nt4:localStorage.getItem('nt4'),wts:localStorage.getItem('wts'),updated:new Date().toISOString()};fetch('https://api.github.com/gists/'+cfg.gist,{method:'PATCH',headers:{'Authorization':'token '+cfg.token,'Content-Type':'application/json'},body:JSON.stringify({files:{'data.json':{content:JSON.stringify(data)}}})}).then(function(r){if(r.ok){updateCloudUI('ok');toast('Sincronizado');}else{updateCloudUI('err');toast('Error');}}).catch(function(){updateCloudUI('err');toast('Sin conexion');});}
-function cloudLoad(){var cfg=gcfg();if(!cfg.token||!cfg.gist){updateCloudUI('off');return;}updateCloudUI('sync');fetch('https://api.github.com/gists/'+cfg.gist,{headers:{'Authorization':'token '+cfg.token}}).then(function(r){return r.json();}).then(function(data){var content=data.files&&data.files['data.json']&&data.files['data.json'].content;if(content){var parsed=JSON.parse(content);if(parsed.nt4)localStorage.setItem('nt4',parsed.nt4);if(parsed.wts)localStorage.setItem('wts',parsed.wts);updateCloudUI('ok');renderDash();toast('Datos cargados de la nube');}else{cloudSync();}}).catch(function(){updateCloudUI('err');});}
+function cloudLoad(){var cfg=gcfg();if(!cfg.token||!cfg.gist){updateCloudUI('off');return;}updateCloudUI('sync');fetch('https://api.github.com/gists/'+cfg.gist,{headers:{'Authorization':'token '+cfg.token}}).then(function(r){return r.json();}).then(function(data){var content=data.files&&data.files['data.json']&&data.files['data.json'].content;if(content){var parsed=JSON.parse(content);var localUpdated=localStorage.getItem('nt4_updated');var cloudUpdated=parsed.updated;if(localUpdated&&cloudUpdated&&new Date(localUpdated)>new Date(cloudUpdated)){updateCloudUI('ok');cloudSync();return;}if(parsed.nt4)localStorage.setItem('nt4',parsed.nt4);if(parsed.wts)localStorage.setItem('wts',parsed.wts);updateCloudUI('ok');renderDash();toast('Datos cargados de la nube');}else{cloudSync();}}).catch(function(){updateCloudUI('err');});}
 function showSetup(){var cfg=gcfg();if(cfg.token)document.getElementById('setup-token').value=cfg.token;if(cfg.gist)document.getElementById('setup-gist').value=cfg.gist;document.getElementById('setupModal').style.display='flex';}
 function saveSetup(){var token=document.getElementById('setup-token').value.trim();var gist=document.getElementById('setup-gist').value.trim();if(!token||!gist){toast('Completa ambos campos');return;}scfg({token:token,gist:gist});document.getElementById('setupModal').style.display='none';toast('Configuracion guardada');cloudLoad();}
 function backupData(){var data={nt4:localStorage.getItem('nt4'),wts:localStorage.getItem('wts'),fecha:todayKey()};var blob=new Blob([JSON.stringify(data)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='nutritrack_backup_'+todayKey()+'.json';a.click();toast('Backup descargado');}
@@ -1641,10 +1678,10 @@ function buildWP(){var wp=document.getElementById('wpt');if(!wp||wp.innerHTML!==
 
 // Valor representativo de cada rango (para poder pasar de "rango elegido" a gramos aproximados)
 var VAL_REP={
-  carb:{bajo:5,moderado:15,alto:30},
-  proteina:{bajo:2.5,moderado:12,alto:28},
-  grasa:{bajo:1.5,moderado:10,alto:25},
-  fibra:{bajo:1.5,moderado:4.5,alto:9}
+  carb:{notiene:0,bajo:5,moderado:15,alto:30},
+  proteina:{notiene:0,bajo:2.5,moderado:12,alto:28},
+  grasa:{notiene:0,bajo:1.5,moderado:10,alto:25},
+  fibra:{notiene:0,bajo:1.5,moderado:4.5,alto:9}
 };
 
 // Ingredientes que chocan con tu plan anti-reflujo (segun lo que ya tienes marcado como NO recomendado)
@@ -1652,13 +1689,32 @@ var VAL_IRRITANTES=['chile','picante','cebolla','ajo','menta','chocolate','cafei
 
 function _valNorm(s){return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');}
 
-// Estado de los botones de rango (reemplaza a los <select> - todo se elige en la misma pantalla)
-var valState={tipo:'solido',carb:'moderado',proteina:'moderado',grasa:'moderado',fibra:'moderado'};
+// Estado de todos los botones (rangos y si/no) - todo se elige en la misma pantalla, sin desplegables.
+// Todos inician en "no tiene" - si no aparece en la etiqueta, se asume que no se usa.
+var valState={
+  tipo:'solido',carb:'notiene',proteina:'notiene',grasa:'notiene',fibra:'notiene',
+  's-kcal':'no','s-azucar':'no','s-grasasat':'no','s-grasatrans':'no','s-sodio':'no','s-cafeina':'no','s-edulcorante':'no',
+  'az-comun':'no','az-oculta':'no','ed-comun':'no','ed-poliol':'no'
+};
 function valPick(group,btn){
   valState[group]=btn.dataset.v;
   var group_el=btn.parentElement;
   group_el.querySelectorAll('.val-rangebtn').forEach(function(b){b.classList.remove('active');});
   btn.classList.add('active');
+}
+// valToggleSello: cada sello es su propio boton (se pueden marcar varios a la vez).
+// Si queda alguno activo, "No tiene sellos" se apaga solo; si no queda ninguno, se prende solo.
+function valToggleSello(chip){
+  var willActivate=!chip.classList.contains('active');
+  chip.classList.toggle('active');
+  valState[chip.dataset.v]=willActivate?'si':'no';
+  var anyActive=false;
+  document.querySelectorAll('.val-chip').forEach(function(c){if(c.classList.contains('active'))anyActive=true;});
+  document.getElementById('val-sellos-none').classList.toggle('active',!anyActive);
+}
+function valNoSellos(){
+  document.querySelectorAll('.val-chip').forEach(function(c){c.classList.remove('active');valState[c.dataset.v]='no';});
+  document.getElementById('val-sellos-none').classList.add('active');
 }
 
 function validarProducto(){
@@ -1667,18 +1723,30 @@ function validarProducto(){
   var bolsaG=parseFloat(document.getElementById('val-bolsa-g').value)||0;
   var porcionG=parseFloat(document.getElementById('val-porcion-g').value)||0;
 
-  // ── 1. Sellos: se leen directo de los checkboxes (lo que el usuario YA ve en el paquete) ──
+  // ── 1. Sellos: se leen directo de los botones (lo que el usuario YA ve en el paquete) ──
   var sellos=[];
-  if(document.getElementById('val-s-kcal').checked)sellos.push('Exceso calorias');
-  if(document.getElementById('val-s-azucar').checked)sellos.push('Exceso azucares');
-  if(document.getElementById('val-s-grasasat').checked)sellos.push('Exceso grasas saturadas');
-  if(document.getElementById('val-s-grasatrans').checked)sellos.push('Exceso grasas trans');
-  if(document.getElementById('val-s-sodio').checked)sellos.push('Exceso sodio');
-  var tieneCafeina=document.getElementById('val-s-cafeina').checked;
-  var tieneEdulcoranteSello=document.getElementById('val-s-edulcorante').checked;
+  if(valState['s-kcal']==='si')sellos.push('Exceso calorias');
+  if(valState['s-azucar']==='si')sellos.push('Exceso azucares');
+  if(valState['s-grasasat']==='si')sellos.push('Exceso grasas saturadas');
+  if(valState['s-grasatrans']==='si')sellos.push('Exceso grasas trans');
+  if(valState['s-sodio']==='si')sellos.push('Exceso sodio');
+  var tieneCafeina=valState['s-cafeina']==='si';
+  var tieneEdulcoranteSello=valState['s-edulcorante']==='si';
   var semaforo=sellos.length===0?'verde':sellos.length===1?'amarillo':'rojo';
   var semColor=semaforo==='verde'?'var(--good)':semaforo==='amarillo'?'var(--warn)':'var(--bad)';
   var semEmoji=semaforo==='verde'?'\ud83d\udfe2':semaforo==='amarillo'?'\ud83d\udfe1':'\ud83d\udd34';
+
+  // ── 1b. Numeros exactos opcionales (si al usuario le importa el dato preciso, no solo el sello) ──
+  var kcalExacto=parseFloat(document.getElementById('val-kcal-exacto').value);kcalExacto=isNaN(kcalExacto)?null:kcalExacto;
+  var azTotalExacto=parseFloat(document.getElementById('val-azucar-total-exacto').value);azTotalExacto=isNaN(azTotalExacto)?null:azTotalExacto;
+  var azAnadidoExacto=parseFloat(document.getElementById('val-azucar-anadido-exacto').value);azAnadidoExacto=isNaN(azAnadidoExacto)?null:azAnadidoExacto;
+  var kcalAvisoMismatch=null;
+  if(kcalExacto!==null&&porcionG>0){
+    var kcal100Real=kcalExacto*100/porcionG;
+    var umbralKcal=tipo==='solido'?275:70;
+    var cruzaUmbral=kcal100Real>=umbralKcal;
+    if(cruzaUmbral&&valState['s-kcal']!=='si'){kcalAvisoMismatch='Segun tu numero ('+Math.round(kcal100Real)+'kcal/100'+(tipo==='solido'?'g':'ml')+'), este producto SI cruzaria el umbral de Exceso calorias aunque no marcaste ese sello - revisa si el paquete lo trae.';}
+  }
 
   // ── 2. Rangos para calcular porciones SMAE (esto no viene en ningun sello) ──
   var carbB=valState.carb;
@@ -1686,14 +1754,10 @@ function validarProducto(){
   var grasaB=valState.grasa;
   var fibraB=valState.fibra;
 
-  var azClasica=document.getElementById('val-az-clasica').checked;
-  var azJarabes=document.getElementById('val-az-jarabes').checked;
-  var azTecnica=document.getElementById('val-az-tecnica').checked;
-  var azMalto=document.getElementById('val-az-malto').checked;
-  var azJugo=document.getElementById('val-az-jugo').checked;
-  var edArtificial=document.getElementById('val-ed-artificial').checked;
-  var edStevia=document.getElementById('val-ed-stevia').checked;
-  var edPoliol=document.getElementById('val-ed-poliol').checked;
+  var azComun=valState['az-comun']==='si';
+  var azOculta=valState['az-oculta']==='si';
+  var edComun=valState['ed-comun']==='si';
+  var edPoliol=valState['ed-poliol']==='si';
   var ingredientesTxt=document.getElementById('val-ingredientes').value;
 
   if(porcionG<=0){
@@ -1704,19 +1768,16 @@ function validarProducto(){
   // ── 3. Porciones SMAE: 3 lecturas por macro, se SUMAN entre si (son nutrientes distintos),
   //    pero Carbohidratos se cuenta como cereal O como fruta, nunca las 2 al mismo tiempo ──
   var carb100=VAL_REP.carb[carbB], proteina100=VAL_REP.proteina[proteinaB], grasa100=VAL_REP.grasa[grasaB];
-  var carbPorcion=carb100*porcionG/100, proteinaPorcion=proteina100*porcionG/100, grasaPorcion=grasa100*porcionG/100;
-  var exCarb=carbPorcion/15, exProt=proteinaPorcion/7, exGrasa=grasaPorcion/5;
+  var baseG=bolsaG>0?bolsaG:porcionG;
+  var carbBase=carb100*baseG/100, proteinaBase=proteina100*baseG/100, grasaBase=grasa100*baseG/100;
+  var exCarb=carbBase/15, exProt=proteinaBase/7, exGrasa=grasaBase/5;
 
   // ── 4. Azucares/edulcorantes + escaneo de irritantes en ingredientes (opcional) ──
   var azucarasOcultas=[];
-  if(azClasica)azucarasOcultas.push('azucar/mascabado');
-  if(azJarabes)azucarasOcultas.push('jarabes/miel/agave');
-  if(azTecnica)azucarasOcultas.push('dextrosa/glucosa/fructosa/etc');
-  if(azMalto)azucarasOcultas.push('maltodextrina');
-  if(azJugo)azucarasOcultas.push('jugo concentrado');
+  if(azComun)azucarasOcultas.push('azucar (comun)');
+  if(azOculta)azucarasOcultas.push('maltodextrina/jugo concentrado (disfrazada)');
   var edulcorantesEnc=[];
-  if(edArtificial)edulcorantesEnc.push('artificiales (sucralosa/aspartame/etc)');
-  if(edStevia)edulcorantesEnc.push('stevia');
+  if(edComun)edulcorantesEnc.push('sin calorias (sucralosa/stevia/etc)');
   if(edPoliol)edulcorantesEnc.push('eritritol/xilitol');
   if(tieneEdulcoranteSello&&!edulcorantesEnc.length)edulcorantesEnc.push('tipo no especificado (marca cual arriba si lo sabes)');
   var ingN=_valNorm(ingredientesTxt);
@@ -1744,8 +1805,9 @@ function validarProducto(){
   else{veredictoFinal='Buena opcion segun sus sellos - sin excesos marcados por NOM-051.';veredictoColor='var(--good)';}
 
   renderValResultado({
-    nombre:nombre,tipo:tipo,bolsaG:bolsaG,porcionG:porcionG,
+    nombre:nombre,tipo:tipo,bolsaG:bolsaG,porcionG:porcionG,baseG:baseG,
     sellos:sellos,semaforo:semaforo,semColor:semColor,semEmoji:semEmoji,
+    kcalExacto:kcalExacto,azTotalExacto:azTotalExacto,azAnadidoExacto:azAnadidoExacto,kcalAvisoMismatch:kcalAvisoMismatch,
     exCarb:exCarb,exProt:exProt,exGrasa:exGrasa,fibraB:fibraB,proteinaB:proteinaB,
     azucarasOcultas:azucarasOcultas,edulcorantesEnc:edulcorantesEnc,irritantesEnc:irritantesEnc,
     horario:horario,veredictoGrasa:veredictoGrasa,veredictoIntestino:veredictoIntestino,
@@ -1753,6 +1815,19 @@ function validarProducto(){
   });
 }
 
+// valFraccionar: desglose de porciones SIEMPRE dentro de lo que realmente tienes (baseG),
+// nunca pide mas cantidad de la que existe en el paquete/porcion.
+function valFraccionar(baseG,totalEx){
+  if(totalEx<1){
+    return [0.25,0.5,0.75,1].map(function(frac){return {l:Math.round(frac*100)+'%',g:Math.round(baseG*frac),p:Math.round(totalEx*frac*10)/10};});
+  }
+  var maxWhole=Math.min(Math.floor(totalEx),4);
+  var arr=[];
+  for(var n=1;n<=maxWhole;n++)arr.push({l:n+'p',g:Math.round(baseG*n/totalEx),p:n});
+  var totalRound=Math.round(totalEx*10)/10;
+  if(totalRound>maxWhole)arr.push({l:'Todo',g:Math.round(baseG),p:totalRound});
+  return arr;
+}
 function renderValResultado(d){
   var h='<div class="card">';
 
@@ -1770,20 +1845,35 @@ function renderValResultado(d){
   // Veredicto final
   h+='<div style="background:rgba(255,255,255,.03);border:1px solid '+d.veredictoColor+';border-radius:10px;padding:10px 12px;margin-bottom:14px;font-size:.82rem;color:'+d.veredictoColor+'">'+d.veredictoFinal+'</div>';
 
+  // Numeros exactos (si el usuario los dio)
+  if(d.kcalExacto!==null||d.azTotalExacto!==null||d.azAnadidoExacto!==null){
+    h+='<div class="stitle" style="margin-bottom:8px">Numeros exactos que diste</div>';
+    if(d.kcalExacto!==null)h+='<div class="ptrow"><div>Energia</div><div>'+d.kcalExacto+' kcal/porcion</div></div>';
+    if(d.azTotalExacto!==null)h+='<div class="ptrow"><div>Azucares totales</div><div>'+d.azTotalExacto+' g/porcion</div></div>';
+    if(d.azAnadidoExacto!==null){
+      var pctOMS=Math.round(d.azAnadidoExacto/25*100);
+      h+='<div class="ptrow'+(pctOMS>=100?' bad':'')+'"><div>Azucares añadidos</div><div>'+d.azAnadidoExacto+'g = '+pctOMS+'% de tu limite diario OMS (25g)</div></div>';
+    }
+    if(d.kcalAvisoMismatch)h+='<div style="font-size:.72rem;color:var(--warn);margin-top:8px;line-height:1.4">\u26a0 '+d.kcalAvisoMismatch+'</div>';
+    h+='<div style="margin-bottom:6px"></div>';
+  }
+
   // ── Porciones SMAE: 3 lecturas claras que se SUMAN, con nota anti-confusion ──
   var hayAlgo=(d.exCarb>=0.3||d.exProt>=0.3||d.exGrasa>=0.3);
   h+='<div class="stitle" style="margin-bottom:6px">A cuantas porciones SMAE equivale</div>';
   if(hayAlgo){
     var nn=(d.exCarb>=0.3?1:0)+(d.exProt>=0.3?1:0)+(d.exGrasa>=0.3?1:0);
+    var unit=d.tipo==='solido'?'g':'ml';
+    h+='<div style="font-size:.68rem;color:var(--muted);margin-bottom:8px">Calculado sobre '+d.baseG+unit+' ('+(d.bolsaG>0?'el paquete completo':'la porcion que diste')+') - los gramos de abajo nunca pasan de eso.</div>';
     h+='<div style="background:rgba(100,212,245,.08);border:1px solid rgba(100,212,245,.3);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:.74rem;color:var(--blue);line-height:1.5">Este producto se cuenta como '+nn+' nutrientes que <b>SE SUMAN</b> (son cosas distintas: carbohidrato + proteina + grasa). Dentro de carbohidratos, elige <b>una sola</b> forma de contarlo.</div>';
     var numI=0;
     if(d.exCarb>=0.3){
       numI++;
-      var perExC=d.porcionG/d.exCarb;
+      var fC=valFraccionar(d.baseG,d.exCarb);
       h+='<div style="display:flex;gap:10px;margin-bottom:12px">';
       h+='<div style="flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#000;display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:800;font-size:.75rem">'+numI+'</div>';
       h+='<div style="flex:1"><div style="font-size:.83rem;font-weight:700;margin-bottom:2px">Carbohidratos \u2248'+(Math.round(d.exCarb*10)/10)+' porciones</div>';
-      h+='<div style="font-size:.68rem;color:var(--muted);margin-bottom:6px">'+[1,2,3].map(function(n){return n+'p='+Math.round(perExC*n)+(d.tipo==='solido'?'g':'ml');}).join(' \u00b7 ')+'</div>';
+      h+='<div style="font-size:.68rem;color:var(--muted);margin-bottom:6px">'+fC.map(function(x){return x.l+'='+x.g+unit+' ('+x.p+'p)';}).join(' \u00b7 ')+'</div>';
       h+='<div style="font-size:.7rem;color:var(--warn);margin-bottom:4px">Elige UNA opcion (no las 2):</div>';
       h+='<div style="font-size:.76rem;padding:6px 8px;background:var(--card2);border-radius:8px;margin-bottom:4px">\u25cb Como <b>Cereal</b> - ej. Tortilla de maiz, Rice cake</div>';
       h+='<div style="font-size:.76rem;padding:6px 8px;background:var(--card2);border-radius:8px">\u25cb Como <b>Fruta</b> - ej. Platano, Fresa</div>';
@@ -1791,21 +1881,21 @@ function renderValResultado(d){
     }
     if(d.exProt>=0.3){
       numI++;
-      var perExP=d.porcionG/d.exProt;
+      var fP=valFraccionar(d.baseG,d.exProt);
       h+='<div style="display:flex;gap:10px;margin-bottom:12px">';
       h+='<div style="flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#000;display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:800;font-size:.75rem">'+numI+'</div>';
       h+='<div style="flex:1"><div style="font-size:.83rem;font-weight:700;margin-bottom:2px">Proteina \u2248'+(Math.round(d.exProt*10)/10)+' porciones</div>';
-      h+='<div style="font-size:.68rem;color:var(--muted);margin-bottom:4px">'+[1,2,3].map(function(n){return n+'p='+Math.round(perExP*n)+(d.tipo==='solido'?'g':'ml');}).join(' \u00b7 ')+'</div>';
+      h+='<div style="font-size:.68rem;color:var(--muted);margin-bottom:4px">'+fP.map(function(x){return x.l+'='+x.g+unit+' ('+x.p+'p)';}).join(' \u00b7 ')+'</div>';
       h+='<div style="font-size:.76rem;padding:6px 8px;background:var(--card2);border-radius:8px">Ej. Pechuga de pollo asada, Huevo entero</div>';
       h+='</div></div>';
     }
     if(d.exGrasa>=0.3){
       numI++;
-      var perExG=d.porcionG/d.exGrasa;
+      var fG=valFraccionar(d.baseG,d.exGrasa);
       h+='<div style="display:flex;gap:10px;margin-bottom:12px">';
       h+='<div style="flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#000;display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:800;font-size:.75rem">'+numI+'</div>';
       h+='<div style="flex:1"><div style="font-size:.83rem;font-weight:700;margin-bottom:2px">Grasas \u2248'+(Math.round(d.exGrasa*10)/10)+' porciones</div>';
-      h+='<div style="font-size:.68rem;color:var(--muted);margin-bottom:4px">'+[1,2,3].map(function(n){return n+'p='+Math.round(perExG*n)+(d.tipo==='solido'?'g':'ml');}).join(' \u00b7 ')+'</div>';
+      h+='<div style="font-size:.68rem;color:var(--muted);margin-bottom:4px">'+fG.map(function(x){return x.l+'='+x.g+unit+' ('+x.p+'p)';}).join(' \u00b7 ')+'</div>';
       h+='<div style="font-size:.76rem;padding:6px 8px;background:var(--card2);border-radius:8px">Ej. Almendra, Aceite de oliva</div>';
       h+='</div></div>';
     }
@@ -1832,6 +1922,25 @@ function renderValResultado(d){
   document.getElementById('val-resultado').innerHTML=h;
 }
 var CHANGELOG=[
+  {v:'2.5.2',fecha:'2026-09-07',cambios:[
+    'CORREGIDO (critico, perdida de datos): si hacias varios cambios seguidos (comida, agua, gimnasio) y recargabas la app antes de que pasaran los 3 segundos del debounce de sincronizacion, al abrirse la app jalaba la nube - que todavia tenia la version vieja - y te pisaba los cambios locales recientes sin avisar. Ahora cada guardado local queda con su hora exacta, y al cargar la app compara: si lo local es mas nuevo que la nube, en vez de perderlo lo sube (nunca se sobreescribe con una version mas vieja). Si la nube de verdad tiene algo mas reciente (ej. sincronizaste desde otro dispositivo), eso si se jala normal',
+    'Validador: nuevos campos opcionales para quien quiera el numero exacto de calorias, azucares totales y azucares añadidos en vez de solo el sello - muestra el %OMS (limite de 25g/dia de azucar añadida) y avisa si tu numero cruzaria el umbral del sello aunque no lo hayas marcado'
+  ]},
+  {v:'2.5.1',fecha:'2026-09-07',cambios:[
+    'Sellos rediseñados: en vez de 7 pares de botones (No tiene/Si tiene = 14 botones), ahora cada sello es un solo chip que tocas para marcarlo (se pueden marcar varios a la vez), mas un boton unico "No tiene sellos" para el caso limpio - de 14 botones a 8',
+    'El boton "No tiene sellos" se apaga solo en cuanto marcas cualquier sello, y se prende solo si los desmarcas todos'
+  ]},
+  {v:'2.5.0',fecha:'2026-09-07',cambios:[
+    'Todo el Validador es ahora botones - se quitaron los ultimos checkboxes (los 7 sellos y los 4 tipos de azucar/edulcorante), mismo estilo visual que los rangos',
+    'Los 4 rangos (Carbohidratos, Proteina, Grasas, Fibra) ahora tienen una cuarta opcion "No tiene" (0g)',
+    'Todo el formulario ahora inicia en "No tiene" por default (antes los rangos iniciaban en "Moderado") - si un dato no aparece en la etiqueta, se asume que el producto no lo tiene en vez de asumir una cantidad media'
+  ]},
+  {v:'2.4.2',fecha:'2026-09-07',cambios:[
+    'CORREGIDO (importante): el desglose de gramos por porcion podia pedir mas cantidad de la que existe en el paquete (ej. si el paquete pesaba 60g, llegaba a sugerir 300/600/900g). Ahora el calculo siempre usa el peso real del paquete o porcion que diste como tope - si el total es menos de 1 porcion, muestra fracciones (25%/50%/75%/100% de lo que tienes); si es 1 o mas, muestra porciones enteras sin pasarse del total real',
+    'Cuando das el peso del empaque completo, el calculo ahora se hace sobre TODO el paquete (antes solo usaba la porcion declarada en la etiqueta, ignorando el gramaje total)',
+    'Simplificados los checkboxes de tipos de azucar (de 5 a 2) y edulcorante (de 3 a 2), agrupando por lo que realmente se ve en las etiquetas en vez de nombres quimicos especificos',
+    'Nota agregada en Grasas totales aclarando que solo se necesita el numero total de la etiqueta, sin distinguir tipos de grasa'
+  ]},
   {v:'2.4.1',fecha:'2026-09-07',cambios:[
     'Los 5 select desplegables del Validador (Tipo, Carbohidratos, Proteina, Grasa, Fibra) se cambiaron por botones que se eligen directo en la pantalla, sin abrir ningun menu aparte - mismo estilo que las pestanas de Equivalencias SMAE en Mi Plan',
     'CORREGIDO (confusion): la seccion de equivalencias ahora numera cada nutriente (1, 2, 3) con una nota explicita arriba: "se cuenta como X nutrientes que SE SUMAN". Dentro de Carbohidratos, "Como Cereal" y "Como Fruta" ahora se muestran como 2 opciones separadas con la instruccion "Elige UNA opcion (no las 2)" en vez de una sola linea combinada que se prestaba a confusion'
