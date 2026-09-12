@@ -187,7 +187,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
 </div>
 
 <div class="page active" id="page-dash">
-  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.7.0</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
+  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.8.0</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
   <div class="sec">
     <div class="ptabs">
       <div class="pt active" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
@@ -210,7 +210,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">Medicamento %</div><div class="ch"><canvas id="ch-meds"></canvas></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">Ejercicio (minutos)</div><div class="ch"><canvas id="ch-ex"></canvas></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">Sueno (horas)</div><div class="ch"><canvas id="ch-sleep"></canvas></div></div>
-    <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Promedio de peso por tipo de rutina</div><div class="ch" id="ch-muscleweight-wrap"><canvas id="ch-muscleweight"></canvas></div><div id="zoneWeights" style="display:flex;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)"></div><div id="restDayHint" style="font-size:.74rem;color:var(--muted);text-align:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)"></div></div>
+    <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Promedio de peso por tipo de rutina</div><div class="ch" id="ch-muscleweight-wrap"><canvas id="ch-muscleweight"></canvas></div><div id="zoneWeights" style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)"></div><div id="restDayHint" style="font-size:.74rem;color:var(--muted);text-align:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)"></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Alimentos mas consumidos</div><div id="foodStatTabs" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px"></div><div id="foodStatList"></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Macros del dia (SMAE)</div><div id="macroCard"></div></div>
     <button class="expbtn" onclick="exportReport()" style="margin-bottom:8px">Exportar reporte</button>
@@ -723,23 +723,25 @@ var RC=['Comi 5-6 veces hoy','Comi despacio, mastique bien','No me acoste 2-3h d
 var GYM_START='2026-08-31';
 // Cada musculo trae su maquina tipica de Planet Fitness (el equipo puede variar por sucursal - ajusta si tu gym tiene otra).
 // Cada musculo trae un arreglo de opciones de maquina (a veces hay mas de una disponible en Planet Fitness).
+// Orden de musculos dentro de cada dia: de mas exigente/compuesto a mas aislado/pequeno,
+// para no fatigarte en el primer ejercicio y aguantar toda la sesion.
 var GYM_TYPES={
   frontal:{l:'Frontal',ico:'💪',muscles:[
-    {n:'Hombros',m:['Shoulder Press']},
+    {n:'Cuadriceps',m:['Leg Extension','Leg Press']},
     {n:'Pectorales',m:['Chest Press']},
-    {n:'Biceps',m:['Bicep Curl']},
-    {n:'Cuadriceps',m:['Leg Extension','Leg Press']}
+    {n:'Hombros',m:['Shoulder Press']},
+    {n:'Biceps',m:['Bicep Curl']}
   ]},
   trasera:{l:'Trasera',ico:'🏋️',muscles:[
-    {n:'Espalda',m:['Lat Pulldown','Seated Row']},
-    {n:'Triceps',m:['Tricep Extension (cable)']},
     {n:'Gluteo',m:['Hip Abductor / Glute Kickback']},
     {n:'Femorales',m:['Leg Curl']},
+    {n:'Espalda',m:['Lat Pulldown','Seated Row']},
+    {n:'Triceps',m:['Tricep Extension (cable)']},
     {n:'Pantorrillas',m:['Calf Raise / Smith Machine']}
   ]},
   abdomen:{l:'Abdomen',ico:'🔥',muscles:[
-    {n:'Abdomen',m:['Ab Crunch']},
-    {n:'Abdomen (cable)',m:['Cable Rope Crunch (polea con cuerda)']}
+    {n:'Abdomen (cable)',m:['Cable Rope Crunch (polea con cuerda)']},
+    {n:'Abdomen',m:['Ab Crunch']}
   ]}
 };
 var GYM_SERIES=[{l:'Serie 1',reps:15},{l:'Serie 2',reps:12},{l:'Serie 3',reps:10}];
@@ -994,7 +996,7 @@ function renderZoneWeights(){
   GYM_ZONES.forEach(function(z){
     var vals=z.muscles.map(muscleLatestWeight).filter(function(v){return v!==null;});
     var avg=vals.length?Math.round((vals.reduce(function(a,b){return a+b;},0)/vals.length)*10)/10:null;
-    h+='<div style="flex:1;text-align:center"><div style="font-family:Syne,sans-serif;font-weight:800;font-size:1.05rem;color:'+(avg!==null?'var(--accent)':'var(--muted)')+'">'+(avg!==null?avg+'kg':'\u2013')+'</div><div style="font-size:.64rem;color:var(--muted);margin-top:2px">'+z.l+'</div></div>';
+    h+='<div style="min-width:0;text-align:center;overflow:hidden"><div style="font-family:Syne,sans-serif;font-weight:800;font-size:.92rem;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:'+(avg!==null?'var(--accent)':'var(--muted)')+'">'+(avg!==null?avg+'kg':'\u2013')+'</div><div style="font-size:.62rem;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+z.l+'</div></div>';
   });
   el.innerHTML=h;
 }
@@ -1975,6 +1977,16 @@ function renderValResultado(d){
   document.getElementById('val-resultado').innerHTML=h;
 }
 var CHANGELOG=[
+  {v:'2.8.0',fecha:'2026-09-12',cambios:[
+    'Orden de musculos dentro de cada dia reordenado de mas exigente a mas facil, para no fatigarte en el primer ejercicio y aguantar toda la sesion:',
+    'Frontal: Cuadriceps -> Pectorales -> Hombros -> Biceps',
+    'Trasera: Gluteo -> Femorales -> Espalda -> Triceps -> Pantorrillas (pantorrillas siempre al final, son las mas resistentes a la fatiga)',
+    'Abdomen: Abdomen (cable) -> Abdomen (el ejercicio de cable exige mas estabilidad, mejor hacerlo fresco)',
+    'Nada cambia en los datos guardados - es solo el orden en que se muestran, tu historial de pesos y series sigue exactamente igual'
+  ]},
+  {v:'2.7.1',fecha:'2026-09-12',cambios:[
+    'CORREGIDO: la seccion de Pierna/Brazo/Torso/Abdomen se desbordaba fuera de la pantalla en una sola linea gigante en vez de acomodarse en 4 columnas. Cambiado de flexbox a grid de 4 columnas fijas (mas predecible) y se agrego proteccion para que el texto nunca se desborde aunque el espacio sea angosto'
+  ]},
   {v:'2.7.0',fecha:'2026-09-12',cambios:[
     'Nueva seccion de 4 zonas justo debajo de la grafica "Promedio de peso por tipo de rutina": Pierna, Brazo, Torso y Abdomen, mostrando el peso mas reciente registrado en cada una (promedio de sus musculos)',
     'Agrupacion: Pierna = Cuadriceps+Gluteo+Femorales+Pantorrillas, Brazo = Biceps+Triceps, Torso = Hombros+Pectorales+Espalda, Abdomen = Abdomen+Abdomen (cable)',
