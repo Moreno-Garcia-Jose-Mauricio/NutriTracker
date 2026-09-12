@@ -187,7 +187,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
 </div>
 
 <div class="page active" id="page-dash">
-  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.6.3</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
+  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.7.0</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
   <div class="sec">
     <div class="ptabs">
       <div class="pt active" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
@@ -210,7 +210,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">Medicamento %</div><div class="ch"><canvas id="ch-meds"></canvas></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">Ejercicio (minutos)</div><div class="ch"><canvas id="ch-ex"></canvas></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">Sueno (horas)</div><div class="ch"><canvas id="ch-sleep"></canvas></div></div>
-    <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Promedio de peso por tipo de rutina</div><div class="ch" id="ch-muscleweight-wrap"><canvas id="ch-muscleweight"></canvas></div><div id="restDayHint" style="font-size:.74rem;color:var(--muted);text-align:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)"></div></div>
+    <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Promedio de peso por tipo de rutina</div><div class="ch" id="ch-muscleweight-wrap"><canvas id="ch-muscleweight"></canvas></div><div id="zoneWeights" style="display:flex;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)"></div><div id="restDayHint" style="font-size:.74rem;color:var(--muted);text-align:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)"></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Alimentos mas consumidos</div><div id="foodStatTabs" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px"></div><div id="foodStatList"></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Macros del dia (SMAE)</div><div id="macroCard"></div></div>
     <button class="expbtn" onclick="exportReport()" style="margin-bottom:8px">Exportar reporte</button>
@@ -916,6 +916,7 @@ function renderMuscleWeightChart(){
   var trainKeys=keys.filter(function(k){var type=gymTypeFor(k);if(type==='libre')return false;var day=s[k];return day.gym&&day.gymType===type&&day.gym.weights;});
   if(!trainKeys.length){
     wrapEl.innerHTML='<div style="color:var(--muted);font-size:.8rem;text-align:center;padding:26px 0">Sin registros de peso en el gimnasio aun - anota el kg en Mi Dia</div>';
+    renderZoneWeights();
     renderRestDayHint();
     return;
   }
@@ -930,6 +931,7 @@ function renderMuscleWeightChart(){
     {label:'Trasera',data:traseraData,borderColor:'#f564b4',backgroundColor:'transparent',tension:0.3,pointRadius:4,spanGaps:true},
     {label:'Abdomen',data:abdomenData,borderColor:'#64d4f5',backgroundColor:'transparent',tension:0.3,pointRadius:4,spanGaps:true}
   ]},options:mopts});
+  renderZoneWeights();
   renderRestDayHint();
 }
 // recommendedRestDay: si no se ha tomado descanso esta semana, sugiere el mejor dia restante
@@ -962,6 +964,39 @@ function recommendedRestDay(){
   }
   if(candidates.length)return {done:false,dow:dowNames[candidates[candidates.length-1].dow],ideal:false};
   return null;
+}
+// GYM_ZONES: agrupa los musculos existentes en 4 zonas anatomicas para el resumen del Dashboard.
+var GYM_ZONES=[
+  {k:'pierna',l:'Pierna',muscles:['Cuadriceps','Gluteo','Femorales','Pantorrillas']},
+  {k:'brazo',l:'Brazo',muscles:['Biceps','Triceps']},
+  {k:'torso',l:'Torso',muscles:['Hombros','Pectorales','Espalda']},
+  {k:'abdomen',l:'Abdomen',muscles:['Abdomen','Abdomen (cable)']}
+];
+// muscleLatestWeight: el peso mas reciente registrado para un musculo (el mas pesado de sus 3
+// series, del ultimo dia que se registro), incluyendo hoy si ya se marco algo.
+function muscleLatestWeight(muscle){
+  var s=ls();
+  var keys=Object.keys(s).filter(function(k){return /^\d{4}-\d{2}-\d{2}$/.test(k);}).sort();
+  for(var i=keys.length-1;i>=0;i--){
+    var k=keys[i];var day=s[k];var type=gymTypeFor(k);
+    if(type==='libre')continue;
+    var g=day.gym&&day.gymType===type?day.gym:null;
+    if(!g||!g.weights||!g.weights[muscle])continue;
+    var vals=(Array.isArray(g.weights[muscle])?g.weights[muscle]:[]).filter(function(v){return v!==null&&v!==undefined;});
+    if(vals.length)return Math.max.apply(null,vals);
+  }
+  return null;
+}
+function renderZoneWeights(){
+  var el=document.getElementById('zoneWeights');
+  if(!el)return;
+  var h='';
+  GYM_ZONES.forEach(function(z){
+    var vals=z.muscles.map(muscleLatestWeight).filter(function(v){return v!==null;});
+    var avg=vals.length?Math.round((vals.reduce(function(a,b){return a+b;},0)/vals.length)*10)/10:null;
+    h+='<div style="flex:1;text-align:center"><div style="font-family:Syne,sans-serif;font-weight:800;font-size:1.05rem;color:'+(avg!==null?'var(--accent)':'var(--muted)')+'">'+(avg!==null?avg+'kg':'\u2013')+'</div><div style="font-size:.64rem;color:var(--muted);margin-top:2px">'+z.l+'</div></div>';
+  });
+  el.innerHTML=h;
 }
 function renderRestDayHint(){
   var el=document.getElementById('restDayHint');
@@ -1613,7 +1648,10 @@ function copyPrevWeight(key,muscle,i){var day=gd(key);var g=getGymData(key,day);
 // muscleSessionHistory: sesiones pasadas de un musculo (peso mas pesado + si completo las 3 series), para sugerir sobrecarga progresiva.
 function muscleSessionHistory(muscle){
   var s=ls();
-  var keys=Object.keys(s).filter(function(k){return /^\d{4}-\d{2}-\d{2}$/.test(k);}).sort();
+  var todayK=todayKey();
+  // Solo dias ANTERIORES a hoy - la sesion de hoy no cuenta aun, asi el aviso sale desde que
+  // abres la rutina (basado en lo ya cerrado) y no hasta que terminas de repetir el mismo peso hoy.
+  var keys=Object.keys(s).filter(function(k){return /^\d{4}-\d{2}-\d{2}$/.test(k)&&k<todayK;}).sort();
   var sessions=[];
   keys.forEach(function(k){
     var day=s[k];var type=gymTypeFor(k);
@@ -1937,6 +1975,14 @@ function renderValResultado(d){
   document.getElementById('val-resultado').innerHTML=h;
 }
 var CHANGELOG=[
+  {v:'2.7.0',fecha:'2026-09-12',cambios:[
+    'Nueva seccion de 4 zonas justo debajo de la grafica "Promedio de peso por tipo de rutina": Pierna, Brazo, Torso y Abdomen, mostrando el peso mas reciente registrado en cada una (promedio de sus musculos)',
+    'Agrupacion: Pierna = Cuadriceps+Gluteo+Femorales+Pantorrillas, Brazo = Biceps+Triceps, Torso = Hombros+Pectorales+Espalda, Abdomen = Abdomen+Abdomen (cable)',
+    'Si una zona no tiene ningun peso registrado aun, muestra "-" en vez de un numero inventado'
+  ]},
+  {v:'2.6.4',fecha:'2026-09-12',cambios:[
+    'CORREGIDO: el aviso de "Es momento de incrementar peso" se basaba en las ultimas 3 sesiones incluyendo la de hoy en curso, por lo que solo aparecia hasta terminar de marcar las 3 series - es decir, hasta despues de haber repetido el mismo peso una vez mas. Ahora el conteo de sesiones ignora el dia de hoy y se basa solo en sesiones anteriores ya cerradas, asi el aviso sale desde que abres la rutina, antes de la serie 1, dandote la oportunidad de subir el peso desde el arranque en vez de hasta el final'
+  ]},
   {v:'2.6.3',fecha:'2026-09-12',cambios:[
     'CORREGIDO: el boton "Quitar dia libre de aqui" no hacia nada si ya habias marcado "Descanso completado" en ese dia - la proteccion contra perdida de datos de la v2.6.1 estaba tratando ese check como "progreso real" y bloqueaba el cambio de tipo. Ahora solo cardio y series de musculos cuentan como progreso a proteger; marcar el descanso como completado ya no bloquea poder deshacer el dia libre'
   ]},
