@@ -187,7 +187,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
 </div>
 
 <div class="page active" id="page-dash">
-  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.6.2</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
+  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.6.3</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
   <div class="sec">
     <div class="ptabs">
       <div class="pt active" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
@@ -841,7 +841,7 @@ function restDowForWeek(key){var wk=weekKeyOf(key);var s=ls();var override=null;
 // se mueva el dia libre de otra fecha en la misma semana.
 function _gymHasProgress(g){
   if(!g)return false;
-  if(g.cardioI||g.cardioF||g.restDone)return true;
+  if(g.cardioI||g.cardioF)return true;
   if(g.muscles){for(var m in g.muscles){if(g.muscles[m].some(function(x){return x;}))return true;}}
   return false;
 }
@@ -1937,6 +1937,9 @@ function renderValResultado(d){
   document.getElementById('val-resultado').innerHTML=h;
 }
 var CHANGELOG=[
+  {v:'2.6.3',fecha:'2026-09-12',cambios:[
+    'CORREGIDO: el boton "Quitar dia libre de aqui" no hacia nada si ya habias marcado "Descanso completado" en ese dia - la proteccion contra perdida de datos de la v2.6.1 estaba tratando ese check como "progreso real" y bloqueaba el cambio de tipo. Ahora solo cardio y series de musculos cuentan como progreso a proteger; marcar el descanso como completado ya no bloquea poder deshacer el dia libre'
+  ]},
   {v:'2.6.2',fecha:'2026-09-12',cambios:[
     'Se puede deshacer el dia libre movido directo desde el mismo dia: si te equivocas al marcar "Dia libre esta semana" en el dia incorrecto, ahora aparece un boton "Quitar dia libre de aqui (regresar a domingo)" justo ahi, sin tener que ir a domingo a arreglarlo'
   ]},
