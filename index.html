@@ -36,6 +36,10 @@ button{font-family:inherit;}
 .card{background:linear-gradient(180deg,var(--card2),var(--card) 55%);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px;box-shadow:var(--shadow);}
 .metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
 .metric{background:linear-gradient(180deg,var(--card2),var(--card) 60%);border:1px solid var(--border);border-radius:var(--r);padding:14px 15px;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+.suppbox{background:linear-gradient(180deg,var(--card2),var(--card) 60%);border:1px solid var(--border);border-radius:var(--r);padding:11px 8px;text-align:center;box-shadow:var(--shadow);}
+.suppdot{width:8px;height:8px;border-radius:50%;margin:0 auto 6px;}
+.supplbl{font-size:.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+.suppst{font-size:.75rem;font-weight:700;margin-top:3px;font-family:'Syne',sans-serif;}
 .metric::before{content:'';position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.10),transparent);}
 .mval{font-family:'Syne',sans-serif;font-size:1.65rem;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em;}
 .mlbl{font-size:.7rem;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.08em;}
@@ -187,7 +191,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
 </div>
 
 <div class="page active" id="page-dash">
-  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.8.0</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
+  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.13.0</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
   <div class="sec">
     <div class="ptabs">
       <div class="pt active" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
@@ -202,6 +206,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
       <div class="metric"><div class="mval" id="m-ex" style="color:var(--good)">-</div><div class="mlbl">Gimnasio</div><div class="msub" id="m-ex-s"></div></div>
       <div class="metric"><div class="mval" id="m-sleep" style="color:var(--purple)">-</div><div class="mlbl">Sueno</div><div class="msub" id="m-sleep-s"></div></div>
     </div>
+    <div id="suppRow" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px"></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle">Resumen</div><div id="dashSum"></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Metas de Peso</div><div id="weightGoals"></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">Agua</div><div class="ch"><canvas id="ch-agua"></canvas></div></div>
@@ -210,7 +215,8 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">Medicamento %</div><div class="ch"><canvas id="ch-meds"></canvas></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">Ejercicio (minutos)</div><div class="ch"><canvas id="ch-ex"></canvas></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">Sueno (horas)</div><div class="ch"><canvas id="ch-sleep"></canvas></div></div>
-    <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Promedio de peso por tipo de rutina</div><div class="ch" id="ch-muscleweight-wrap"><canvas id="ch-muscleweight"></canvas></div><div id="zoneWeights" style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)"></div><div id="restDayHint" style="font-size:.74rem;color:var(--muted);text-align:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)"></div></div>
+    <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Promedio de peso por tipo de rutina</div><div class="ch" id="ch-muscleweight-wrap"><canvas id="ch-muscleweight"></canvas></div><div id="zoneWeights" style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)"></div><div id="monthlyGymCount" style="display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)"></div><div id="restDayHint" style="font-size:.74rem;color:var(--muted);text-align:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)"></div></div>
+    <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Horarios de gimnasio por dia</div><div class="ch" id="ch-gymschedule-wrap"><canvas id="ch-gymschedule"></canvas></div><div id="gymScheduleSummary" style="font-size:.72rem;color:var(--muted);margin-top:10px;padding-top:10px;border-top:1px solid var(--border);line-height:1.6"></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Alimentos mas consumidos</div><div id="foodStatTabs" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px"></div><div id="foodStatList"></div></div>
     <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Macros del dia (SMAE)</div><div id="macroCard"></div></div>
     <button class="expbtn" onclick="exportReport()" style="margin-bottom:8px">Exportar reporte</button>
@@ -273,6 +279,10 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
     <div class="card"><div id="day-fibra"></div></div>
   </div>
   <div class="sec" data-diagroup="salud">
+    <div class="stitle">Creatina - diario</div>
+    <div class="card"><div id="day-creatina"></div></div>
+  </div>
+  <div class="sec" data-diagroup="salud">
     <div class="stitle">Reflujo</div>
     <div class="card"><div id="day-reflux"></div></div>
   </div>
@@ -284,11 +294,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
         <div id="ex-num" style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--good);line-height:1">0 min</div>
         <div id="ex-meta" style="font-size:.74rem;color:var(--muted);margin-top:2px">sin ejercicio hoy</div>
         <div style="height:6px;background:var(--border);border-radius:999px;overflow:hidden;margin:8px 0 10px"><div id="ex-bar" style="height:100%;width:0%;background:var(--good);border-radius:999px;transition:width .5s"></div></div>
-        <div style="display:flex;gap:6px">
-          <button class="wbtn" onclick="addExercise(-15)">-15</button>
-          <button class="wbtn main" style="background:var(--good);border-color:var(--good);color:#000" onclick="addExercise(15)">+ 15 min</button>
-          <button class="wbtn" onclick="addExercise(30)">+30</button>
-        </div>
+        <div id="ex-buttons"></div>
       </div>
       <div id="gym-header" style="margin-bottom:10px"></div>
       <div id="gym-body"></div>
@@ -727,21 +733,25 @@ var GYM_START='2026-08-31';
 // para no fatigarte en el primer ejercicio y aguantar toda la sesion.
 var GYM_TYPES={
   frontal:{l:'Frontal',ico:'💪',muscles:[
-    {n:'Cuadriceps',m:['Leg Extension','Leg Press']},
-    {n:'Pectorales',m:['Chest Press']},
-    {n:'Hombros',m:['Shoulder Press']},
-    {n:'Biceps',m:['Bicep Curl']}
+    {n:'Cuadriceps (Leg Press)',m:['Leg Press'],pos:['Posicion del pie','Posicion 2']},
+    {n:'Cuadriceps (Leg Extension)',m:['Leg Extension'],pos:['Ajuste del pie']},
+    {n:'Pectorales',m:['Chest Press'],pos:['Posicion']},
+    {n:'Hombros',m:['Shoulder Press'],pos:['Posicion']},
+    {n:'Biceps',m:['Bicep Curl'],pos:['Posicion del asiento']}
   ]},
   trasera:{l:'Trasera',ico:'🏋️',muscles:[
-    {n:'Gluteo',m:['Hip Abductor / Glute Kickback']},
-    {n:'Femorales',m:['Leg Curl']},
-    {n:'Espalda',m:['Lat Pulldown','Seated Row']},
-    {n:'Triceps',m:['Tricep Extension (cable)']},
+    {n:'Gluteo (Glute Kickback)',m:['Glute Kickback'],pos:['Posicion']},
+    {n:'Femorales',m:['Leg Curl'],pos:['Posicion']},
+    {n:'Espalda (Lat Pulldown)',m:['Lat Pulldown'],pos:['Posicion']},
+    {n:'Triceps',m:['Tricep Extension (cable)'],pos:['Posicion']},
     {n:'Pantorrillas',m:['Calf Raise / Smith Machine']}
   ]},
   abdomen:{l:'Abdomen',ico:'🔥',muscles:[
+    {n:'Espalda (Seated Row)',m:['Seated Row'],pos:['Posicion del asiento']},
+    {n:'Gluteo (Hip Abductor)',m:['Hip Abductor']},
     {n:'Abdomen (cable)',m:['Cable Rope Crunch (polea con cuerda)']},
-    {n:'Abdomen',m:['Ab Crunch']}
+    {n:'Oblicuos',m:['Torso Rotary']},
+    {n:'Abdomen',m:['Ab Crunch'],pos:['Posicion']}
   ]}
 };
 var GYM_SERIES=[{l:'Serie 1',reps:15},{l:'Serie 2',reps:12},{l:'Serie 3',reps:10}];
@@ -865,13 +875,28 @@ function lastWeightsForType(beforeKey,type){
   }
   return null;
 }
+// lastPositionsForType: igual que lastWeightsForType pero para las posiciones de maquina
+// (asiento, ajuste de pie, etc) - asi no hay que volver a ajustar/recordar cada vez.
+function lastPositionsForType(beforeKey,type){
+  var s=ls();
+  var keys=Object.keys(s).filter(function(k){return /^\d{4}-\d{2}-\d{2}$/.test(k)&&k<beforeKey;}).sort();
+  for(var i=keys.length-1;i>=0;i--){
+    var day=s[keys[i]];
+    if(day&&day.gym&&day.gymType===type&&day.gym.positions)return day.gym.positions;
+  }
+  return null;
+}
 function gymDefaultsFor(type,key){
-  var g={cardioI:false,cardioF:false,muscles:{},weights:{}};
+  var g={cardioI:false,cardioF:false,muscles:{},weights:{},positions:{},conArantza:false};
   var lastW=key?lastWeightsForType(key,type):null;
+  var lastP=key?lastPositionsForType(key,type):null;
   if(GYM_TYPES[type]){
     GYM_TYPES[type].muscles.forEach(function(mu){
       g.muscles[mu.n]=[false,false,false];
       g.weights[mu.n]=(lastW&&Array.isArray(lastW[mu.n]))?lastW[mu.n].slice():[null,null,null];
+      if(mu.pos&&mu.pos.length){
+        g.positions[mu.n]=(lastP&&Array.isArray(lastP[mu.n]))?lastP[mu.n].slice():mu.pos.map(function(){return null;});
+      }
     });
   }
   if(type==='libre')g.restDone=false;
@@ -879,7 +904,8 @@ function gymDefaultsFor(type,key){
 }
 // getGymData: crea o regenera los datos de la rutina del dia si el tipo cambio (p.ej. al mover el dia libre).
 // Tambien normaliza pesos viejos (v1.8.0 guardaba un solo numero por musculo) al nuevo formato de 3 series.
-function getGymData(key,day){var type=gymTypeFor(key);if(!day.gym||day.gymType!==type){day.gym=gymDefaultsFor(type,key);day.gymType=type;}if(!day.gym.weights)day.gym.weights={};Object.keys(day.gym.muscles||{}).forEach(function(m){var w=day.gym.weights[m];if(!Array.isArray(w))day.gym.weights[m]=(w!==null&&w!==undefined)?[w,null,null]:[null,null,null];});return day.gym;}
+function getGymData(key,day){var type=gymTypeFor(key);if(!day.gym||day.gymType!==type){day.gym=gymDefaultsFor(type,key);day.gymType=type;}if(!day.gym.weights)day.gym.weights={};if(!day.gym.positions)day.gym.positions={};if(day.gym.conArantza===undefined)day.gym.conArantza=false;Object.keys(day.gym.muscles||{}).forEach(function(m){var w=day.gym.weights[m];if(!Array.isArray(w))day.gym.weights[m]=(w!==null&&w!==undefined)?[w,null,null]:[null,null,null];});if(GYM_TYPES[type]){GYM_TYPES[type].muscles.forEach(function(mu){if(mu.pos&&mu.pos.length&&!Array.isArray(day.gym.positions[mu.n]))day.gym.positions[mu.n]=mu.pos.map(function(){return null;});});}return day.gym;}
+function toggleConArantza(key){var day=gd(key);var g=getGymData(key,day);g.conArantza=!g.conArantza;sd(key,day);renderGym(key,day);}
 
 var activeFoodGroup='verduras';
 function getFoodCounts(){var s=ls();var counts={};Object.keys(PT).forEach(function(g){counts[g]={};});Object.keys(s).forEach(function(dk){var dayFoods=s[dk]&&s[dk].foods||{};Object.keys(dayFoods).forEach(function(fn){var grp=dayFoods[fn].g;var cnt=dayFoods[fn].c||0;if(grp&&counts[grp])counts[grp][fn]=(counts[grp][fn]||0)+cnt;});});return counts;}
@@ -919,6 +945,7 @@ function renderMuscleWeightChart(){
   if(!trainKeys.length){
     wrapEl.innerHTML='<div style="color:var(--muted);font-size:.8rem;text-align:center;padding:26px 0">Sin registros de peso en el gimnasio aun - anota el kg en Mi Dia</div>';
     renderZoneWeights();
+    renderMonthlyGymCount();
     renderRestDayHint();
     return;
   }
@@ -934,6 +961,7 @@ function renderMuscleWeightChart(){
     {label:'Abdomen',data:abdomenData,borderColor:'#64d4f5',backgroundColor:'transparent',tension:0.3,pointRadius:4,spanGaps:true}
   ]},options:mopts});
   renderZoneWeights();
+  renderMonthlyGymCount();
   renderRestDayHint();
 }
 // recommendedRestDay: si no se ha tomado descanso esta semana, sugiere el mejor dia restante
@@ -969,10 +997,10 @@ function recommendedRestDay(){
 }
 // GYM_ZONES: agrupa los musculos existentes en 4 zonas anatomicas para el resumen del Dashboard.
 var GYM_ZONES=[
-  {k:'pierna',l:'Pierna',muscles:['Cuadriceps','Gluteo','Femorales','Pantorrillas']},
+  {k:'pierna',l:'Pierna',muscles:['Cuadriceps (Leg Press)','Cuadriceps (Leg Extension)','Gluteo (Glute Kickback)','Gluteo (Hip Abductor)','Femorales','Pantorrillas']},
   {k:'brazo',l:'Brazo',muscles:['Biceps','Triceps']},
-  {k:'torso',l:'Torso',muscles:['Hombros','Pectorales','Espalda']},
-  {k:'abdomen',l:'Abdomen',muscles:['Abdomen','Abdomen (cable)']}
+  {k:'torso',l:'Torso',muscles:['Hombros','Pectorales','Espalda (Lat Pulldown)','Espalda (Seated Row)']},
+  {k:'abdomen',l:'Abdomen',muscles:['Abdomen','Abdomen (cable)','Oblicuos']}
 ];
 // muscleLatestWeight: el peso mas reciente registrado para un musculo (el mas pesado de sus 3
 // series, del ultimo dia que se registro), incluyendo hoy si ya se marco algo.
@@ -999,6 +1027,74 @@ function renderZoneWeights(){
     h+='<div style="min-width:0;text-align:center;overflow:hidden"><div style="font-family:Syne,sans-serif;font-weight:800;font-size:.92rem;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:'+(avg!==null?'var(--accent)':'var(--muted)')+'">'+(avg!==null?avg+'kg':'\u2013')+'</div><div style="font-size:.62rem;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+z.l+'</div></div>';
   });
   el.innerHTML=h;
+}
+// monthlyGymCount: cuenta los dias de ESTE mes con entrenamiento real (cardio o alguna serie
+// marcada), separados entre solo y acompanado por Arantza.
+function monthlyGymCount(){
+  var s=ls();
+  var now=new Date();
+  var ym=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+  var solo=0,conArantza=0;
+  Object.keys(s).forEach(function(k){
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(k)||k.substring(0,7)!==ym)return;
+    var day=s[k];var type=gymTypeFor(k);
+    if(type==='libre')return;
+    var g=day.gym&&day.gymType===type?day.gym:null;
+    if(!g||!_gymHasProgress(g))return;
+    if(g.conArantza)conArantza++;else solo++;
+  });
+  return {solo:solo,conArantza:conArantza};
+}
+function renderMonthlyGymCount(){
+  var el=document.getElementById('monthlyGymCount');
+  if(!el)return;
+  var c=monthlyGymCount();
+  var mesNombre=new Date().toLocaleDateString('es-MX',{month:'long'});
+  el.innerHTML='<div style="flex:1;text-align:center"><div style="font-family:Syne,sans-serif;font-weight:800;font-size:1.3rem;color:var(--good)">'+c.solo+'</div><div style="font-size:.66rem;color:var(--muted);margin-top:2px">Solo en '+mesNombre+'</div></div><div style="flex:1;text-align:center"><div style="font-family:Syne,sans-serif;font-weight:800;font-size:1.3rem;color:var(--purple)">'+c.conArantza+'</div><div style="font-size:.66rem;color:var(--muted);margin-top:2px">Con Arantza en '+mesNombre+'</div></div>';
+}
+// gymSessionsData: un punto por dia con hora de inicio registrada (x=dia de la semana en que
+// INICIO, y=hora decimal). Si cruza medianoche, el punto sigue siendo del dia en que empezaste.
+function gymSessionsData(){
+  var s=ls();
+  var keys=Object.keys(s).filter(function(k){return /^\d{4}-\d{2}-\d{2}$/.test(k);});
+  var pts=[];
+  keys.forEach(function(k){
+    var day=s[k];
+    if(!day.gymStart)return;
+    var start=new Date(day.gymStart);
+    pts.push({x:start.getDay(),y:start.getHours()+start.getMinutes()/60,k:k});
+  });
+  return pts;
+}
+var DOW_LABELS=['Dom','Lun','Mar','Mie','Jue','Vie','Sab'];
+var DOW_LABELS_FULL=['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado'];
+function renderGymScheduleChart(){
+  dc('ch-gymschedule');
+  var wrapEl=document.getElementById('ch-gymschedule-wrap');
+  var sumEl=document.getElementById('gymScheduleSummary');
+  if(!wrapEl)return;
+  var pts=gymSessionsData();
+  if(!pts.length){
+    wrapEl.innerHTML='<div style="color:var(--muted);font-size:.8rem;text-align:center;padding:26px 0">Aun no registras horarios - usa Iniciar rutina en Mi Dia</div>';
+    if(sumEl)sumEl.innerHTML='';
+    return;
+  }
+  wrapEl.innerHTML='<canvas id="ch-gymschedule"></canvas>';
+  var mopts={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){var h=Math.floor(ctx.raw.y);var mn=Math.round((ctx.raw.y-h)*60);return DOW_LABELS_FULL[ctx.raw.x]+' '+h+':'+(mn<10?'0':'')+mn;}}}},scales:{x:{type:'linear',min:-0.5,max:6.5,ticks:{stepSize:1,color:'#8888aa',callback:function(v){return DOW_LABELS[v]||'';}},grid:{color:'#2a2a38'}},y:{min:0,max:24,ticks:{stepSize:3,color:'#8888aa',callback:function(v){return v+':00';}},grid:{color:'#2a2a38'}}}};
+  charts['ch-gymschedule']=new Chart(document.getElementById('ch-gymschedule').getContext('2d'),{type:'scatter',data:{datasets:[{data:pts,backgroundColor:'#c8f564',pointRadius:6}]},options:mopts});
+  if(sumEl){
+    var byDow={};
+    pts.forEach(function(p){if(!byDow[p.x])byDow[p.x]=[];byDow[p.x].push(p.y);});
+    var lines=[];
+    for(var d=0;d<7;d++){
+      if(byDow[d]&&byDow[d].length){
+        var avg=byDow[d].reduce(function(a,b){return a+b;},0)/byDow[d].length;
+        var h=Math.floor(avg);var mn=Math.round((avg-h)*60);
+        lines.push('<div>'+DOW_LABELS_FULL[d]+': promedio <strong style="color:var(--accent)">'+h+':'+(mn<10?'0':'')+mn+'</strong> ('+byDow[d].length+' veces)</div>');
+      }
+    }
+    sumEl.innerHTML=lines.join('');
+  }
 }
 function renderRestDayHint(){
   var el=document.getElementById('restDayHint');
@@ -1061,7 +1157,19 @@ function renderDash(){
   }
   var checkAvg=Math.round(days.map(function(k){var c=s[k]&&s[k].ch&&s[k].ch.length||0;return Math.round(c/8*100);}).reduce(function(a,b){return a+b;},0)/n);
   var wAmt=n===1?todW.toFixed(1):avgW;
+  var todaySc=(s[tk]&&s[tk].sc)||[];
+  var fibOk=todaySc.indexOf('fib')>=0;
+  var creaOk=todaySc.indexOf('crea')>=0;
+  var todayDow=new Date().getDay();
+  var suToday=SUEROS.filter(function(x){return x.day===todayDow;})[0];
+  var suTomado=suToday&&todaySc.indexOf(suToday.id)>=0;
+  var suLbl=suToday?(suTomado?'Tomado':'Pendiente'):'No toca hoy';
+  var suBadge=suToday?(suTomado?'bg':'bw'):'bw';
   document.getElementById('dashSum').innerHTML='<div class="sum-row"><div class="sdot" style="background:var(--blue)"></div><div class="slbl">Agua</div><div class="sval">'+wAmt+'L</div><span class="sbadge '+(parseFloat(wAmt)>=3?'bg':'bw')+'">'+(parseFloat(wAmt)>=3?'Meta':'Incompleto')+'</span></div><div class="sum-row"><div class="sdot" style="background:var(--accent)"></div><div class="slbl">Peso actual</div><div class="sval">'+(lwVal!==null?lwVal+'kg':'sin datos')+'</div>'+(lwVal!==null&&pwVal!==null?'<span class="sbadge '+(lwVal<pwVal?'bg':'bb')+'">'+(lwVal<pwVal?'-':'+')+(Math.abs(lwVal-pwVal).toFixed(1))+'kg</span>':'')+'</div><div class="sum-row"><div class="sdot" style="background:var(--pink)"></div><div class="slbl">Porciones</div><div class="sval">'+(n===1?todP:avgP)+'%</div><span class="sbadge '+((n===1?todP:avgP)>=80?'bg':(n===1?todP:avgP)>=50?'bw':'bb')+'">'+(( n===1?todP:avgP)>=80?'Bien':(n===1?todP:avgP)>=50?'Regular':'Bajo')+'</span></div><div class="sum-row"><div class="sdot" style="background:var(--purple)"></div><div class="slbl">Medicamento</div><div class="sval">'+(n===1?todM:avgM)+'%</div><span class="sbadge '+((n===1?todM:avgM)>=100?'bg':(n===1?todM:avgM)>0?'bw':'bb')+'">'+(( n===1?todM:avgM)>=100?'Completo':'Incompleto')+'</span></div><div class="sum-row"><div class="sdot" style="background:var(--warn)"></div><div class="slbl">Checklist</div><div class="sval">'+checkAvg+'%</div></div>';
+  var suppEl=document.getElementById('suppRow');
+  if(suppEl){
+    suppEl.innerHTML='<div class="suppbox"><div class="suppdot" style="background:'+(fibOk?'var(--good)':'var(--border)')+'"></div><div class="supplbl">Fibra</div><div class="suppst" style="color:'+(fibOk?'var(--good)':'var(--muted)')+'">'+(fibOk?'Tomada':'Pendiente')+'</div></div><div class="suppbox"><div class="suppdot" style="background:'+(suToday?(suTomado?'var(--good)':'var(--warn)'):'var(--border)')+'"></div><div class="supplbl">Electrolit</div><div class="suppst" style="color:'+(suToday?(suTomado?'var(--good)':'var(--warn)'):'var(--muted)')+'">'+suLbl+'</div></div><div class="suppbox"><div class="suppdot" style="background:'+(creaOk?'var(--good)':'var(--border)')+'"></div><div class="supplbl">Creatina</div><div class="suppst" style="color:'+(creaOk?'var(--good)':'var(--muted)')+'">'+(creaOk?'Tomada':'Pendiente')+'</div></div>';
+  }
   var opts={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#8888aa',maxRotation:45},grid:{color:'#2a2a38'}},y:{ticks:{color:'#8888aa'},grid:{color:'#2a2a38'}}}};
   var chartDays=getDays(n<7?7:n);
   var labels=chartDays.map(function(k){var d=new Date(k+'T12:00:00');return d.toLocaleDateString('es-MX',{weekday:'short',day:'numeric'});});
@@ -1102,7 +1210,7 @@ function renderDash(){
   charts['ch-ex']=new Chart(document.getElementById('ch-ex').getContext('2d'),{type:'bar',data:{labels:labels,datasets:[{data:exData,backgroundColor:exData.map(function(v,i){var rgb=v===0?'245,100,100':v<30?'245,162,100':'100,245,180';return isToday[i]?'rgba('+rgb+',1)':'rgba('+rgb+',.55)';}),borderRadius:6,borderSkipped:false}]},options:exOpts});
   dc('ch-sleep');var slData=chartDays.map(function(k){return s[k]&&s[k].sl||0;});var slOpts=JSON.parse(JSON.stringify(opts));slOpts.scales.y.min=0;slOpts.scales.y.max=12;slOpts.scales.y.ticks.callback=function(v){return v+'h';};
   charts['ch-sleep']=new Chart(document.getElementById('ch-sleep').getContext('2d'),{type:'bar',data:{labels:labels,datasets:[{data:slData,backgroundColor:slData.map(function(v,i){var rgb=v===0?'160,100,245':v<6?'245,100,100':v<7?'245,162,100':v<=9?'100,245,180':'245,162,100';return isToday[i]?'rgba('+rgb+',1)':'rgba('+rgb+',.55)';}),borderRadius:6,borderSkipped:false}]},options:slOpts});
-  renderWeightGoals();renderFoodStats(activeFoodGroup);renderMacros(days,n);renderMuscleWeightChart();
+  renderWeightGoals();renderFoodStats(activeFoodGroup);renderMacros(days,n);renderMuscleWeightChart();renderGymScheduleChart();
 }
 
 // ── exportReport: historial completo + estadisticas clinicas para Michelle ────
@@ -1504,13 +1612,15 @@ function renderDia(){
   else{var nextS=SUEROS.filter(function(x){return x.day>dow;});if(!nextS.length)nextS=SUEROS;sueroDiv.innerHTML='<div style="font-size:.82rem;color:var(--muted);padding:8px 0">Hoy no toca - proximo: <strong style="color:var(--blue)">'+nextS[0].l+'</strong></div>';}
   var fibDiv=document.getElementById('day-fibra');
   if(fibDiv){var fbOk=day.sc.indexOf('fib')>=0;var fDiv=document.createElement('div');fDiv.className='ci';fDiv.dataset.key=key;fDiv.onclick=function(){toggleSuero('fib',this.dataset.key);};fDiv.innerHTML='<div class="cbox" style="background:'+(fbOk?'var(--good)':'transparent')+';border-color:'+(fbOk?'var(--good)':'var(--border)')+'">'+(fbOk?'v':'')+'</div><span class="clbl '+(fbOk?'done':'')+'">Fibra soluble Optigest '+(fbOk?'(tomada)':'(pendiente)')+'</span>';fibDiv.innerHTML='';fibDiv.appendChild(fDiv);}
+  var creaDiv=document.getElementById('day-creatina');
+  if(creaDiv){var crOk=day.sc.indexOf('crea')>=0;var cDiv=document.createElement('div');cDiv.className='ci';cDiv.dataset.key=key;cDiv.onclick=function(){toggleSuero('crea',this.dataset.key);};cDiv.innerHTML='<div class="cbox" style="background:'+(crOk?'var(--good)':'transparent')+';border-color:'+(crOk?'var(--good)':'var(--border)')+'">'+(crOk?'v':'')+'</div><span class="clbl '+(crOk?'done':'')+'">Creatina '+(crOk?'(tomada)':'(pendiente)')+'</span>';creaDiv.innerHTML='';creaDiv.appendChild(cDiv);}
   var wts=gw();var ew=wts.find(function(w){return w.date===key;});
   document.getElementById('w-input').value=ew?ew.w:'';
   var prevW=wts.filter(function(w){return w.date<key;}).slice(-1)[0];
   if(ew){var dw=prevW?(ew.w-prevW.w).toFixed(1):null;var wDisp=document.getElementById('w-display');wDisp.innerHTML='';var wDiv=document.createElement('div');wDiv.style.cssText='display:flex;align-items:baseline;gap:6px;margin-top:6px';wDiv.innerHTML='<span style="font-family:Syne,sans-serif;font-size:1.8rem;font-weight:800">'+ew.w+'</span><span style="color:var(--muted);font-size:1rem">kg</span>'+(dw!==null?'<span style="font-weight:700;font-size:.95rem;color:'+(parseFloat(dw)<0?'var(--good)':'var(--bad)')+'">'+((dw>0?'+':'')+dw)+'kg</span>':'');var delBtn=document.createElement('button');delBtn.textContent='Borrar';delBtn.dataset.k=key;delBtn.style.cssText='background:transparent;border:1px solid var(--bad);color:var(--bad);border-radius:7px;padding:3px 8px;font-size:.73rem;cursor:pointer;margin-left:6px';delBtn.onclick=function(){deleteWeight(this.dataset.k);};wDiv.appendChild(delBtn);wDisp.appendChild(wDiv);}
   else document.getElementById('w-display').innerHTML='';
   renderChecklist(key,day);
-  renderExercise(day);
+  renderExercise(day,key);
   renderSleep(day);
   renderReflux(key,day);
   renderGym(key,day);
@@ -1540,8 +1650,32 @@ function addWater(d){var key=keyOf(viewDate);var day=gd(key);day.water=Math.max(
 function addWaterMl(){var ml=parseInt(document.getElementById('cw-ml').value)||0;if(ml<50){toast('Min 50ml');return;}var key=keyOf(viewDate);var day=gd(key);day.water=(day.water||0)+Math.round(ml/250);syncAutoChecks(key,day);renderWater(key,day);renderChecklist(key,day);document.getElementById('cw-wrap').style.display='none';toast('+'+ml+'ml');}
 function removeW(i,key){var day=gd(key);day.water=i;syncAutoChecks(key,day);renderWater(key,day);renderChecklist(key,day);}
 function toggleCW(){var el=document.getElementById('cw-wrap');el.style.display=el.style.display==='none'?'block':'none';}
-function addExercise(delta){var key=keyOf(viewDate);var day=gd(key);day.ex=Math.max(0,(day.ex||0)+delta);sd(key,day);renderExercise(day);if(delta>0)toast(day.ex+' min');}
-function renderExercise(day){var min=day.ex||0;var el=document.getElementById('ex-num');var meta=document.getElementById('ex-meta');var bar=document.getElementById('ex-bar');if(!el)return;el.textContent=min+' min';bar.style.width=Math.min(100,min/60*100)+'%';if(min===0)meta.textContent='sin ejercicio hoy';else if(min<30)meta.textContent='buen inicio - meta: 30-60 min';else if(min<60)meta.textContent='va muy bien!';else meta.textContent='Meta alcanzada!';}
+function startGymSession(key){var day=gd(key);day.gymStart=new Date().toISOString();day.gymEnd=null;sd(key,day);renderExercise(day,key);toast('Rutina iniciada');}
+function endGymSession(key){var day=gd(key);if(!day.gymStart){toast('Primero inicia la rutina');return;}day.gymEnd=new Date().toISOString();var mins=Math.round((new Date(day.gymEnd)-new Date(day.gymStart))/60000);day.ex=Math.max(0,mins);sd(key,day);renderExercise(day,key);toast(mins+' min registrados');}
+function resetGymSession(key){var day=gd(key);day.gymStart=null;day.gymEnd=null;day.ex=0;sd(key,day);renderExercise(day,key);}
+function renderExercise(day,key){
+  var min=day.ex||0;
+  var el=document.getElementById('ex-num');var meta=document.getElementById('ex-meta');var bar=document.getElementById('ex-bar');
+  if(!el)return;
+  el.textContent=min+' min';
+  bar.style.width=Math.min(100,min/60*100)+'%';
+  if(min===0&&!day.gymStart)meta.textContent='sin ejercicio hoy';
+  else if(day.gymStart&&!day.gymEnd)meta.textContent='rutina en curso...';
+  else if(min<30)meta.textContent='buen inicio - meta: 30-60 min';
+  else if(min<60)meta.textContent='va muy bien!';
+  else meta.textContent='Meta alcanzada!';
+  var btnsEl=document.getElementById('ex-buttons');
+  if(btnsEl&&key){
+    var fmtHM=function(iso){var d=new Date(iso);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');};
+    if(day.gymStart&&day.gymEnd){
+      btnsEl.innerHTML='<div style="font-size:.78rem;color:var(--muted);margin-bottom:6px">'+fmtHM(day.gymStart)+' - '+fmtHM(day.gymEnd)+'</div><button class="wbtn" style="width:100%" onclick="resetGymSession(\''+key+'\')">\u21ba Reiniciar registro</button>';
+    } else if(day.gymStart){
+      btnsEl.innerHTML='<div style="font-size:.78rem;color:var(--good);margin-bottom:6px">Entrenando desde las '+fmtHM(day.gymStart)+'</div><button class="wbtn main" style="width:100%;background:var(--bad);border-color:var(--bad);color:#fff" onclick="endGymSession(\''+key+'\')">\u23f9 Terminar rutina</button>';
+    } else {
+      btnsEl.innerHTML='<button class="wbtn main" style="width:100%;background:var(--good);border-color:var(--good);color:#000" onclick="startGymSession(\''+key+'\')">\u25b6 Iniciar rutina</button>';
+    }
+  }
+}
 function addSleep(delta){var key=keyOf(viewDate);var day=gd(key);day.sl=Math.max(0,Math.min(24,parseFloat(((day.sl||0)+delta).toFixed(1))));sd(key,day);renderSleep(day);if(delta>0)toast(day.sl+'h sueno');}
 function renderSleep(day){var h=day.sl||0;var el=document.getElementById('sl-num');var meta=document.getElementById('sl-meta');var bar=document.getElementById('sl-bar');if(!el)return;var hInt=Math.floor(h);var min=Math.round((h-hInt)*60);el.textContent=hInt+'h'+(min>0?' '+min+'min':'');var pct=Math.min(100,h/9*100);bar.style.width=pct+'%';if(h===0){meta.textContent='registra horas de la noche anterior';bar.style.background='var(--purple)';}else if(h<6){meta.textContent='poco sueno - lo ideal es 7-9h';bar.style.background='var(--bad)';}else if(h<7){meta.textContent='casi en rango - intenta llegar a 7h';bar.style.background='var(--warn)';}else if(h<=9){meta.textContent='Excelente! Rango ideal';bar.style.background='var(--good)';}else{meta.textContent='Mucho sueno - revisa tu rutina';bar.style.background='var(--warn)';}}
 function renderReflux(key,day){var el=document.getElementById('day-reflux');if(!el)return;var items=[{f:'rfn',l:'Tuve reflujo la noche anterior'},{f:'rfd',l:'Tuve reflujo durante el dia'}];var h='';items.forEach(function(it){var on=!!day[it.f];h+='<div class="ci" onclick="toggleReflux(\''+it.f+'\',\''+key+'\')"><div class="cbox" style="background:'+(on?'var(--bad)':'transparent')+';border-color:'+(on?'var(--bad)':'var(--border)')+'">'+(on?'!':'')+'</div><span class="clbl" style="'+(on?'color:var(--bad)':'')+'">'+it.l+'</span></div>';});h+='<div style="font-size:.72rem;color:var(--muted);margin-top:8px">Marca solo si hubo sintomas - se incluye en el reporte para Michelle</div>';el.innerHTML=h;}
@@ -1605,9 +1739,10 @@ function renderGym(key,day){
     h+='<div class="ci" onclick="toggleGymRest(\''+key+'\')"><div class="cbox" style="background:'+(g.restDone?'var(--good)':'transparent')+';border-color:'+(g.restDone?'var(--good)':'var(--border)')+'">'+(g.restDone?'v':'')+'</div><span class="clbl '+(g.restDone?'done':'')+'">Descanso completado</span></div>';
     if(day.restWeek){h+='<button class="wbtn" style="width:100%;margin-top:12px" onclick="toggleRestDay(\''+key+'\')">\u21ba Quitar dia libre de aqui (regresar a domingo)</button>';}
   } else {
+    h+='<div class="ci" onclick="toggleConArantza(\''+key+'\')"><div class="cbox" style="background:'+(g.conArantza?'var(--purple)':'transparent')+';border-color:'+(g.conArantza?'var(--purple)':'var(--border)')+'">'+(g.conArantza?'v':'')+'</div><span class="clbl '+(g.conArantza?'done':'')+'">Con mi amorcito (Arantza)</span></div>';
     h+=renderGymCardio(key,'cardioI','Cardio inicial',GYM_CARDIO_INI,g.cardioI);
     h+='<div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:12px 0 6px">Musculos - '+GYM_TYPES[type].l+'</div>';
-    GYM_TYPES[type].muscles.forEach(function(mu){h+=renderGymMuscle(key,mu.n,mu.m,g.muscles[mu.n],g.weights[mu.n]);});
+    GYM_TYPES[type].muscles.forEach(function(mu){h+=renderGymMuscle(key,mu.n,mu.m,g.muscles[mu.n],g.weights[mu.n],mu.pos,g.positions[mu.n]);});
     h+=renderGymCardio(key,'cardioF','Cardio final',GYM_CARDIO_FIN,g.cardioF);
   }
   el.innerHTML=h;
@@ -1617,18 +1752,55 @@ function renderGymCardio(key,slot,label,itemLabel,val){
   h+='<div class="ci" onclick="toggleGymCardio(\''+key+'\',\''+slot+'\')"><div class="cbox" style="background:'+(val?'var(--warn)':'transparent')+';border-color:'+(val?'var(--warn)':'var(--border)')+'">'+(val?'v':'')+'</div><span class="clbl '+(val?'done':'')+'">'+itemLabel+'</span></div>';
   return h;
 }
-function renderGymMuscle(key,muscle,machine,arr,weights){
+// seriesWeightStreak: cuantas veces consecutivas (sin contar hoy) una serie especifica de un
+// musculo ya uso exactamente este peso. Sirve para el color de cada input (azul=1a vez,
+// verde=2-3 veces, rojo/azul-con-numero-rojo=4+ veces = hora de subir).
+function seriesWeightStreak(muscle,i,w){
+  if(w===null||w===undefined||w==='')return 0;
+  var s=ls();
+  var todayK=todayKey();
+  var keys=Object.keys(s).filter(function(k){return /^\d{4}-\d{2}-\d{2}$/.test(k)&&k<todayK;}).sort();
+  var streak=0;
+  for(var idx=keys.length-1;idx>=0;idx--){
+    var k=keys[idx];var day=s[k];var type=gymTypeFor(k);
+    if(type==='libre')continue;
+    var g=day.gym&&day.gymType===type?day.gym:null;
+    if(!g||!g.weights||!Array.isArray(g.weights[muscle]))continue;
+    var pastW=g.weights[muscle][i];
+    if(pastW==null)continue;
+    if(pastW===w)streak++;
+    else break;
+  }
+  return streak;
+}
+function renderGymMuscle(key,muscle,machine,arr,weights,pos,positions){
   var doneCount=arr.filter(function(x){return x;}).length;
   if(!Array.isArray(weights))weights=[null,null,null];
   var machineDisplay=Array.isArray(machine)?machine.join(' o '):machine;
   var h='<div style="margin-bottom:14px"><div style="margin-bottom:6px"><span style="font-size:.83rem;font-weight:600">'+muscle+'</span><span style="font-size:.68rem;color:var(--accent)"> · '+machineDisplay+'</span><span style="font-size:.68rem;color:var(--muted)"> · '+doneCount+'/3</span></div>';
+  if(pos&&pos.length){
+    if(!Array.isArray(positions))positions=pos.map(function(){return null;});
+    h+='<div style="display:flex;gap:6px;margin-bottom:8px">';
+    pos.forEach(function(pl,pi){
+      var pv=positions[pi]!=null?positions[pi]:'';
+      h+='<div style="flex:1"><div style="font-size:.62rem;color:var(--muted);margin-bottom:2px">'+pl+'</div><input type="number" inputmode="decimal" value="'+pv+'" placeholder="#" style="width:100%;padding:4px 1px;font-size:.7rem;text-align:center" onchange="setGymPosition(\''+key+'\',\''+muscle+'\','+pi+',this.value)"></div>';
+    });
+    h+='</div>';
+  }
   var hint=progressiveOverloadHint(muscle);
   var needsIncrease=!!hint;
   if(hint)h+='<div style="background:rgba(245,100,100,.1);border:1px solid rgba(245,100,100,.4);border-radius:8px;padding:6px 9px;margin-bottom:8px;font-size:.7rem;color:var(--bad)">\u26A0 Es momento de incrementar peso - '+hint+'</div>';
   h+='<div style="display:flex;gap:6px">';
   GYM_SERIES.forEach(function(sr,i){
     var on=arr[i];var w=weights[i]!=null?weights[i]:'';
-    var inputStyle='width:100%;padding:4px 1px;font-size:.68rem;text-align:center'+(needsIncrease?';color:var(--bad);border-color:var(--bad);font-weight:700':'');
+    var boxColor='var(--border)',numColor='var(--text)';
+    if(weights[i]!=null){
+      var totalUses=seriesWeightStreak(muscle,i,weights[i])+1;
+      if(totalUses===1){boxColor='var(--blue)';numColor='var(--blue)';}
+      else if(totalUses<=3){boxColor='var(--good)';numColor='var(--good)';}
+      else{boxColor='var(--warn)';numColor='var(--warn)';}
+    }
+    var inputStyle='width:100%;padding:4px 1px;font-size:.68rem;text-align:center;font-weight:700;color:'+numColor+';border-color:'+boxColor;
     h+='<div style="flex:1;display:flex;flex-direction:column;gap:3px">';
     h+='<div style="font-size:.65rem;color:var(--muted);text-align:center;line-height:1.25">'+sr.l+'<br>'+sr.reps+' reps</div>';
     h+='<div style="display:flex;align-items:center;gap:2px">';
@@ -1645,6 +1817,7 @@ function renderGymMuscle(key,muscle,machine,arr,weights){
   return h;
 }
 function setGymSeriesWeight(key,muscle,i,val){var day=gd(key);var g=getGymData(key,day);if(!Array.isArray(g.weights[muscle]))g.weights[muscle]=[null,null,null];var num=parseFloat(val);g.weights[muscle][i]=isNaN(num)?null:num;sd(key,day);}
+function setGymPosition(key,muscle,i,val){var day=gd(key);var g=getGymData(key,day);if(!Array.isArray(g.positions[muscle]))g.positions[muscle]=[];var num=parseFloat(val);g.positions[muscle][i]=isNaN(num)?null:num;sd(key,day);}
 function adjustGymWeight(key,muscle,i,delta){var day=gd(key);var g=getGymData(key,day);if(!Array.isArray(g.weights[muscle]))g.weights[muscle]=[null,null,null];var base=g.weights[muscle][i]!=null?g.weights[muscle][i]:0;var nv=Math.max(0,Math.round((base+delta)*10)/10);g.weights[muscle][i]=nv;sd(key,day);renderGym(key,day);}
 function copyPrevWeight(key,muscle,i){var day=gd(key);var g=getGymData(key,day);if(!Array.isArray(g.weights[muscle]))g.weights[muscle]=[null,null,null];var prev=g.weights[muscle][i-1];if(prev==null)return;g.weights[muscle][i]=prev;sd(key,day);renderGym(key,day);}
 // muscleSessionHistory: sesiones pasadas de un musculo (peso mas pesado + si completo las 3 series), para sugerir sobrecarga progresiva.
@@ -1977,6 +2150,39 @@ function renderValResultado(d){
   document.getElementById('val-resultado').innerHTML=h;
 }
 var CHANGELOG=[
+  {v:'2.13.0',fecha:'2026-09-17',cambios:[
+    'Agregado registro de posicion (1 numero) a: Pectorales, Hombros, Gluteo (Glute Kickback), Femorales, Espalda (Lat Pulldown), Triceps y Abdomen (Ab Crunch) - se copian solas de la sesion anterior igual que las demas',
+    'Corregido el nombre de la maquina de Oblicuos: Torso Rotary (antes decia "Torso Rotation / Kneeling Twist... confirma el nombre")',
+    'Nota: la etiqueta de estas 7 posiciones nuevas quedo generica ("Posicion") porque no especificaste que ajusta cada una - dime el nombre exacto si quieres que diga algo mas especifico (ej. "Altura del respaldo")'
+  ]},
+  {v:'2.12.1',fecha:'2026-09-17',cambios:[
+    'Colorimetria de pesos simplificada: se quito el truco de "azul con numero rojo" (confuso). Ahora es un solo color limpio por estado: azul = primera vez con ese peso, verde = 2a o 3a vez, ambar/naranja = 4a vez o mas (momento de subir). Al cambiar el peso a un numero nuevo, vuelve a azul automaticamente sin ningun rastro del estado anterior - el historial completo sigue intacto en la grafica y el reporte, el color solo refleja el estado de hoy'
+  ]},
+  {v:'2.12.0',fecha:'2026-09-17',cambios:[
+    'Fibra/Electrolit/Creatina se movieron del Resumen a 3 cuadritos propios en un solo renglon, justo debajo de las 6 tarjetas del Dashboard y arriba del Resumen',
+    'CAMBIO en el color de los pesos: ahora cada input de peso tiene su propio color segun cuantas veces seguidas llevas usando ese numero exacto en esa serie especifica - azul = primera vez, verde = 2-3 veces, azul con el numero en rojo = 4 o mas veces (ya deberias subir). El color es independiente por cada serie, no por musculo completo',
+    'Nuevo registro de posiciones de maquina: Leg Press (posicion del pie + otra), Leg Extension (ajuste del pie), Seated Row (posicion del asiento) y Biceps (posicion del asiento) - se guardan como numeros y se copian solas de la sesion anterior, igual que los pesos'
+  ]},
+  {v:'2.11.0',fecha:'2026-09-17',cambios:[
+    'Rebalance de rutinas a 5-5-5: Hip Abductor y Seated Row se movieron al dia de Abdomen, Lat Pulldown se quedo solo en Trasera. Frontal, Trasera y Abdomen quedan con 5 ejercicios cada uno',
+    'El check de pareja ahora dice "Con mi amorcito (Arantza)" en vez de "Arantza fue conmigo hoy"',
+    'Dashboard: 3 filas nuevas en el Resumen mostrando si ya tomaste Fibra, Electrolit (o si no toca hoy) y Creatina',
+    'Entrenamiento: se quitaron los botones manuales de +15/-15/+30 min. Ahora hay un boton "Iniciar rutina" y al terminar "Terminar rutina" - los minutos se calculan solos con la hora real, mas preciso. Si tu sesion cruza medianoche (empiezas antes de las 12 y terminas despues), el calculo sigue siendo correcto',
+    'Nueva grafica en el Dashboard "Horarios de gimnasio por dia": un punto por cada sesion registrada (dia de la semana vs hora de inicio), con un resumen de tu horario promedio por dia para ir identificando tus mejores horarios'
+  ]},
+  {v:'2.10.0',fecha:'2026-09-15',cambios:[
+    'Frontal: Leg Press y Leg Extension ahora son 2 ejercicios independientes (antes eran opciones alternativas de Cuadriceps) - se hacen los dos, cada uno con su propio peso y series',
+    'Trasera: Glute Kickback y Hip Abductor ahora son 2 ejercicios independientes de Gluteo, mismo cambio',
+    'Nuevo check "Arantza fue conmigo hoy" en cada dia de entrenamiento (no en dia libre), para saber si fuiste acompanado o solo',
+    'Nuevo conteo mensual en el Dashboard, justo debajo de las zonas de peso: cuantos dias entrenaste solo este mes y cuantos con Arantza',
+    'Nueva seccion de Creatina (diario), mismo patron que Fibra soluble'
+  ]},
+  {v:'2.9.0',fecha:'2026-09-15',cambios:[
+    'Nuevo tercer ejercicio en el dia de Abdomen: Oblicuos, en una maquina de torsion de torso/kneeling twist (de rodillas) - se agrego porque Ab Crunch y Cable Rope Crunch trabajan mas el abdomen central, no especificamente el oblicuo',
+    'Orden del dia: Abdomen (cable) -> Oblicuos -> Abdomen (maquina guiada al final, es la que menos exige tecnica)',
+    'Incluido en la zona "Abdomen" del resumen de pesos del Dashboard',
+    'IMPORTANTE: el nombre de la maquina se identifico de un video, no confirmado en tu sucursal especifica - revisa el nombre real en tu Planet Fitness y avisame si hay que corregirlo'
+  ]},
   {v:'2.8.0',fecha:'2026-09-12',cambios:[
     'Orden de musculos dentro de cada dia reordenado de mas exigente a mas facil, para no fatigarte en el primer ejercicio y aguantar toda la sesion:',
     'Frontal: Cuadriceps -> Pectorales -> Hombros -> Biceps',
