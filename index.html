@@ -191,7 +191,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
 </div>
 
 <div class="page active" id="page-dash">
-  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.14.1</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
+  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.15.1</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
   <div class="sec">
     <div class="ptabs">
       <div class="pt active" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
@@ -733,10 +733,10 @@ var GYM_START='2026-08-31';
 // para no fatigarte en el primer ejercicio y aguantar toda la sesion.
 var GYM_TYPES={
   frontal:{l:'Frontal',ico:'💪',muscles:[
-    {n:'Cuadriceps (Leg Press)',m:['Leg Press'],pos:['Posicion del pie','Posicion 2']},
+    {n:'Cuadriceps (Leg Press)',m:['Leg Press'],pos:['Posicion del pie']},
     {n:'Cuadriceps (Leg Extension)',m:['Leg Extension'],pos:['Ajuste del pie']},
-    {n:'Pectorales',m:['Chest Press'],pos:['Posicion']},
     {n:'Hombros',m:['Shoulder Press'],pos:['Posicion']},
+    {n:'Pectorales',m:['Chest Press'],pos:['Posicion']},
     {n:'Biceps',m:['Bicep Curl'],pos:['Posicion del asiento']}
   ]},
   trasera:{l:'Trasera',ico:'🏋️',muscles:[
@@ -1129,8 +1129,9 @@ function gymSessionsData(){
   var pts=[];
   keys.forEach(function(k){
     var day=s[k];
-    if(!day.gymStart)return;
-    var start=new Date(day.gymStart);
+    var startIso=day.gymFirstStart||day.gymStart;
+    if(!startIso)return;
+    var start=new Date(startIso);
     pts.push({x:start.getDay(),y:start.getHours()+start.getMinutes()/60,k:k});
   });
   return pts;
@@ -1719,9 +1720,11 @@ function addWater(d){var key=keyOf(viewDate);var day=gd(key);day.water=Math.max(
 function addWaterMl(){var ml=parseInt(document.getElementById('cw-ml').value)||0;if(ml<50){toast('Min 50ml');return;}var key=keyOf(viewDate);var day=gd(key);day.water=(day.water||0)+Math.round(ml/250);syncAutoChecks(key,day);renderWater(key,day);renderChecklist(key,day);document.getElementById('cw-wrap').style.display='none';toast('+'+ml+'ml');}
 function removeW(i,key){var day=gd(key);day.water=i;syncAutoChecks(key,day);renderWater(key,day);renderChecklist(key,day);}
 function toggleCW(){var el=document.getElementById('cw-wrap');el.style.display=el.style.display==='none'?'block':'none';}
-function startGymSession(key){var day=gd(key);day.gymStart=new Date().toISOString();day.gymEnd=null;sd(key,day);renderExercise(day,key);toast('Rutina iniciada');}
-function endGymSession(key){var day=gd(key);if(!day.gymStart){toast('Primero inicia la rutina');return;}day.gymEnd=new Date().toISOString();var mins=Math.round((new Date(day.gymEnd)-new Date(day.gymStart))/60000);day.ex=Math.max(0,mins);sd(key,day);renderExercise(day,key);toast(mins+' min registrados');}
-function resetGymSession(key){var day=gd(key);day.gymStart=null;day.gymEnd=null;day.ex=0;sd(key,day);renderExercise(day,key);}
+function startGymSession(key){var day=gd(key);var now=new Date().toISOString();if(!day.gymFirstStart)day.gymFirstStart=now;day.gymStart=now;day.gymEnd=null;sd(key,day);renderExercise(day,key);toast('Rutina iniciada');}
+function endGymSession(key){var day=gd(key);if(!day.gymStart){toast('Primero inicia la rutina');return;}var end=new Date();var mins=Math.max(0,Math.round((end-new Date(day.gymStart))/60000));day.ex=Math.max(0,(day.ex||0)+mins);day.gymEnd=end.toISOString();day.gymStart=null;sd(key,day);renderExercise(day,key);toast('+'+mins+' min ('+day.ex+' min total hoy)');}
+function resetGymSession(key){var day=gd(key);day.gymStart=null;day.gymEnd=null;day.gymFirstStart=null;day.ex=0;sd(key,day);renderExercise(day,key);}
+function toggleExEdit(){var w=document.getElementById('ex-edit-wrap');if(w)w.style.display=(w.style.display==='none'?'block':'none');}
+function applyExEdit(key){var val=document.getElementById('ex-edit-input').value;var mins=parseInt(val);if(isNaN(mins)||mins<0){toast('Numero invalido');return;}var day=gd(key);day.ex=mins;day.gymStart=null;sd(key,day);toggleExEdit();renderExercise(day,key);toast('Ajustado a '+mins+' min');}
 function renderExercise(day,key){
   var min=day.ex||0;
   var el=document.getElementById('ex-num');var meta=document.getElementById('ex-meta');var bar=document.getElementById('ex-bar');
@@ -1729,20 +1732,25 @@ function renderExercise(day,key){
   el.textContent=min+' min';
   bar.style.width=Math.min(100,min/60*100)+'%';
   if(min===0&&!day.gymStart)meta.textContent='sin ejercicio hoy';
-  else if(day.gymStart&&!day.gymEnd)meta.textContent='rutina en curso...';
+  else if(day.gymStart)meta.textContent='rutina en curso...';
   else if(min<30)meta.textContent='buen inicio - meta: 30-60 min';
   else if(min<60)meta.textContent='va muy bien!';
   else meta.textContent='Meta alcanzada!';
   var btnsEl=document.getElementById('ex-buttons');
   if(btnsEl&&key){
     var fmtHM=function(iso){var d=new Date(iso);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');};
-    if(day.gymStart&&day.gymEnd){
-      btnsEl.innerHTML='<div style="font-size:.78rem;color:var(--muted);margin-bottom:6px">'+fmtHM(day.gymStart)+' - '+fmtHM(day.gymEnd)+'</div><button class="wbtn" style="width:100%" onclick="resetGymSession(\''+key+'\')">\u21ba Reiniciar registro</button>';
-    } else if(day.gymStart){
-      btnsEl.innerHTML='<div style="font-size:.78rem;color:var(--good);margin-bottom:6px">Entrenando desde las '+fmtHM(day.gymStart)+'</div><button class="wbtn main" style="width:100%;background:var(--bad);border-color:var(--bad);color:#fff" onclick="endGymSession(\''+key+'\')">\u23f9 Terminar rutina</button>';
+    var h='';
+    if(day.gymStart){
+      h+='<div style="font-size:.78rem;color:var(--good);margin-bottom:6px">Entrenando desde las '+fmtHM(day.gymStart)+'</div><button class="wbtn main" style="width:100%;background:var(--bad);border-color:var(--bad);color:#fff" onclick="endGymSession(\''+key+'\')">\u23f9 Terminar rutina</button>';
+    } else if(min>0){
+      h+=(day.gymEnd?'<div style="font-size:.74rem;color:var(--muted);margin-bottom:6px">Ultima sesion termino a las '+fmtHM(day.gymEnd)+'</div>':'');
+      h+='<button class="wbtn main" style="width:100%;background:var(--good);border-color:var(--good);color:#000;margin-bottom:6px" onclick="startGymSession(\''+key+'\')">\u25b6 Continuar / nueva sesion</button><button class="wbtn" style="width:100%" onclick="resetGymSession(\''+key+'\')">\u21ba Reiniciar registro</button>';
     } else {
-      btnsEl.innerHTML='<button class="wbtn main" style="width:100%;background:var(--good);border-color:var(--good);color:#000" onclick="startGymSession(\''+key+'\')">\u25b6 Iniciar rutina</button>';
+      h+='<button class="wbtn main" style="width:100%;background:var(--good);border-color:var(--good);color:#000" onclick="startGymSession(\''+key+'\')">\u25b6 Iniciar rutina</button>';
     }
+    h+='<div style="text-align:center;margin-top:9px"><span style="font-size:.68rem;color:var(--muted);text-decoration:underline;cursor:pointer" onclick="toggleExEdit()">Ajustar minutos manualmente</span></div>';
+    h+='<div id="ex-edit-wrap" style="display:none;margin-top:8px"><div class="wr"><input type="number" inputmode="numeric" id="ex-edit-input" placeholder="minutos" value="'+min+'"><button class="savebtn" onclick="applyExEdit(\''+key+'\')">OK</button></div></div>';
+    btnsEl.innerHTML=h;
   }
 }
 function addSleep(delta){var key=keyOf(viewDate);var day=gd(key);day.sl=Math.max(0,Math.min(24,parseFloat(((day.sl||0)+delta).toFixed(1))));sd(key,day);renderSleep(day);if(delta>0)toast(day.sl+'h sueno');}
@@ -1858,7 +1866,9 @@ function renderGymMuscle(key,muscle,machine,arr,weights,pos,positions){
   }
   var hint=progressiveOverloadHint(muscle);
   var needsIncrease=!!hint;
-  if(hint)h+='<div style="background:rgba(245,100,100,.1);border:1px solid rgba(245,100,100,.4);border-radius:8px;padding:6px 9px;margin-bottom:8px;font-size:.7rem;color:var(--bad)">\u26A0 Es momento de incrementar peso - '+hint+'</div>';
+  if(hint)h+='<div style="background:rgba(245,162,100,.1);border:1px solid rgba(245,162,100,.4);border-radius:8px;padding:6px 9px;margin-bottom:8px;font-size:.7rem;color:var(--warn)">\u2191 Es momento de incrementar peso - '+hint+'</div>';
+  var rhint=regressionHint(muscle,arr,weights);
+  if(rhint)h+='<div style="background:rgba(245,100,100,.1);border:1px solid rgba(245,100,100,.4);border-radius:8px;padding:6px 9px;margin-bottom:8px;font-size:.7rem;color:var(--bad)">\u2193 '+rhint+'</div>';
   h+='<div style="display:flex;gap:6px">';
   GYM_SERIES.forEach(function(sr,i){
     var on=arr[i];var w=weights[i]!=null?weights[i]:'';
@@ -1917,6 +1927,21 @@ function progressiveOverloadHint(muscle){
   var allComplete=last3.every(function(x){return x.complete;});
   var sameWeight=last3.every(function(x){return x.w===last3[0].w;});
   if(allComplete&&sameWeight){return 'Llevas '+last3.length+' sesiones en '+last3[0].w+'kg - considera subir a '+(last3[0].w+2.5)+'kg';}
+  return null;
+}
+// regressionHint: si hoy NO completaste las 3 series y ya van 2+ sesiones pasadas en ese mismo
+// peso (o sea hoy seria la 3a+), sugiere bajar de peso - complementa a progressiveOverloadHint,
+// que solo avisa cuando SI se completa todo.
+function regressionHint(muscle,arr,weights){
+  var doneCount=arr.filter(function(x){return x;}).length;
+  if(doneCount>=3)return null;
+  var vals=(weights||[]).filter(function(w){return w!=null;});
+  if(!vals.length)return null;
+  var w=Math.max.apply(null,vals);
+  var sessions=muscleSessionHistory(muscle);
+  var last2=sessions.slice(-2);
+  var sameWeightPast=last2.length===2&&last2.every(function(x){return x.w===w;});
+  if(sameWeightPast){return 'Llevas varias sesiones en '+w+'kg y hoy no completaste las 3 series - considera bajar a '+(w-2.5)+'kg';}
   return null;
 }
 function toggleGymCardio(key,slot){var day=gd(key);var g=getGymData(key,day);g[slot]=!g[slot];sd(key,day);renderGym(key,day);}
@@ -2219,6 +2244,20 @@ function renderValResultado(d){
   document.getElementById('val-resultado').innerHTML=h;
 }
 var CHANGELOG=[
+  {v:'2.15.1',fecha:'2026-09-17',cambios:[
+    'CORREGIDO: cada vez que reiniciabas la rutina (Iniciar de nuevo despues de Terminar), los minutos se sobreescribian en vez de sumarse - si por error terminabas antes de tiempo y volvias a empezar, perdias el registro de la primera parte. Ahora se ACUMULA: cada ciclo Iniciar->Terminar suma sus minutos al total del dia',
+    'Nuevo boton "Continuar / nueva sesion" que aparece despues de terminar, para retomar sin perder lo ya registrado',
+    'Nuevo "Ajustar minutos manualmente" (siempre visible abajo de los botones) - por si necesitas corregir el total a mano, por ejemplo si terminaste por error y quieres poner el numero correcto directamente',
+    'La grafica de "Horarios de gimnasio por dia" ahora usa la hora del PRIMER inicio del dia (se conserva aunque termines y reinicies varias veces), no se pierde aunque acumules varios ciclos'
+  ]},
+  {v:'2.15.0',fecha:'2026-09-17',cambios:[
+    'Reordenado Frontal: Hombros ahora va antes de Pectorales. El press de pecho usa el hombro como musculo secundario y lo pre-fatiga si va primero - por eso el mismo peso se puede sentir mas pesado al llegar a Hombros sin que el peso este mal',
+    'Nueva leyenda de bajar peso: si ya van 2+ sesiones pasadas en el mismo peso y hoy no completaste las 3 series, aparece un aviso rojo sugiriendo bajar 2.5kg - complementa al aviso ambar de subir peso (que solo avisa cuando SI completas todo)',
+    'Corregido: el aviso de "momento de incrementar peso" estaba en rojo desde antes de la v2.12.1 (quedo sin actualizar) - ahora es ambar, consistente con el color de los inputs'
+  ]},
+  {v:'2.14.2',fecha:'2026-09-17',cambios:[
+    'CORREGIDO: Leg Press solo tiene 1 posicion (Posicion del pie), se quito "Posicion 2" que no aplicaba. Tu valor guardado (ej. 4) se conserva'
+  ]},
   {v:'2.14.1',fecha:'2026-09-17',cambios:[
     'CORREGIDO: el copiado automatico de la ultima sesion tomaba TODO el bloque de pesos del dia mas reciente de ese tipo, no musculo por musculo. Si un ejercicio hermano (ej. Leg Press) tenia actividad mas reciente que su pareja (Leg Extension), esta ultima se veia vacia aunque su historial siguiera existiendo mas atras (ej. 23/27/32kg del 14-sep). Ahora cada musculo busca su propio historial de forma independiente',
     'Auto-relleno: si un dia ya se habia creado con un musculo vacio por este bug, se autocorrige solo la siguiente vez que abras Mi Dia - no hace falta borrar ni volver a capturar nada',
