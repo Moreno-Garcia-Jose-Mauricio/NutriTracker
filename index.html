@@ -191,7 +191,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
 </div>
 
 <div class="page active" id="page-dash">
-  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.13.0</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
+  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.13.1</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
   <div class="sec">
     <div class="ptabs">
       <div class="pt active" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
@@ -853,7 +853,7 @@ function restDowForWeek(key){var wk=weekKeyOf(key);var s=ls();var override=null;
 // se mueva el dia libre de otra fecha en la misma semana.
 function _gymHasProgress(g){
   if(!g)return false;
-  if(g.cardioI||g.cardioF)return true;
+  if(g.cardioI||g.cardioF||g.conArantza)return true;
   if(g.muscles){for(var m in g.muscles){if(g.muscles[m].some(function(x){return x;}))return true;}}
   return false;
 }
@@ -2150,6 +2150,9 @@ function renderValResultado(d){
   document.getElementById('val-resultado').innerHTML=h;
 }
 var CHANGELOG=[
+  {v:'2.13.1',fecha:'2026-09-17',cambios:[
+    'CORREGIDO: marcar "Con mi amorcito (Arantza)" antes de registrar cualquier serie o cardio ese dia no contaba en el Dashboard (ni como solo ni como con Arantza). Ahora marcar ese check ya cuenta como progreso real del dia, igual que el cardio o una serie'
+  ]},
   {v:'2.13.0',fecha:'2026-09-17',cambios:[
     'Agregado registro de posicion (1 numero) a: Pectorales, Hombros, Gluteo (Glute Kickback), Femorales, Espalda (Lat Pulldown), Triceps y Abdomen (Ab Crunch) - se copian solas de la sesion anterior igual que las demas',
     'Corregido el nombre de la maquina de Oblicuos: Torso Rotary (antes decia "Torso Rotation / Kneeling Twist... confirma el nombre")',
