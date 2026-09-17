@@ -191,7 +191,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
 </div>
 
 <div class="page active" id="page-dash">
-  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.14.0</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
+  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.14.1</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
   <div class="sec">
     <div class="ptabs">
       <div class="pt active" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
@@ -897,38 +897,45 @@ function gymTypeFor(key){
   if(day&&day.gymType&&_gymHasProgress(day.gym))return day.gymType;
   var d=new Date(key+'T12:00:00');var dow=d.getDay();var restDow=restDowForWeek(key);var diff=(dow-restDow+7)%7;if(diff===0)return 'libre';if(diff===1||diff===4)return 'frontal';if(diff===2||diff===5)return 'trasera';return 'abdomen';
 }
-// lastWeightsForType: busca hacia atras (antes de la fecha dada) el registro mas reciente de este
-// tipo de rutina y devuelve sus pesos, para usarlos como punto de partida de la nueva sesion.
-function lastWeightsForType(beforeKey,type){
+// lastWeightForMuscle: busca hacia atras el peso mas reciente de ESTE musculo especificamente
+// (no del dia mas reciente en general) - asi si un ejercicio hermano (ej. Leg Press) tiene
+// actividad mas reciente que Leg Extension, Leg Extension sigue encontrando SU propio historial
+// mas atras en vez de perderlo.
+function lastWeightForMuscle(beforeKey,muscle){
   var s=ls();
   var keys=Object.keys(s).filter(function(k){return /^\d{4}-\d{2}-\d{2}$/.test(k)&&k<beforeKey;}).sort();
   for(var i=keys.length-1;i>=0;i--){
     var day=s[keys[i]];
-    if(day&&day.gym&&day.gymType===type&&day.gym.weights)return day.gym.weights;
+    if(day&&day.gym&&day.gym.weights&&Array.isArray(day.gym.weights[muscle])){
+      var vals=day.gym.weights[muscle].filter(function(v){return v!==null&&v!==undefined;});
+      if(vals.length)return day.gym.weights[muscle];
+    }
   }
   return null;
 }
-// lastPositionsForType: igual que lastWeightsForType pero para las posiciones de maquina
-// (asiento, ajuste de pie, etc) - asi no hay que volver a ajustar/recordar cada vez.
-function lastPositionsForType(beforeKey,type){
+// lastPositionForMuscle: mismo concepto que lastWeightForMuscle pero para posiciones de maquina.
+function lastPositionForMuscle(beforeKey,muscle){
   var s=ls();
   var keys=Object.keys(s).filter(function(k){return /^\d{4}-\d{2}-\d{2}$/.test(k)&&k<beforeKey;}).sort();
   for(var i=keys.length-1;i>=0;i--){
     var day=s[keys[i]];
-    if(day&&day.gym&&day.gymType===type&&day.gym.positions)return day.gym.positions;
+    if(day&&day.gym&&day.gym.positions&&Array.isArray(day.gym.positions[muscle])){
+      var vals=day.gym.positions[muscle].filter(function(v){return v!==null&&v!==undefined;});
+      if(vals.length)return day.gym.positions[muscle];
+    }
   }
   return null;
 }
 function gymDefaultsFor(type,key){
   var g={cardioI:false,cardioF:false,muscles:{},weights:{},positions:{},conArantza:false};
-  var lastW=key?lastWeightsForType(key,type):null;
-  var lastP=key?lastPositionsForType(key,type):null;
   if(GYM_TYPES[type]){
     GYM_TYPES[type].muscles.forEach(function(mu){
       g.muscles[mu.n]=[false,false,false];
-      g.weights[mu.n]=(lastW&&Array.isArray(lastW[mu.n]))?lastW[mu.n].slice():[null,null,null];
+      var lastW=key?lastWeightForMuscle(key,mu.n):null;
+      g.weights[mu.n]=(lastW&&Array.isArray(lastW))?lastW.slice():[null,null,null];
       if(mu.pos&&mu.pos.length){
-        g.positions[mu.n]=(lastP&&Array.isArray(lastP[mu.n]))?lastP[mu.n].slice():mu.pos.map(function(){return null;});
+        var lastP=key?lastPositionForMuscle(key,mu.n):null;
+        g.positions[mu.n]=(lastP&&Array.isArray(lastP))?lastP.slice():mu.pos.map(function(){return null;});
       }
     });
   }
@@ -936,8 +943,37 @@ function gymDefaultsFor(type,key){
   return g;
 }
 // getGymData: crea o regenera los datos de la rutina del dia si el tipo cambio (p.ej. al mover el dia libre).
-// Tambien normaliza pesos viejos (v1.8.0 guardaba un solo numero por musculo) al nuevo formato de 3 series.
-function getGymData(key,day){var type=gymTypeFor(key);if(!day.gym||day.gymType!==type){day.gym=gymDefaultsFor(type,key);day.gymType=type;}if(!day.gym.weights)day.gym.weights={};if(!day.gym.positions)day.gym.positions={};if(day.gym.conArantza===undefined)day.gym.conArantza=false;Object.keys(day.gym.muscles||{}).forEach(function(m){var w=day.gym.weights[m];if(!Array.isArray(w))day.gym.weights[m]=(w!==null&&w!==undefined)?[w,null,null]:[null,null,null];});if(GYM_TYPES[type]){GYM_TYPES[type].muscles.forEach(function(mu){if(mu.pos&&mu.pos.length&&!Array.isArray(day.gym.positions[mu.n]))day.gym.positions[mu.n]=mu.pos.map(function(){return null;});});}return day.gym;}
+// Tambien normaliza pesos viejos (v1.8.0 guardaba un solo numero por musculo) al nuevo formato de 3 series,
+// y auto-rellena (backfill) cualquier musculo que haya quedado completamente vacio buscando su propio
+// historial - corrige dias de hoy ya creados antes de este arreglo.
+function getGymData(key,day){
+  var type=gymTypeFor(key);
+  if(!day.gym||day.gymType!==type){day.gym=gymDefaultsFor(type,key);day.gymType=type;}
+  if(!day.gym.weights)day.gym.weights={};
+  if(!day.gym.positions)day.gym.positions={};
+  if(day.gym.conArantza===undefined)day.gym.conArantza=false;
+  Object.keys(day.gym.muscles||{}).forEach(function(m){
+    var w=day.gym.weights[m];
+    if(!Array.isArray(w))day.gym.weights[m]=(w!==null&&w!==undefined)?[w,null,null]:[null,null,null];
+    var arr=day.gym.weights[m];
+    if(arr.every(function(v){return v===null||v===undefined;})){
+      var lastW=lastWeightForMuscle(key,m);
+      if(lastW)day.gym.weights[m]=lastW.slice();
+    }
+  });
+  if(GYM_TYPES[type]){
+    GYM_TYPES[type].muscles.forEach(function(mu){
+      if(mu.pos&&mu.pos.length){
+        if(!Array.isArray(day.gym.positions[mu.n]))day.gym.positions[mu.n]=mu.pos.map(function(){return null;});
+        if(day.gym.positions[mu.n].every(function(v){return v===null||v===undefined;})){
+          var lastP=lastPositionForMuscle(key,mu.n);
+          if(lastP)day.gym.positions[mu.n]=lastP.slice();
+        }
+      }
+    });
+  }
+  return day.gym;
+}
 function toggleConArantza(key){var day=gd(key);var g=getGymData(key,day);g.conArantza=!g.conArantza;sd(key,day);renderGym(key,day);}
 
 var activeFoodGroup='verduras';
@@ -2183,6 +2219,11 @@ function renderValResultado(d){
   document.getElementById('val-resultado').innerHTML=h;
 }
 var CHANGELOG=[
+  {v:'2.14.1',fecha:'2026-09-17',cambios:[
+    'CORREGIDO: el copiado automatico de la ultima sesion tomaba TODO el bloque de pesos del dia mas reciente de ese tipo, no musculo por musculo. Si un ejercicio hermano (ej. Leg Press) tenia actividad mas reciente que su pareja (Leg Extension), esta ultima se veia vacia aunque su historial siguiera existiendo mas atras (ej. 23/27/32kg del 14-sep). Ahora cada musculo busca su propio historial de forma independiente',
+    'Auto-relleno: si un dia ya se habia creado con un musculo vacio por este bug, se autocorrige solo la siguiente vez que abras Mi Dia - no hace falta borrar ni volver a capturar nada',
+    'Mismo arreglo aplicado a las posiciones de maquina, por si acaso'
+  ]},
   {v:'2.14.0',fecha:'2026-09-17',cambios:[
     'CORREGIDO (critico): al separar Leg Press/Leg Extension, Glute Kickback/Hip Abductor y Lat Pulldown/Seated Row (v2.10-v2.11), los datos viejos seguian guardados bajo los nombres sin separar (Cuadriceps, Espalda, Gluteo). Como esos nombres ya no existen en la rutina, la pantalla se rompia a la mitad al dibujar esos dias - por eso se veian dias pasados como "dia libre" cuando no lo eran',
     'Nueva migracion automatica que corre sola cada vez que abres la app: renombra Cuadriceps->Cuadriceps (Leg Extension), Espalda->Espalda (Lat Pulldown), Gluteo->Gluteo (Glute Kickback) - se preserva el historial completo de pesos y series; Leg Press, Hip Abductor y Oblicuos arrancan en 0 porque nunca se habian registrado por separado',
