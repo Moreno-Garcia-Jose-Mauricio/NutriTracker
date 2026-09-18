@@ -191,7 +191,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
 </div>
 
 <div class="page active" id="page-dash">
-  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.15.2</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
+  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.16.2</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
   <div class="sec">
     <div class="ptabs">
       <div class="pt active" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
@@ -233,7 +233,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
 <div class="page" id="page-dia">
   <div class="daynav">
     <button class="dnbtn" onclick="changeDay(-1)">&#8249;</button>
-    <div class="dncenter"><div class="dnname" id="dn-name"></div><div class="dndate" id="dn-date"></div></div>
+    <div class="dncenter"><div class="dnname" id="dn-name"></div><div class="dndate" id="dn-date"></div><div id="dn-note" style="font-size:.7rem;color:var(--warn);margin-top:4px"></div></div>
     <button class="dnbtn" id="btn-next" onclick="changeDay(1)">&#8250;</button>
   </div>
   <div style="padding:12px 18px 0">
@@ -1150,7 +1150,7 @@ function renderGymScheduleChart(){
     return;
   }
   wrapEl.innerHTML='<canvas id="ch-gymschedule"></canvas>';
-  var mopts={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){var h=Math.floor(ctx.raw.y);var mn=Math.round((ctx.raw.y-h)*60);return DOW_LABELS_FULL[ctx.raw.x]+' '+h+':'+(mn<10?'0':'')+mn;}}}},scales:{x:{type:'linear',min:-0.5,max:6.5,ticks:{stepSize:1,color:'#8888aa',callback:function(v){return DOW_LABELS[v]||'';}},grid:{color:'#2a2a38'}},y:{min:0,max:24,ticks:{stepSize:3,color:'#8888aa',callback:function(v){return v+':00';}},grid:{color:'#2a2a38'}}}};
+  var mopts={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){var h=Math.floor(ctx.raw.y);var mn=Math.round((ctx.raw.y-h)*60);return DOW_LABELS_FULL[ctx.raw.x]+' '+h+':'+(mn<10?'0':'')+mn;}}}},scales:{x:{type:'linear',min:-0.5,max:6.5,afterBuildTicks:function(axis){axis.ticks=[0,1,2,3,4,5,6].map(function(v){return {value:v};});},ticks:{color:'#8888aa',font:{weight:'bold'},callback:function(v){return DOW_LABELS[v]!==undefined?DOW_LABELS[v]:'';}},grid:{color:'#2a2a38'}},y:{min:0,max:24,ticks:{stepSize:3,color:'#8888aa',callback:function(v){return v+':00';}},grid:{color:'#2a2a38'}}}};
   charts['ch-gymschedule']=new Chart(document.getElementById('ch-gymschedule').getContext('2d'),{type:'scatter',data:{datasets:[{data:pts,backgroundColor:'#c8f564',pointRadius:6}]},options:mopts});
   if(sumEl){
     var byDow={};
@@ -1628,7 +1628,17 @@ function exportReport(){
   toast('Reporte completo exportado');
 }
 
-var viewDate=new Date();
+// viewDate arranca en HOY, salvo que ayer haya quedado una rutina sin terminar (gymStart sin
+// gymEnd) - en ese caso arranca ahi mismo, para que el usuario vea de inmediato el boton de
+// Terminar rutina en vez de tener que acordarse o buscarlo.
+var viewDate=(function(){
+  var today=new Date();
+  var yd=new Date(today);yd.setDate(yd.getDate()-1);
+  var yKey=yd.getFullYear()+'-'+String(yd.getMonth()+1).padStart(2,'0')+'-'+String(yd.getDate()).padStart(2,'0');
+  var ys=ls()[yKey];
+  if(ys&&ys.gymStart&&!ys.gymEnd)return yd;
+  return today;
+})();
 function changeDay(d){var nd=new Date(viewDate);nd.setDate(nd.getDate()+d);var today=new Date();today.setHours(23,59,59,999);if(nd>today)return;viewDate=nd;renderDia();}
 var _clockInterval=null;
 function startClock(){stopClock();function tick(){var el=document.getElementById('dn-date');if(!el)return;var now=new Date();var h=now.getHours();var m=now.getMinutes();var sec=now.getSeconds();el.textContent=now.toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'})+' - '+(h<10?'0':'')+h+':'+(m<10?'0':'')+m+':'+(sec<10?'0':'')+sec;}tick();_clockInterval=setInterval(tick,1000);}
@@ -1642,6 +1652,8 @@ function renderDia(){
   var days_es=['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado'];
   document.getElementById('dn-name').textContent=isToday?'Hoy - '+days_es[dow]:days_es[dow];
   document.getElementById('dn-date').textContent=viewDate.toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'});
+  var noteEl=document.getElementById('dn-note');
+  if(noteEl)noteEl.textContent=(!isToday&&day.gymStart&&!day.gymEnd)?'Te trajimos aqui porque quedo una rutina sin terminar':'';
   if(isToday){startClock();}else{stopClock();}
   document.getElementById('btn-next').disabled=isToday;
   if(!day.mc)day.mc=[];
@@ -1690,10 +1702,10 @@ function renderDia(){
   if(ew){var dw=prevW?(ew.w-prevW.w).toFixed(1):null;var wDisp=document.getElementById('w-display');wDisp.innerHTML='';var wDiv=document.createElement('div');wDiv.style.cssText='display:flex;align-items:baseline;gap:6px;margin-top:6px';wDiv.innerHTML='<span style="font-family:Syne,sans-serif;font-size:1.8rem;font-weight:800">'+ew.w+'</span><span style="color:var(--muted);font-size:1rem">kg</span>'+(dw!==null?'<span style="font-weight:700;font-size:.95rem;color:'+(parseFloat(dw)<0?'var(--good)':'var(--bad)')+'">'+((dw>0?'+':'')+dw)+'kg</span>':'');var delBtn=document.createElement('button');delBtn.textContent='Borrar';delBtn.dataset.k=key;delBtn.style.cssText='background:transparent;border:1px solid var(--bad);color:var(--bad);border-radius:7px;padding:3px 8px;font-size:.73rem;cursor:pointer;margin-left:6px';delBtn.onclick=function(){deleteWeight(this.dataset.k);};wDiv.appendChild(delBtn);wDisp.appendChild(wDiv);}
   else document.getElementById('w-display').innerHTML='';
   renderChecklist(key,day);
-  renderExercise(day,key);
   renderSleep(day);
   renderReflux(key,day);
   renderGym(key,day);
+  renderExercise(day,key);
 }
 function deleteWeight(key){var wts=gw();wts=wts.filter(function(w){return w.date!==key;});sw(wts);toast('Peso borrado');renderDia();renderDash();}
 function toggleMeal(mk,key){var tb=document.getElementById('tb-'+mk);tb.classList.toggle('open');if(tb.classList.contains('open'))renderChips(mk,key,gd(key));}
@@ -1721,6 +1733,16 @@ function addWaterMl(){var ml=parseInt(document.getElementById('cw-ml').value)||0
 function removeW(i,key){var day=gd(key);day.water=i;syncAutoChecks(key,day);renderWater(key,day);renderChecklist(key,day);}
 function toggleCW(){var el=document.getElementById('cw-wrap');el.style.display=el.style.display==='none'?'block':'none';}
 function startGymSession(key){var day=gd(key);var now=new Date().toISOString();if(!day.gymFirstStart)day.gymFirstStart=now;day.gymStart=now;day.gymEnd=null;sd(key,day);renderExercise(day,key);toast('Rutina iniciada');}
+// endAbandonedSession: cierra una sesion que quedo sin terminar en un dia PASADO (ej. cerraste la
+// app antes de darle Terminar y ya es el dia siguiente) y luego re-dibuja la vista de HOY, ya que
+// endGymSession internamente actualiza los recuadros de minutos con los datos del dia que cerro.
+function endAbandonedSession(yKey,tKey){
+  endGymSession(yKey);
+  var day=gd(tKey);
+  renderGym(tKey,day);
+  renderExercise(day,tKey);
+  toast('Sesion de ayer cerrada');
+}
 function endGymSession(key){var day=gd(key);if(!day.gymStart){toast('Primero inicia la rutina');return;}var end=new Date();var mins=Math.max(0,Math.round((end-new Date(day.gymStart))/60000));day.ex=Math.max(0,(day.ex||0)+mins);day.gymEnd=end.toISOString();day.gymStart=null;sd(key,day);renderExercise(day,key);toast('+'+mins+' min ('+day.ex+' min total hoy)');}
 function resetGymSession(key){var day=gd(key);day.gymStart=null;day.gymEnd=null;day.gymFirstStart=null;day.ex=0;sd(key,day);renderExercise(day,key);}
 function toggleExEdit(){var w=document.getElementById('ex-edit-wrap');if(w)w.style.display=(w.style.display==='none'?'block':'none');}
@@ -1768,11 +1790,16 @@ function renderExercise(day,key){
     } else {
       h+='<button class="wbtn main" style="width:100%;background:var(--good);border-color:var(--good);color:#000" onclick="startGymSession(\''+key+'\')">\u25b6 Iniciar rutina</button>';
     }
-    h+='<div style="text-align:center;margin-top:9px"><span style="font-size:.68rem;color:var(--muted);text-decoration:underline;cursor:pointer" onclick="toggleExEdit()">Ajustar minutos manualmente</span></div>';
-    h+='<div id="ex-edit-wrap" style="display:none;margin-top:8px"><div class="wr"><input type="number" inputmode="numeric" id="ex-edit-input" placeholder="minutos" value="'+min+'"><button class="savebtn" onclick="applyExEdit(\''+key+'\')">OK</button></div></div>';
-    h+='<div style="text-align:center;margin-top:6px"><span style="font-size:.68rem;color:var(--muted);text-decoration:underline;cursor:pointer" onclick="toggleExTimeEdit()">Ajustar hora de inicio + duracion</span></div>';
-    h+='<div id="ex-time-edit-wrap" style="display:none;margin-top:8px"><div class="wr" style="gap:6px"><input type="time" id="ex-time-edit-hour" style="flex:1"><input type="number" inputmode="numeric" id="ex-time-edit-mins" placeholder="minutos" style="flex:1"><button class="savebtn" onclick="applyExTimeEdit(\''+key+'\')">OK</button></div></div>';
     btnsEl.innerHTML=h;
+  }
+  var editEl=document.getElementById('ex-manual-edit');
+  if(editEl&&key){
+    var eh='';
+    eh+='<div style="text-align:center"><span style="font-size:.68rem;color:var(--muted);text-decoration:underline;cursor:pointer" onclick="toggleExEdit()">Ajustar minutos manualmente</span></div>';
+    eh+='<div id="ex-edit-wrap" style="display:none;margin-top:8px"><div class="wr"><input type="number" inputmode="numeric" id="ex-edit-input" placeholder="minutos" value="'+min+'"><button class="savebtn" onclick="applyExEdit(\''+key+'\')">OK</button></div></div>';
+    eh+='<div style="text-align:center;margin-top:9px"><span style="font-size:.68rem;color:var(--muted);text-decoration:underline;cursor:pointer" onclick="toggleExTimeEdit()">Ajustar hora de inicio + duracion</span></div>';
+    eh+='<div id="ex-time-edit-wrap" style="display:none;margin-top:8px"><div class="wr" style="gap:6px"><input type="time" id="ex-time-edit-hour" style="flex:1"><input type="number" inputmode="numeric" id="ex-time-edit-mins" placeholder="minutos" style="flex:1"><button class="savebtn" onclick="applyExTimeEdit(\''+key+'\')">OK</button></div></div>';
+    editEl.innerHTML=eh;
   }
 }
 function addSleep(delta){var key=keyOf(viewDate);var day=gd(key);day.sl=Math.max(0,Math.min(24,parseFloat(((day.sl||0)+delta).toFixed(1))));sd(key,day);renderSleep(day);if(delta>0)toast(day.sl+'h sueno');}
@@ -1826,23 +1853,36 @@ function renderGym(key,day){
   renderWeekProgress();
   var type=gymTypeFor(key);
   var g=getGymData(key,day);
+  var abandonedBanner='';
+  if(key===todayKey()){
+    var yd=new Date(key+'T12:00:00');yd.setDate(yd.getDate()-1);
+    var yKey=yd.getFullYear()+'-'+String(yd.getMonth()+1).padStart(2,'0')+'-'+String(yd.getDate()).padStart(2,'0');
+    var ys=ls()[yKey];
+    if(ys&&ys.gymStart&&!ys.gymEnd){
+      var yh=new Date(ys.gymStart);
+      var yHM=String(yh.getHours()).padStart(2,'0')+':'+String(yh.getMinutes()).padStart(2,'0');
+      abandonedBanner='<div style="background:rgba(245,162,100,.12);border:1px solid rgba(245,162,100,.4);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:.78rem;color:var(--warn)">\u26A0 Tienes una sesion sin terminar de ayer (desde las '+yHM+') - probablemente cerraste la app antes de darle Terminar.<button class="wbtn" style="margin-top:8px;width:100%;background:var(--warn);border-color:var(--warn);color:#000" onclick="endAbandonedSession(\''+yKey+'\',\''+key+'\')">Terminar esa sesion ahora</button></div>';
+    }
+  }
   var typeLbl=type==='libre'?'Dia libre - dar gracias':GYM_TYPES[type].l+' '+GYM_TYPES[type].ico;
   if(type==='libre'){
     hdr.innerHTML='<div style="font-family:Syne,sans-serif;font-weight:800;font-size:.95rem">'+typeLbl+'</div>';
   } else {
     hdr.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span style="font-family:Syne,sans-serif;font-weight:800;font-size:.95rem">'+typeLbl+'</span><label style="display:flex;align-items:center;gap:6px;font-size:.7rem;color:var(--muted);cursor:pointer;white-space:nowrap"><input type="checkbox" '+(day.restWeek?'checked':'')+' onchange="toggleRestDay(\''+key+'\')" style="width:auto">Dia libre esta semana</label></div>';
   }
-  var h='';
+  var h=abandonedBanner;
   if(type==='libre'){
     h+='<div style="text-align:center;padding:14px 0"><div style="font-size:2rem">\uD83D\uDE4F</div><div style="font-size:.85rem;color:var(--muted);margin-top:6px">Hoy toca descansar y dar gracias</div></div>';
     h+='<div class="ci" onclick="toggleGymRest(\''+key+'\')"><div class="cbox" style="background:'+(g.restDone?'var(--good)':'transparent')+';border-color:'+(g.restDone?'var(--good)':'var(--border)')+'">'+(g.restDone?'v':'')+'</div><span class="clbl '+(g.restDone?'done':'')+'">Descanso completado</span></div>';
     if(day.restWeek){h+='<button class="wbtn" style="width:100%;margin-top:12px" onclick="toggleRestDay(\''+key+'\')">\u21ba Quitar dia libre de aqui (regresar a domingo)</button>';}
+    h+='<div id="ex-manual-edit" style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)"></div>';
   } else {
     h+='<div class="ci" onclick="toggleConArantza(\''+key+'\')"><div class="cbox" style="background:'+(g.conArantza?'var(--purple)':'transparent')+';border-color:'+(g.conArantza?'var(--purple)':'var(--border)')+'">'+(g.conArantza?'v':'')+'</div><span class="clbl '+(g.conArantza?'done':'')+'">Con mi amorcito (Arantza)</span></div>';
     h+=renderGymCardio(key,'cardioI','Cardio inicial',GYM_CARDIO_INI,g.cardioI);
     h+='<div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:12px 0 6px">Musculos - '+GYM_TYPES[type].l+'</div>';
     GYM_TYPES[type].muscles.forEach(function(mu){h+=renderGymMuscle(key,mu.n,mu.m,g.muscles[mu.n]||[false,false,false],g.weights[mu.n],mu.pos,g.positions[mu.n]);});
     h+=renderGymCardio(key,'cardioF','Cardio final',GYM_CARDIO_FIN,g.cardioF);
+    h+='<div id="ex-manual-edit" style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)"></div>';
   }
   el.innerHTML=h;
 }
@@ -2266,6 +2306,21 @@ function renderValResultado(d){
   document.getElementById('val-resultado').innerHTML=h;
 }
 var CHANGELOG=[
+  {v:'2.16.2',fecha:'2026-09-18',cambios:[
+    'CORREGIDO: en la grafica de "Horarios de gimnasio por dia" el eje X (dias de la semana) salia vacio - el calculo automatico de posiciones de Chart.js no caia exactamente en los numeros enteros que usa la lista de dias. Ahora se fuerzan las 7 posiciones exactas, mostrando Dom/Lun/Mar/Mie/Jue/Vie/Sab debajo de cada punto'
+  ]},
+  {v:'2.16.1',fecha:'2026-09-18',cambios:[
+    'La app ya no depende de que dejes la pestana abierta: si al abrirla (aunque haya hecho refresh) queda una rutina de ayer sin terminar, te lleva directo a ese dia en vez de "Hoy" - ahi mismo ves el boton normal de "Terminar rutina" con la hora de inicio real, sin tener que buscar ni acordarte de nada',
+    'Se agrega una nota breve arriba explicando por que no dice "Hoy" cuando esto pasa',
+    'El aviso agregado en v2.16.0 se queda como respaldo por si navegas manualmente a Hoy antes de cerrar esa sesion'
+  ]},
+  {v:'2.16.0',fecha:'2026-09-18',cambios:[
+    'Confirmado: si empiezas a entrenar antes de medianoche y terminas despues, la sesion se guarda completa en el dia en que INICIASTE, no en el que termino - siempre que no cierres la app antes de darle Terminar',
+    'Nuevo aviso automatico: si cierras la app antes de terminar la rutina y la vuelves a abrir al dia siguiente, aparece un mensaje en "Hoy" avisando que quedo una sesion sin terminar de ayer, con un boton para cerrarla ahi mismo sin tener que navegar al dia anterior'
+  ]},
+  {v:'2.15.3',fecha:'2026-09-18',cambios:[
+    'Los links de "Ajustar minutos manualmente" y "Ajustar hora de inicio + duracion" se movieron al final de toda la seccion de Entrenamiento (despues de Cardio final), en vez de estar justo debajo del boton principal de Iniciar/Terminar'
+  ]},
   {v:'2.15.2',fecha:'2026-09-17',cambios:[
     'Nueva opcion "Ajustar hora de inicio + duracion" (junto al ajuste de solo minutos) - escribes la hora en que empezaste y cuantos minutos duro, y corrige a la vez el total del dia Y la hora que usa la grafica de "Horarios de gimnasio por dia" - util cuando ademas del total tambien se perdio la hora real de inicio'
   ]},
