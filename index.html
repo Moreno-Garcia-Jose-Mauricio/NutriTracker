@@ -191,7 +191,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
 </div>
 
 <div class="page active" id="page-dash">
-  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.15.1</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
+  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.15.2</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
   <div class="sec">
     <div class="ptabs">
       <div class="pt active" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
@@ -1725,6 +1725,26 @@ function endGymSession(key){var day=gd(key);if(!day.gymStart){toast('Primero ini
 function resetGymSession(key){var day=gd(key);day.gymStart=null;day.gymEnd=null;day.gymFirstStart=null;day.ex=0;sd(key,day);renderExercise(day,key);}
 function toggleExEdit(){var w=document.getElementById('ex-edit-wrap');if(w)w.style.display=(w.style.display==='none'?'block':'none');}
 function applyExEdit(key){var val=document.getElementById('ex-edit-input').value;var mins=parseInt(val);if(isNaN(mins)||mins<0){toast('Numero invalido');return;}var day=gd(key);day.ex=mins;day.gymStart=null;sd(key,day);toggleExEdit();renderExercise(day,key);toast('Ajustado a '+mins+' min');}
+function toggleExTimeEdit(){var w=document.getElementById('ex-time-edit-wrap');if(w)w.style.display=(w.style.display==='none'?'block':'none');}
+// applyExTimeEdit: ajuste manual de hora de inicio + duracion. Corrige a la vez el total de
+// minutos del dia (day.ex) Y la hora que usa la grafica de horarios (day.gymFirstStart) - util
+// cuando ademas del total, tambien se perdio o quedo mal la hora de inicio real.
+function applyExTimeEdit(key){
+  var timeVal=document.getElementById('ex-time-edit-hour').value;
+  var minVal=document.getElementById('ex-time-edit-mins').value;
+  var mins=parseInt(minVal);
+  if(!timeVal||isNaN(mins)||mins<0){toast('Completa hora y minutos validos');return;}
+  var day=gd(key);
+  var start=new Date(key+'T'+timeVal+':00');
+  day.gymFirstStart=start.toISOString();
+  day.gymStart=null;
+  day.gymEnd=new Date(start.getTime()+mins*60000).toISOString();
+  day.ex=mins;
+  sd(key,day);
+  toggleExTimeEdit();
+  renderExercise(day,key);
+  toast('Registrado: '+timeVal+' + '+mins+' min');
+}
 function renderExercise(day,key){
   var min=day.ex||0;
   var el=document.getElementById('ex-num');var meta=document.getElementById('ex-meta');var bar=document.getElementById('ex-bar');
@@ -1750,6 +1770,8 @@ function renderExercise(day,key){
     }
     h+='<div style="text-align:center;margin-top:9px"><span style="font-size:.68rem;color:var(--muted);text-decoration:underline;cursor:pointer" onclick="toggleExEdit()">Ajustar minutos manualmente</span></div>';
     h+='<div id="ex-edit-wrap" style="display:none;margin-top:8px"><div class="wr"><input type="number" inputmode="numeric" id="ex-edit-input" placeholder="minutos" value="'+min+'"><button class="savebtn" onclick="applyExEdit(\''+key+'\')">OK</button></div></div>';
+    h+='<div style="text-align:center;margin-top:6px"><span style="font-size:.68rem;color:var(--muted);text-decoration:underline;cursor:pointer" onclick="toggleExTimeEdit()">Ajustar hora de inicio + duracion</span></div>';
+    h+='<div id="ex-time-edit-wrap" style="display:none;margin-top:8px"><div class="wr" style="gap:6px"><input type="time" id="ex-time-edit-hour" style="flex:1"><input type="number" inputmode="numeric" id="ex-time-edit-mins" placeholder="minutos" style="flex:1"><button class="savebtn" onclick="applyExTimeEdit(\''+key+'\')">OK</button></div></div>';
     btnsEl.innerHTML=h;
   }
 }
@@ -2244,6 +2266,9 @@ function renderValResultado(d){
   document.getElementById('val-resultado').innerHTML=h;
 }
 var CHANGELOG=[
+  {v:'2.15.2',fecha:'2026-09-17',cambios:[
+    'Nueva opcion "Ajustar hora de inicio + duracion" (junto al ajuste de solo minutos) - escribes la hora en que empezaste y cuantos minutos duro, y corrige a la vez el total del dia Y la hora que usa la grafica de "Horarios de gimnasio por dia" - util cuando ademas del total tambien se perdio la hora real de inicio'
+  ]},
   {v:'2.15.1',fecha:'2026-09-17',cambios:[
     'CORREGIDO: cada vez que reiniciabas la rutina (Iniciar de nuevo despues de Terminar), los minutos se sobreescribian en vez de sumarse - si por error terminabas antes de tiempo y volvias a empezar, perdias el registro de la primera parte. Ahora se ACUMULA: cada ciclo Iniciar->Terminar suma sus minutos al total del dia',
     'Nuevo boton "Continuar / nueva sesion" que aparece despues de terminar, para retomar sin perder lo ya registrado',
