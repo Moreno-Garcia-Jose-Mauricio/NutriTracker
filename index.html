@@ -197,7 +197,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
 </div>
 
 <div class="page active" id="page-dash">
-  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.26.4</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
+  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.28.0</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
   <div class="sec">
     <div class="ptabs">
       <div class="pt active" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
@@ -296,6 +296,10 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
   <div class="sec" data-diagroup="salud">
     <div class="stitle">Alcohol (opcional)</div>
     <div class="card"><div id="day-alcohol"></div></div>
+  </div>
+  <div class="sec" data-diagroup="salud">
+    <div class="stitle">Otras bebidas</div>
+    <div class="card"><div id="day-bebidas"></div></div>
   </div>
   <div class="sec" data-diagroup="gimnasio">
     <div class="stitle">Entrenamiento</div>
@@ -776,7 +780,7 @@ var GYM_START='2026-08-31';
 // Cada musculo trae un arreglo de opciones de maquina (a veces hay mas de una disponible en Planet Fitness).
 // Orden de musculos dentro de cada dia: de mas exigente/compuesto a mas aislado/pequeno,
 // para no fatigarte en el primer ejercicio y aguantar toda la sesion.
-var GYM_TYPES={
+var GYM_TYPES_V1={
   frontal:{l:'Frontal',ico:'💪',muscles:[
     {n:'Cuadriceps (Leg Press)',m:['Leg Press'],pos:['Posicion del pie']},
     {n:'Cuadriceps (Leg Extension)',m:['Leg Extension'],pos:['Ajuste del pie']},
@@ -799,6 +803,46 @@ var GYM_TYPES={
     {n:'Abdomen',m:['Ab Crunch'],pos:['Posicion']}
   ]}
 };
+// GYM_TYPES_V2: plan nuevo (entrenador, Planet Fitness Punto Sur) - Superior/Inferior x2, 4 dias
+// por semana, ajustado por hernia hiatal leve. Reutiliza EXACTAMENTE los mismos nombres de
+// musculo/maquina/posicion que GYM_TYPES_V1 donde aplica - el historial de peso y posiciones de
+// cada ejercicio se conserva completo, solo cambia en que dia de la semana se entrena cada uno.
+var GYM_TYPES_V2={
+  superiorA:{l:'Superior A',ico:'💪',muscles:[
+    {n:'Pectorales',m:['Chest Press'],pos:['Posicion']},
+    {n:'Hombros',m:['Shoulder Press'],pos:['Posicion']},
+    {n:'Espalda (Lat Pulldown)',m:['Lat Pulldown'],pos:['Posicion de abajo','Posicion de arriba']},
+    {n:'Biceps',m:['Bicep Curl'],pos:['Posicion del asiento']},
+    {n:'Triceps',m:['Tricep Extension (cable)'],pos:['Posicion']}
+  ]},
+  inferiorA:{l:'Inferior A + Core',ico:'🦵',muscles:[
+    {n:'Cuadriceps (Leg Press)',m:['Leg Press'],pos:['Posicion del pie']},
+    {n:'Cuadriceps (Leg Extension)',m:['Leg Extension'],pos:['Ajuste del pie']},
+    {n:'Femorales',m:['Leg Curl'],pos:['Posicion de abajo','Posicion de arriba']},
+    {n:'Gluteo (Glute Kickback)',m:['Glute Kickback'],pos:['Posicion']},
+    {n:'Pantorrillas',m:['Calf Raise / Smith Machine']},
+    {n:'Abdomen',m:['Ab Crunch'],pos:['Posicion']},
+    {n:'Oblicuos',m:['Torso Rotary']}
+  ]},
+  superiorB:{l:'Superior B',ico:'💪',muscles:[
+    {n:'Espalda (Seated Row)',m:['Seated Row'],pos:['Posicion del asiento']},
+    {n:'Pectorales',m:['Chest Press'],pos:['Posicion']},
+    {n:'Hombros',m:['Shoulder Press'],pos:['Posicion']},
+    {n:'Biceps',m:['Bicep Curl'],pos:['Posicion del asiento']},
+    {n:'Triceps',m:['Tricep Extension (cable)'],pos:['Posicion']}
+  ]},
+  inferiorB:{l:'Inferior B + Core',ico:'🦵',muscles:[
+    {n:'Cuadriceps (Leg Press)',m:['Leg Press'],pos:['Posicion del pie']},
+    {n:'Cuadriceps (Leg Extension)',m:['Leg Extension'],pos:['Ajuste del pie']},
+    {n:'Femorales',m:['Leg Curl'],pos:['Posicion de abajo','Posicion de arriba']},
+    {n:'Gluteo (Hip Abductor)',m:['Hip Abductor']},
+    {n:'Abdomen (cable)',m:['Cable Rope Crunch (polea con cuerda)']},
+    {n:'Oblicuos',m:['Torso Rotary']}
+  ]}
+};
+var GYM_PLAN_CHANGE_DATE='2026-10-01';
+function gymTypesForKey(key){return (key>=GYM_PLAN_CHANGE_DATE)?GYM_TYPES_V2:GYM_TYPES_V1;}
+function gymTypeLabel(t){return (GYM_TYPES_V1[t]||GYM_TYPES_V2[t]||{}).l||t;}
 var GYM_SERIES=[{l:'Serie 1',reps:15},{l:'Serie 2',reps:12},{l:'Serie 3',reps:10}];
 var GYM_CARDIO_INI='Eliptica ritmo suave - calentamiento 5-7 min';
 var GYM_CARDIO_FIN='Escaladora ritmo caminado - enfriamiento 5 min';
@@ -1007,7 +1051,24 @@ function _gymHasProgress(g){
   if(g.muscles){for(var m in g.muscles){if(g.muscles[m].some(function(x){return x;}))return true;}}
   return false;
 }
-// gymTypeFor: 'frontal'|'trasera'|'abdomen'|'libre' segun la secuencia fija, arrancando el dia despues del libre.
+// gymTypeFor: antes del 1-oct-2026, secuencia rodante Frontal/Trasera/Abdomen con dia libre movible.
+// isRestDayV2: si un dia especifico (desde el plan nuevo) es descanso o entrenamiento. Por
+// defecto sigue el patron lunes/martes/jueves/viernes=entreno, miercoles/sabado/domingo=descanso,
+// pero CUALQUIER dia se puede marcar al reves con gymOverride ('rest'|'train') via toggleGymDayV2.
+function isRestDayV2(key){
+  var s=ls();var day=s[key];
+  if(day&&day.gymOverride)return day.gymOverride==='rest';
+  var dow=new Date(key+'T12:00:00').getDay();
+  return (dow===3||dow===6||dow===0);
+}
+// GYM_SEQ_V2: el orden fijo que SI debe respetarse (Superior A -> Inferior A -> Superior B ->
+// Inferior B). Lo que es flexible es CUANDO caen los descansos entre medio, no este orden.
+var GYM_SEQ_V2=['superiorA','inferiorA','superiorB','inferiorB'];
+// Desde el 1-oct-2026 (plan del entrenador): secuencia Superior A -> Inferior A -> Superior B ->
+// Inferior B con 3 descansos repartidos en la semana - el CALENDARIO es flexible (puedes mover
+// que dia es descanso), pero el ORDEN de la secuencia y que cada tipo caiga una sola vez por
+// semana NO se mueve. El tipo de un dia se calcula segun que lugar ocupa entre los dias de
+// entrenamiento de ESA semana (lunes a domingo), en orden cronologico.
 // Si el dia ya tiene progreso real, se respeta su tipo guardado en vez de recalcular.
 // Memoizado por dia - se llama muchas veces por render para la misma fecha dentro de un mismo ciclo.
 var _gymTypeCache={},_gymTypeCacheRaw=null;
@@ -1018,12 +1079,61 @@ function gymTypeFor(key){
   var s=ls();var day=s[key];
   var result;
   if(day&&day.gymType&&_gymHasProgress(day.gym)){result=day.gymType;}
+  else if(key>=GYM_PLAN_CHANGE_DATE){
+    if(isRestDayV2(key)){result='libre';}
+    else{
+      var wk2=weekKeyOf(key);
+      var mon2=new Date(wk2+'T12:00:00');
+      var trainDaysThisWeek=[];
+      for(var di=0;di<7;di++){
+        var dd=new Date(mon2);dd.setDate(mon2.getDate()+di);
+        var dk=fmtYMD(dd);
+        if(!isRestDayV2(dk))trainDaysThisWeek.push(dk);
+      }
+      var idx=trainDaysThisWeek.indexOf(key);
+      result=(idx>=0&&idx<GYM_SEQ_V2.length)?GYM_SEQ_V2[idx]:'libre';
+    }
+  }
   else{
     var d=new Date(key+'T12:00:00');var dow=d.getDay();var restDow=restDowForWeek(key);var diff=(dow-restDow+7)%7;
     if(diff===0)result='libre';else if(diff===1||diff===4)result='frontal';else if(diff===2||diff===5)result='trasera';else result='abdomen';
   }
   _gymTypeCache[key]=result;
   return result;
+}
+// toggleGymDayV2: marca un dia especifico como descanso o entrenamiento (al reves de lo que
+// esta ahora), para el plan nuevo. Mover un dia recalcula solo los dias de ESA semana que aun
+// no tengan progreso real guardado (los que ya entrenaste se quedan protegidos, igual que antes).
+function toggleGymDayV2(key){
+  var day=gd(key);
+  var currentlyRest=isRestDayV2(key);
+  day.gymOverride=currentlyRest?'train':'rest';
+  sd(key,day);
+  renderGym(key,day);
+  renderWeekProgress();
+}
+// checkGymSpacingV2: avisos (no bloquea nada) si la semana configurada rompe las reglas minimas
+// de recuperacion: mismo grupo (Superior/Inferior) en dias seguidos, o 3+ dias de entreno seguidos.
+function checkGymSpacingV2(key){
+  var wk=weekKeyOf(key);
+  var mon=new Date(wk+'T12:00:00');
+  var types=[];
+  for(var i=0;i<7;i++){var d=new Date(mon);d.setDate(mon.getDate()+i);types.push(gymTypeFor(fmtYMD(d)));}
+  var warnings=[];
+  for(var i=0;i<6;i++){
+    var t1=types[i],t2=types[i+1];
+    if(t1!=='libre'&&t2!=='libre'){
+      var g1=t1.indexOf('superior')===0?'Superior':'Inferior';
+      var g2=t2.indexOf('superior')===0?'Superior':'Inferior';
+      if(g1===g2)warnings.push('2 dias seguidos de '+g1+' sin descanso de por medio');
+    }
+  }
+  var streak=0;
+  for(var i=0;i<7;i++){
+    if(types[i]!=='libre'){streak++;if(streak===3)warnings.push('3 o mas dias de entrenamiento seguidos sin descanso');}
+    else streak=0;
+  }
+  return warnings;
 }
 // lastWeightForMuscle: busca hacia atras el peso mas reciente de ESTE musculo especificamente
 // (no del dia mas reciente en general) - asi si un ejercicio hermano (ej. Leg Press) tiene
@@ -1056,8 +1166,9 @@ function lastPositionForMuscle(beforeKey,muscle){
 }
 function gymDefaultsFor(type,key){
   var g={cardioI:false,cardioF:false,muscles:{},weights:{},positions:{},conArantza:false};
-  if(GYM_TYPES[type]){
-    GYM_TYPES[type].muscles.forEach(function(mu){
+  var GT=gymTypesForKey(key);
+  if(GT[type]){
+    GT[type].muscles.forEach(function(mu){
       g.muscles[mu.n]=[false,false,false];
       var lastW=key?lastWeightForMuscle(key,mu.n):null;
       g.weights[mu.n]=(lastW&&Array.isArray(lastW))?lastW.slice():[null,null,null];
@@ -1089,8 +1200,9 @@ function getGymData(key,day){
       if(lastW)day.gym.weights[m]=lastW.slice();
     }
   });
-  if(GYM_TYPES[type]){
-    GYM_TYPES[type].muscles.forEach(function(mu){
+  var GT2=gymTypesForKey(key);
+  if(GT2[type]){
+    GT2[type].muscles.forEach(function(mu){
       if(mu.pos&&mu.pos.length){
         if(!Array.isArray(day.gym.positions[mu.n]))day.gym.positions[mu.n]=mu.pos.map(function(){return null;});
         if(day.gym.positions[mu.n].every(function(v){return v===null||v===undefined;})){
@@ -1243,15 +1355,15 @@ function renderMuscleWeightChart(){
   }
   wrapEl.innerHTML='<canvas id="ch-muscleweight"></canvas>';
   var labels=trainKeys.map(function(k){var d=new Date(k+'T12:00:00');return d.toLocaleDateString('es-MX',{month:'short',day:'numeric'});});
-  var frontalData=trainKeys.map(function(k){return gymTypeFor(k)==='frontal'?typeAvgWeight(k,'frontal'):null;});
-  var traseraData=trainKeys.map(function(k){return gymTypeFor(k)==='trasera'?typeAvgWeight(k,'trasera'):null;});
-  var abdomenData=trainKeys.map(function(k){return gymTypeFor(k)==='abdomen'?typeAvgWeight(k,'abdomen'):null;});
+  var typeColors={frontal:'#c8f564',trasera:'#f564b4',abdomen:'#64d4f5',superiorA:'#c8f564',inferiorA:'#f564b4',superiorB:'#a064f5',inferiorB:'#64d4f5'};
+  var distinctTypes=[];
+  trainKeys.forEach(function(k){var t=gymTypeFor(k);if(distinctTypes.indexOf(t)<0)distinctTypes.push(t);});
+  var datasets=distinctTypes.map(function(t){
+    return {label:gymTypeLabel(t),data:trainKeys.map(function(k){return gymTypeFor(k)===t?typeAvgWeight(k,t):null;}),
+      borderColor:typeColors[t]||'#8888aa',backgroundColor:'transparent',tension:0.3,pointRadius:4,spanGaps:true};
+  });
   var mopts={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{color:'#8888aa',font:{size:10},boxWidth:12}}},scales:{x:{ticks:{color:'#8888aa',maxRotation:45},grid:{color:'#2a2a38'}},y:{ticks:{color:'#8888aa',precision:0,callback:function(v){return Math.round(v)+'kg';}},grid:{color:'#2a2a38'}}}};
-  charts['ch-muscleweight']=new Chart(document.getElementById('ch-muscleweight').getContext('2d'),{type:'line',data:{labels:labels,datasets:[
-    {label:'Frontal',data:frontalData,borderColor:'#c8f564',backgroundColor:'transparent',tension:0.3,pointRadius:4,spanGaps:true},
-    {label:'Trasera',data:traseraData,borderColor:'#f564b4',backgroundColor:'transparent',tension:0.3,pointRadius:4,spanGaps:true},
-    {label:'Abdomen',data:abdomenData,borderColor:'#64d4f5',backgroundColor:'transparent',tension:0.3,pointRadius:4,spanGaps:true}
-  ]},options:mopts});
+  charts['ch-muscleweight']=new Chart(document.getElementById('ch-muscleweight').getContext('2d'),{type:'line',data:{labels:labels,datasets:datasets},options:mopts});
   renderZoneWeights();
   renderMonthlyGymCount();
   renderRestDayHint();
@@ -1260,6 +1372,7 @@ function renderMuscleWeightChart(){
 // (preferimos el dia justo despues de un dia Frontal, para dejar que las piernas se recuperen).
 function recommendedRestDay(){
   var todayK=todayKey();
+  if(todayK>=GYM_PLAN_CHANGE_DATE)return null;
   var wk=weekKeyOf(todayK);
   var s=ls();
   var mon=new Date(wk+'T12:00:00');
@@ -1849,7 +1962,7 @@ function exportReport(){
         return;
       }
       var g=day.gym&&day.gymType===type?day.gym:null;
-      if(!g){txt+='  '+k+': '+GYM_TYPES[type].l+' - sin registro ese dia\n';return;}
+      if(!g){txt+='  '+k+': '+gymTypeLabel(type)+' - sin registro ese dia\n';return;}
       var parts=[];
       parts.push('Cardio inicial '+(g.cardioI?1:0)+'/1');
       Object.keys(g.muscles).forEach(function(m){var wArr=Array.isArray(g.weights&&g.weights[m])?g.weights[m]:[];var hasW=wArr.some(function(v){return v!=null;});var w=hasW?' @'+[0,1,2].map(function(i){return wArr[i]!=null?wArr[i]:'-';}).join('/')+'kg':'';parts.push(m+' '+g.muscles[m].filter(function(x){return x;}).length+'/3'+w);});
@@ -1858,7 +1971,7 @@ function exportReport(){
       var done=(g.cardioI?1:0)+(g.cardioF?1:0);
       Object.keys(g.muscles).forEach(function(m){done+=g.muscles[m].filter(function(x){return x;}).length;});
       var pctDay=Math.round(done/total*100);
-      txt+='  '+k+': '+GYM_TYPES[type].l+' - '+parts.join(', ')+' ('+pctDay+'% completado)\n';
+      txt+='  '+k+': '+gymTypeLabel(type)+' - '+parts.join(', ')+' ('+pctDay+'% completado)\n';
     });
   }else{txt+='  Sin dias registrados aun\n';}
   txt+='Como se calculo: cardio inicial = eliptica ritmo suave 5-7 min (calentamiento); cardio final =\n';
@@ -1995,13 +2108,14 @@ function renderDia(){
   renderSleep(day);
   renderReflux(key,day);
   renderAlcohol(key,day);
+  renderBebidas(key,day);
   renderGym(key,day);
   renderExercise(day,key);
 }
 function deleteWeight(key){var wts=gw();wts=wts.filter(function(w){return w.date!==key;});sw(wts);toast('Peso borrado');renderDia();renderDash();}
 function toggleMeal(mk,key){var tb=document.getElementById('tb-'+mk);tb.classList.toggle('open');if(tb.classList.contains('open'))renderChips(mk,key,gd(key));}
 function renderChips(mk,key,day){if(!day)day=gd(key);var mt=mgForKey(key)[mk];var mp=(day.mp&&day.mp[mk])||{};var h='';var gks=Object.keys(mt);var done2=0;gks.forEach(function(g){var tgt=mt[g];var curr=mp[g]||0;var pct=Math.min(100,curr/tgt*100);var done=curr>=tgt;if(done)done2++;h+='<div class="chip '+(done?'done':'')+'" onclick="openFM(\''+g+'\',\''+mk+'\','+tgt+',\''+key+'\')">';h+='<div class="chip-name" style="'+(done?'color:var(--good)':'')+'">'+PT[g].l+'</div>';h+='<div class="chip-bar"><div class="chip-fill" style="width:'+pct+'%;background:'+PT[g].c+'"></div></div>';h+='<div class="chip-cnt">'+curr+'/'+tgt+(done?' v':'')+'</div></div>';});document.getElementById('chips-'+mk).innerHTML=h;var headerPct=Math.round(done2/gks.length*100);var barColor=headerPct>=100?'var(--good)':headerPct>0?'var(--accent)':'var(--border)';var fill=document.getElementById('tfill-'+mk);var txt=document.getElementById('ttxt-'+mk);if(fill){fill.style.width=headerPct+'%';fill.style.background=barColor;}if(txt){txt.textContent=done2+'/'+gks.length;}var mealEl=document.getElementById('tb-'+mk);if(mealEl&&headerPct>=100)mealEl.parentElement.style.borderColor='var(--good)';else if(mealEl)mealEl.parentElement.style.borderColor='';}
-function renderChecklist(key,day){if(!day.ch)day.ch=[];var ckh='';RC.forEach(function(rc,i){var ok=day.ch.indexOf(i)>=0;var isAuto=(i===6||i===7||i===9);ckh+='<div class="ci"'+(isAuto?' style="cursor:default"':' onclick="toggleCheck('+i+',\''+key+'\')"')+'>';ckh+='<div class="cbox" style="background:'+(ok?'var(--accent)':'transparent')+';border-color:'+(ok?'var(--accent)':'var(--border)')+'">'+( ok?'v':'')+'</div>';ckh+='<span class="clbl '+(ok?'done':'')+'">'+rc+(isAuto?' <span style="color:var(--muted);font-size:.68rem">(automático)</span>':'')+'</span></div>';});document.getElementById('day-checks').innerHTML=ckh;}
+function renderChecklist(key,day){if(!day.ch)day.ch=[];var ckh='';RC.forEach(function(rc,i){var ok=day.ch.indexOf(i)>=0;var isAuto=(i===4||i===6||i===7||i===8||i===9);ckh+='<div class="ci"'+(isAuto?' style="cursor:default"':' onclick="toggleCheck('+i+',\''+key+'\')"')+'>';ckh+='<div class="cbox" style="background:'+(ok?'var(--accent)':'transparent')+';border-color:'+(ok?'var(--accent)':'var(--border)')+'">'+( ok?'v':'')+'</div>';ckh+='<span class="clbl '+(ok?'done':'')+'">'+rc+(isAuto?' <span style="color:var(--muted);font-size:.68rem">(automático)</span>':'')+'</span></div>';});document.getElementById('day-checks').innerHTML=ckh;}
 // syncAutoChecks (definida abajo): reemplaza el auto-check unidireccional anterior por uno bidireccional
 // y agrega el calculo de "Porciones moderadas".
 // syncAutoChecks: calcula y persiste 2 items del checklist que ya no llena el usuario a mano:
@@ -2021,6 +2135,13 @@ function syncAutoChecks(key,day){
   var tookAlcohol=(alc.whisky||0)>0||(alc.vino||0)>0||(alc.tequila||0)>0;
   var idx9=day.ch.indexOf(9);
   if(!tookAlcohol){if(idx9<0)day.ch.push(9);}else{if(idx9>=0)day.ch.splice(idx9,1);}
+  var beb=day.bebidas||{};
+  var tookCafe=(beb.cafe||0)>0;
+  var idx4=day.ch.indexOf(4);
+  if(!tookCafe){if(idx4<0)day.ch.push(4);}else{if(idx4>=0)day.ch.splice(idx4,1);}
+  var tookRefresco=(beb.refresco||0)>0;
+  var idx8=day.ch.indexOf(8);
+  if(!tookRefresco){if(idx8<0)day.ch.push(8);}else{if(idx8>=0)day.ch.splice(idx8,1);}
   sd(key,day);
 }
 function renderWater(key,day){var c=day.water||0;var L=(c*0.25).toFixed(1);document.getElementById('w-num').textContent=L+'L';document.getElementById('w-bar').style.width=Math.min(100,c/16*100)+'%';document.getElementById('w-bar').style.background=c>=16?'var(--accent)':'var(--blue)';document.getElementById('w-meta').textContent=c>=16?'Meta superada - '+L+'L':'Meta: 3-4L - faltan '+(Math.max(0,3-c*0.25)).toFixed(1)+'L';var bh='';for(var i=0;i<c;i++){bh+='<div class="bub '+(i>=16?'extra':'on')+'" onclick="removeW('+i+',\''+key+'\')">&#x1F4A7;</div>';}document.getElementById('w-bubbles').innerHTML=bh;}
@@ -2126,6 +2247,31 @@ function adjustAlcohol(key,tipo,delta){
   renderAlcohol(key,day);
   renderChecklist(key,day);
 }
+// BEBIDA_TYPES: agua de sabor, refresco y cafe - se registran aparte del agua natural (no suman
+// a la meta de hidratacion, porque el objetivo del checklist es reducirlas, no fomentarlas) y no
+// tienen equivalencia SMAE oficial (igual que el alcohol), asi que se trackean como conteo simple.
+var BEBIDA_TYPES=[{k:'aguaSabor',l:'Agua de sabor',u:'vaso (250ml)',ch:null},{k:'refresco',l:'Refresco',u:'lata/vaso (355ml)',ch:8},{k:'cafe',l:'Cafe',u:'taza (240ml)',ch:4}];
+function renderBebidas(key,day){
+  var el=document.getElementById('day-bebidas');
+  if(!el)return;
+  if(!day.bebidas)day.bebidas={};
+  var h='';
+  BEBIDA_TYPES.forEach(function(t){
+    var c=day.bebidas[t.k]||0;
+    h+='<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)"><div><div style="font-size:.83rem">'+t.l+'</div><div style="font-size:.66rem;color:var(--muted)">1 '+t.u+'</div></div><div style="display:flex;align-items:center;gap:8px"><button style="width:26px;height:26px;padding:0;border-radius:6px" onclick="adjustBebida(\''+key+'\',\''+t.k+'\',-1)">-</button><span style="font-family:Syne,sans-serif;font-weight:800;min-width:16px;text-align:center">'+c+'</span><button style="width:26px;height:26px;padding:0;border-radius:6px" onclick="adjustBebida(\''+key+'\',\''+t.k+'\',1)">+</button></div></div>';
+  });
+  h+='<div style="font-size:.72rem;color:var(--muted);margin-top:8px">No suman a tu meta de agua natural. Refresco y cafe sincronizan solos los checks de "Sin refrescos" y "Sin cafe" del checklist</div>';
+  el.innerHTML=h;
+}
+function adjustBebida(key,tipo,delta){
+  var day=gd(key);
+  if(!day.bebidas)day.bebidas={};
+  day.bebidas[tipo]=Math.max(0,(day.bebidas[tipo]||0)+delta);
+  syncAutoChecks(key,day);
+  sd(key,day);
+  renderBebidas(key,day);
+  renderChecklist(key,day);
+}
 // weekProgress: % completado de la rutina de la semana actual, contando solo los dias que ya pasaron o es hoy.
 // weekProgress: % completado de TODA la semana (Lun-Dom), incluyendo los dias que aun no llegan
 // (cuentan como pendientes, 0 de su total, hasta que se registren) - asi el % solo llega a 100
@@ -2147,7 +2293,7 @@ function weekProgress(){
       if(g0&&g0.restDone)totalDone+=1;
       continue;
     }
-    var muscleCount=GYM_TYPES[type].muscles.length;
+    var muscleCount=gymTypesForKey(k)[type].muscles.length;
     var dayTotal=2+muscleCount*3;
     totalPossible+=dayTotal;
     var g=day&&day.gym&&day.gymType===type?day.gym:null;
@@ -2184,23 +2330,31 @@ function renderGym(key,day){
       abandonedBanner='<div style="background:rgba(245,162,100,.12);border:1px solid rgba(245,162,100,.4);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:.78rem;color:var(--warn)">\u26A0 Tienes una sesion sin terminar de ayer (desde las '+yHM+') - probablemente cerraste la app antes de darle Terminar.<button class="wbtn" style="margin-top:8px;width:100%;background:var(--warn);border-color:var(--warn);color:#000" onclick="endAbandonedSession(\''+yKey+'\',\''+key+'\')">Terminar esa sesion ahora</button></div>';
     }
   }
-  var typeLbl=type==='libre'?'Dia libre - dar gracias':GYM_TYPES[type].l+' '+GYM_TYPES[type].ico;
+  var GTk=gymTypesForKey(key);var typeLbl=type==='libre'?'Dia libre - dar gracias':GTk[type].l+' '+GTk[type].ico;
   if(type==='libre'){
     hdr.innerHTML='<div style="font-family:Syne,sans-serif;font-weight:800;font-size:.95rem">'+typeLbl+'</div>';
   } else {
-    hdr.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span style="font-family:Syne,sans-serif;font-weight:800;font-size:.95rem">'+typeLbl+'</span><label style="display:flex;align-items:center;gap:6px;font-size:.7rem;color:var(--muted);cursor:pointer;white-space:nowrap"><input type="checkbox" '+(day.restWeek?'checked':'')+' onchange="toggleRestDay(\''+key+'\')" style="width:auto">Dia libre esta semana</label></div>';
+    var dayToggleCtrl=key<GYM_PLAN_CHANGE_DATE
+      ?'<label style="display:flex;align-items:center;gap:6px;font-size:.7rem;color:var(--muted);cursor:pointer;white-space:nowrap"><input type="checkbox" '+(day.restWeek?'checked':'')+' onchange="toggleRestDay(\''+key+'\')" style="width:auto">Dia libre esta semana</label>'
+      :'<button class="wbtn" style="font-size:.68rem;padding:6px 10px" onclick="toggleGymDayV2(\''+key+'\')">Marcar como descanso</button>';
+    hdr.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span style="font-family:Syne,sans-serif;font-weight:800;font-size:.95rem">'+typeLbl+'</span>'+dayToggleCtrl+'</div>';
   }
   var h=abandonedBanner;
+  if(key>=GYM_PLAN_CHANGE_DATE){
+    var spacingWarnings=checkGymSpacingV2(key);
+    if(spacingWarnings.length)h+='<div style="background:rgba(245,162,100,.1);border:1px solid rgba(245,162,100,.4);border-radius:8px;padding:8px 10px;margin-bottom:10px;font-size:.7rem;color:var(--warn)">\u26A0 '+spacingWarnings.join(' · ')+'</div>';
+  }
   if(type==='libre'){
     h+='<div style="text-align:center;padding:14px 0"><div style="font-size:2rem">\uD83D\uDE4F</div><div style="font-size:.85rem;color:var(--muted);margin-top:6px">Hoy toca descansar y dar gracias</div></div>';
     h+='<div class="ci" onclick="toggleGymRest(\''+key+'\')"><div class="cbox" style="background:'+(g.restDone?'var(--good)':'transparent')+';border-color:'+(g.restDone?'var(--good)':'var(--border)')+'">'+(g.restDone?'v':'')+'</div><span class="clbl '+(g.restDone?'done':'')+'">Descanso completado</span></div>';
     if(day.restWeek){h+='<button class="wbtn" style="width:100%;margin-top:12px" onclick="toggleRestDay(\''+key+'\')">\u21ba Quitar dia libre de aqui (regresar a domingo)</button>';}
+    if(key>=GYM_PLAN_CHANGE_DATE){h+='<button class="wbtn" style="width:100%;margin-top:12px" onclick="toggleGymDayV2(\''+key+'\')">\u21ba Marcar como dia de entrenamiento</button>';}
     h+='<div id="ex-manual-edit" style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)"></div>';
   } else {
     h+='<div class="ci" onclick="toggleConArantza(\''+key+'\')"><div class="cbox" style="background:'+(g.conArantza?'var(--purple)':'transparent')+';border-color:'+(g.conArantza?'var(--purple)':'var(--border)')+'">'+(g.conArantza?'v':'')+'</div><span class="clbl '+(g.conArantza?'done':'')+'">Con mi amorcito (Arantza)</span></div>';
     h+=renderGymCardio(key,'cardioI','Cardio inicial',GYM_CARDIO_INI,g.cardioI);
-    h+='<div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:12px 0 6px">Musculos - '+GYM_TYPES[type].l+'</div>';
-    GYM_TYPES[type].muscles.forEach(function(mu){h+=renderGymMuscle(key,mu.n,mu.m,g.muscles[mu.n]||[false,false,false],g.weights[mu.n],mu.pos,g.positions[mu.n]);});
+    h+='<div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:12px 0 6px">Musculos - '+GTk[type].l+'</div>';
+    GTk[type].muscles.forEach(function(mu){h+=renderGymMuscle(key,mu.n,mu.m,g.muscles[mu.n]||[false,false,false],g.weights[mu.n],mu.pos,g.positions[mu.n]);});
     h+=renderGymCardio(key,'cardioF','Cardio final',GYM_CARDIO_FIN,g.cardioF);
     h+='<div id="ex-manual-edit" style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)"></div>';
   }
@@ -2626,6 +2780,26 @@ function renderValResultado(d){
   document.getElementById('val-resultado').innerHTML=h;
 }
 var CHANGELOG=[
+  {v:'2.28.0',fecha:'2026-10-05',cambios:[
+    'Revision completa antes de publicar: 47 fechas distintas de ambos planes de gym, los 3 periodos del Dashboard, las 4 pestanas de Mi Plan y el reporte exportable, todo sin errores. Rendimiento confirmado igual de rapido que antes',
+    'Nueva seccion "Otras bebidas" en Mi Dia - Salud: contador para Agua de sabor, Refresco y Cafe (igual patron que el de Alcohol)',
+    'Cafe y Refresco ahora sincronizan solos los checks "Sin cafe" y "Sin refrescos" del checklist anti-reflujo (antes eran manuales) - si no registras nada quedan marcados solos, igual que ya pasaba con el alcohol',
+    'Agua de sabor se registra para que quede visible, pero NO suma a tu meta de agua natural ni toca el checklist - no tiene equivalencia SMAE oficial (igual que el alcohol), se cuenta aparte'
+  ]},
+  {v:'2.27.1',fecha:'2026-10-05',cambios:[
+    'El plan nuevo (Superior/Inferior x2) ya no tiene horario fijo por dia de la semana - ahora cualquier dia se puede marcar como descanso o entrenamiento ("Marcar como descanso" en dias de entreno, "Marcar como dia de entrenamiento" en los de descanso)',
+    'El tipo de cada dia se calcula por POSICION: el orden Superior A -> Inferior A -> Superior B -> Inferior B nunca cambia, pero se acomoda solo segun cuales dias marques como entreno esa semana - mover un descanso comprime o estira la secuencia automaticamente',
+    'Nuevo aviso (no bloquea nada, solo informa) si la semana configurada rompe las reglas minimas de recuperacion: mismo grupo Superior/Inferior en dias seguidos, o 3+ dias de entrenamiento seguidos sin descanso',
+    'Verificado: un dia que ya tiene progreso real guardado se queda protegido con su tipo y pesos intactos, sin importar como reacomodes los demas dias de esa semana'
+  ]},
+  {v:'2.27.0',fecha:'2026-10-05',cambios:[
+    'Nueva rutina de gimnasio del entrenador (Planet Fitness Punto Sur) cargada - activa desde el 1-oct-2026, NO retroactiva: dias antes de esa fecha se siguen evaluando con la rutina vieja (Frontal/Trasera/Abdomen), igual logica de versionado por fecha que ya usamos para la dieta',
+    'Plan nuevo: Superior A (lunes) / Inferior A+Core (martes) / descanso (miercoles) / Superior B (jueves) / Inferior B+Core (viernes) / descanso (sabado y domingo) - horario FIJO, ya no es rodante ni movible como el plan anterior',
+    'Verificado con pruebas: el historial de peso y posiciones de cada ejercicio se conserva completo - los mismos nombres de musculo/maquina se reutilizan, nada se perdio ni se reinicio en 0',
+    'La grafica de "Promedio de peso por tipo de rutina" ahora construye sus lineas dinamicamente segun lo que encuentre (soporta ver Frontal/Trasera del plan viejo y Superior A/Inferior A del nuevo en la misma grafica, sin romperse)',
+    'El checkbox de mover el dia libre y la recomendacion de "aun no descansas esta semana" ya no aparecen a partir de octubre, porque el plan nuevo tiene descansos fijos (no aplica moverlos)',
+    'El reporte exportable y el progreso semanal tambien se actualizaron para reconocer ambos planes automaticamente'
+  ]},
   {v:'2.26.4',fecha:'2026-10-05',cambios:[
     'Se quito manifest.json otra vez - confirmado que CocoSalud no tiene ese archivo subido a GitHub (la etiqueta en su HTML apunta a nada), asi que lo que de verdad hace el trabajo son las 4 etiquetas meta de la v2.26.3 + el archivo icon.png real. Ya no hace falta subir manifest.json',
     'Archivos a subir junto con index.html: solo icon.png'
