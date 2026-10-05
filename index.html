@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0b0b11">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="NutriTrack">
 <title>NutriTrack</title>
 <link rel="icon" href="icon.png">
 <link rel="apple-touch-icon" href="icon.png">
@@ -193,7 +197,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
 </div>
 
 <div class="page active" id="page-dash">
-  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.26.2</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
+  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.26.4</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
   <div class="sec">
     <div class="ptabs">
       <div class="pt active" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
@@ -2622,6 +2626,15 @@ function renderValResultado(d){
   document.getElementById('val-resultado').innerHTML=h;
 }
 var CHANGELOG=[
+  {v:'2.26.4',fecha:'2026-10-05',cambios:[
+    'Se quito manifest.json otra vez - confirmado que CocoSalud no tiene ese archivo subido a GitHub (la etiqueta en su HTML apunta a nada), asi que lo que de verdad hace el trabajo son las 4 etiquetas meta de la v2.26.3 + el archivo icon.png real. Ya no hace falta subir manifest.json',
+    'Archivos a subir junto con index.html: solo icon.png'
+  ]},
+  {v:'2.26.3',fecha:'2026-10-05',cambios:[
+    'CORREGIDO (de verdad esta vez): comparando contra el codigo real de CocoSalud, faltaban 4 etiquetas meta (apple-mobile-web-app-capable, mobile-web-app-capable, apple-mobile-web-app-status-bar-style, apple-mobile-web-app-title) que le dicen a Android/iOS que la pagina puede instalarse como app - sin ellas, Chrome trata el acceso directo como un simple marcador y usa el icono generico sin importar que icono le des',
+    'Manifest.json de vuelta como archivo real (CocoSalud si lo usa, a pesar de lo que se penso antes) apuntando al mismo icon.png',
+    'Archivos a subir junto con index.html: icon.png y manifest.json'
+  ]},
   {v:'2.26.2',fecha:'2026-10-05',cambios:[
     'Simplificado el icono: se quito el manifest.json y los data-URI incrustados. Ahora es solo un archivo real (icon.png) referenciado con una ruta normal - mismo enfoque que ya funciono en CocoSalud. Solo hay que subir icon.png junto con index.html, nada mas'
   ]},
