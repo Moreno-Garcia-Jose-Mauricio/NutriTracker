@@ -197,7 +197,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
 </div>
 
 <div class="page active" id="page-dash">
-  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.28.1</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
+  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.28.2</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
   <div class="sec">
     <div class="ptabs">
       <div class="pt active" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
@@ -2415,7 +2415,7 @@ function renderGymMuscle(key,muscle,machine,arr,weights,pos,positions){
     var inputStyle='width:100%;padding:4px 1px;font-size:.68rem;text-align:center;font-weight:700;color:'+numColor+';border-color:'+boxColor;
     h+='<div style="flex:1;display:flex;flex-direction:column;gap:3px">';
     h+='<div style="font-size:.65rem;color:var(--muted);text-align:center;line-height:1.25">'+sr.l+'<br>'+sr.reps+' reps</div>';
-    h+='<div style="text-align:center;font-size:.68rem;font-weight:800;font-family:Syne,sans-serif;color:'+(totalUses!=null?numColor:'var(--muted)')+'">'+(totalUses!=null?totalUses+'x':'\u2013')+'</div>';
+    h+='<div style="text-align:center;font-size:.68rem;font-weight:800;font-family:Syne,sans-serif;color:'+(totalUses!=null?numColor:'var(--muted)')+';opacity:'+(totalUses!=null&&!on?'.4':'1')+'">'+(totalUses!=null?totalUses+'x':'\u2013')+'</div>';
     h+='<div style="display:flex;align-items:center;gap:2px">';
     h+='<button style="flex:0 0 auto;width:18px;height:26px;padding:0;font-size:.7rem;border-radius:5px" onclick="adjustGymWeight(\''+key+'\',\''+muscle+'\','+i+',-2.5)">-</button>';
     h+='<input type="number" inputmode="decimal" value="'+w+'" placeholder="kg" style="'+inputStyle+'" onchange="setGymSeriesWeight(\''+key+'\',\''+muscle+'\','+i+',this.value)">';
@@ -2781,6 +2781,9 @@ function renderValResultado(d){
   document.getElementById('val-resultado').innerHTML=h;
 }
 var CHANGELOG=[
+  {v:'2.28.2',fecha:'2026-10-05',cambios:[
+    'El numero Nx (arriba de cada peso) ahora se ve atenuado mientras esa serie no este confirmada con el check verde - mismo color (sigue indicando en que zona quedarias), pero visualmente distinto de un uso que ya cuenta. En cuanto confirmas, se pone solido'
+  ]},
   {v:'2.28.1',fecha:'2026-10-05',cambios:[
     'CORREGIDO bug real en el contador Nx de peso por serie: un dia donde NO marcaste el ejercicio como hecho (0/3) pero el campo de peso seguia poblado con el valor por defecto contaba como "usado" igual que un dia real. Ahora solo cuenta series marcadas con el check verde',
     'Se corrige solo automaticamente en todo tu historial (el contador se calcula al vuelo, no hay nada guardado que migrar)'
