@@ -43,6 +43,11 @@ button{font-family:inherit;}
 .metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
 .metric{background:linear-gradient(180deg,var(--card2),var(--card) 60%);border:1px solid var(--border);border-radius:var(--r);padding:14px 15px;box-shadow:var(--shadow);position:relative;overflow:hidden;}
 .suppbox{background:linear-gradient(180deg,var(--card2),var(--card) 60%);border:1px solid var(--border);border-radius:var(--r);padding:11px 8px;text-align:center;box-shadow:var(--shadow);}
+.acc{background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin-bottom:10px;overflow:hidden;box-shadow:var(--shadow);}
+.acc-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer;}
+.acc-ttl{font-family:'Syne',sans-serif;font-weight:800;font-size:.9rem;}
+.acc-arrow{color:var(--muted);font-size:.8rem;transition:transform .2s;}
+.acc-body{padding:0 12px 12px;border-top:1px solid var(--border);padding-top:10px;}
 .suppdot{width:8px;height:8px;border-radius:50%;margin:0 auto 6px;}
 .supplbl{font-size:.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
 .suppst{font-size:.75rem;font-weight:700;margin-top:3px;font-family:'Syne',sans-serif;}
@@ -88,10 +93,12 @@ button{font-family:inherit;}
 .chip-cnt{font-size:.68rem;color:var(--muted);font-variant-numeric:tabular-nums;}
 .water-num{font-family:'Syne',sans-serif;font-size:2.7rem;font-weight:800;color:var(--blue);text-align:center;line-height:1;font-variant-numeric:tabular-nums;text-shadow:0 0 24px rgba(100,212,245,.25);}
 .water-meta{font-size:.8rem;color:var(--muted);text-align:center;margin-top:4px;}
-.wbar-wrap{height:9px;background:var(--border);border-radius:999px;overflow:hidden;margin:14px 0;}
-.wbar-fill{height:100%;border-radius:999px;transition:width .5s ease;}
-.bubbles{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:12px;}
-.bub{width:40px;height:40px;border-radius:50%;border:2px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;background:transparent;}
+.water-bottle{position:relative;height:66px;margin:16px 6px 4px;}
+.water-bottle-track{position:absolute;left:0;top:12px;right:20px;height:40px;background:var(--card2);border:2px solid var(--border);border-radius:20px;overflow:hidden;}
+.water-bottle-fill{position:absolute;left:0;top:0;height:100%;border-radius:20px;transition:width .4s ease;background:linear-gradient(90deg,#3a9fd4,var(--blue));}
+.water-bottle-cap{position:absolute;right:0;top:20px;width:18px;height:24px;background:var(--card2);border:2px solid var(--border);border-left:none;border-radius:0 8px 8px 0;}
+.water-tick{position:absolute;top:12px;height:40px;width:1px;background:rgba(255,255,255,.16);}
+.water-tick-lbl{position:absolute;top:56px;font-size:.6rem;color:var(--muted);transform:translateX(-50%);white-space:nowrap;}
 .bub.on{background:var(--blue);border-color:var(--blue);box-shadow:0 0 10px rgba(100,212,245,.35);}
 .bub.extra{background:var(--accent);border-color:var(--accent);box-shadow:0 0 10px rgba(200,245,100,.35);}
 .wbtns{display:flex;gap:8px;}
@@ -197,7 +204,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
 </div>
 
 <div class="page active" id="page-dash">
-  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.28.4</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
+  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.29.1</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
   <div class="sec">
     <div class="ptabs">
       <div class="pt active" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
@@ -210,22 +217,37 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
       <div class="metric"><div class="mval" id="m-porc" style="color:var(--pink)">-</div><div class="mlbl">Porciones</div><div class="msub" id="m-porc-s"></div></div>
       <div class="metric"><div class="mval" id="m-meds" style="color:var(--purple)">-</div><div class="mlbl">Medicamento</div><div class="msub" id="m-meds-s"></div></div>
       <div class="metric"><div class="mval" id="m-ex" style="color:var(--good)">-</div><div class="mlbl">Gimnasio</div><div class="msub" id="m-ex-s"></div></div>
-      <div class="metric"><div class="mval" id="m-sleep" style="color:var(--purple)">-</div><div class="mlbl">Sueno</div><div class="msub" id="m-sleep-s"></div></div>
+      <div class="metric"><div class="mval" id="m-sleep" style="color:var(--warn)">-</div><div class="mlbl">Sueno</div><div class="msub" id="m-sleep-s"></div></div>
     </div>
     <div id="suppRow" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px"></div>
-    <div class="card" style="margin-bottom:10px"><div class="stitle">Resumen</div><div id="dashSum"></div></div>
-    <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Este mes vs. mes pasado</div><div id="monthComparison"></div></div>
-    <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Metas de Peso</div><div id="weightGoals"></div></div>
-    <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">Agua</div><div class="ch"><canvas id="ch-agua"></canvas></div></div>
-    <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">Peso</div><div class="ch" id="ch-peso-wrap"><canvas id="ch-peso"></canvas></div></div>
-    <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">Porciones %</div><div class="ch"><canvas id="ch-porc"></canvas></div></div>
-    <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">Medicamento %</div><div class="ch"><canvas id="ch-meds"></canvas></div></div>
-    <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">Ejercicio (minutos)</div><div class="ch"><canvas id="ch-ex"></canvas></div></div>
-    <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">Sueno (horas)</div><div class="ch"><canvas id="ch-sleep"></canvas></div></div>
-    <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Promedio de peso por tipo de rutina</div><div class="ch" id="ch-muscleweight-wrap"><canvas id="ch-muscleweight"></canvas></div><div id="zoneWeights" style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)"></div><div id="monthlyGymCount" style="display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)"></div><div id="restDayHint" style="font-size:.74rem;color:var(--muted);text-align:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)"></div></div>
-    <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Horarios de gimnasio por dia</div><div class="ch" id="ch-gymschedule-wrap"><canvas id="ch-gymschedule"></canvas></div><div id="gymScheduleSummary" style="font-size:.72rem;color:var(--muted);margin-top:10px;padding-top:10px;border-top:1px solid var(--border);line-height:1.6"></div></div>
-    <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Alimentos mas consumidos</div><div id="foodStatTabs" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px"></div><div id="foodStatList"></div></div>
-    <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Macros del dia (SMAE)</div><div id="macroCard"></div></div>
+    <div class="acc" id="acc-hoy" data-open="1">
+      <div class="acc-head" onclick="toggleAcc('hoy')"><span class="acc-ttl">&#128203; Resumen de hoy</span><span class="acc-arrow" id="acc-arrow-hoy">&#9660;</span></div>
+      <div class="acc-body" id="acc-body-hoy">
+        <div class="card" style="margin-bottom:10px"><div class="stitle">Resumen</div><div id="dashSum"></div></div>
+        <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Este mes vs. mes pasado</div><div id="monthComparison"></div></div>
+        <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Metas de Peso</div><div id="weightGoals"></div></div>
+      </div>
+    </div>
+    <div class="acc" id="acc-tend" data-open="0">
+      <div class="acc-head" onclick="toggleAcc('tend')"><span class="acc-ttl">&#128200; Tendencias</span><span class="acc-arrow" id="acc-arrow-tend">&#9660;</span></div>
+      <div class="acc-body" id="acc-body-tend" style="display:none">
+        <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">Agua</div><div class="ch"><canvas id="ch-agua"></canvas></div></div>
+        <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">Peso</div><div class="ch" id="ch-peso-wrap"><canvas id="ch-peso"></canvas></div></div>
+        <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">Porciones %</div><div class="ch"><canvas id="ch-porc"></canvas></div></div>
+        <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">Medicamento %</div><div class="ch"><canvas id="ch-meds"></canvas></div></div>
+        <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">Ejercicio (minutos)</div><div class="ch"><canvas id="ch-ex"></canvas></div></div>
+        <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:6px">Sueno (horas)</div><div class="ch"><canvas id="ch-sleep"></canvas></div></div>
+      </div>
+    </div>
+    <div class="acc" id="acc-gym" data-open="0">
+      <div class="acc-head" onclick="toggleAcc('gym')"><span class="acc-ttl">&#127947; Gimnasio y nutricion</span><span class="acc-arrow" id="acc-arrow-gym">&#9660;</span></div>
+      <div class="acc-body" id="acc-body-gym" style="display:none">
+        <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Promedio de peso por tipo de rutina</div><div class="ch" id="ch-muscleweight-wrap"><canvas id="ch-muscleweight"></canvas></div><div id="zoneWeights" style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)"></div><div id="monthlyGymCount" style="display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)"></div><div id="restDayHint" style="font-size:.74rem;color:var(--muted);text-align:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)"></div></div>
+        <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Horarios de gimnasio por dia</div><div class="ch" id="ch-gymschedule-wrap"><canvas id="ch-gymschedule"></canvas></div><div id="gymScheduleSummary" style="font-size:.72rem;color:var(--muted);margin-top:10px;padding-top:10px;border-top:1px solid var(--border);line-height:1.6"></div></div>
+        <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Alimentos mas consumidos</div><div id="foodStatTabs" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px"></div><div id="foodStatList"></div></div>
+        <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Macros del dia (SMAE)</div><div id="macroCard"></div></div>
+      </div>
+    </div>
     <button class="expbtn" onclick="exportReport()" style="margin-bottom:8px">Exportar reporte</button>
     <button class="expbtn" style="margin-bottom:8px;border-color:var(--blue);color:var(--blue)" onclick="cloudSync()">Sincronizar con nube</button>
     <button class="expbtn" style="margin-bottom:8px;border-color:var(--purple);color:var(--purple)" onclick="showSetup()">Configurar sincronizacion</button>
@@ -257,13 +279,20 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
     <div class="card">
       <div class="water-num" id="w-num">0.0L</div>
       <div class="water-meta" id="w-meta">meta: 3-4L al dia</div>
-      <div class="wbar-wrap"><div class="wbar-fill" id="w-bar" style="width:0%;background:var(--blue)"></div></div>
-      <div class="bubbles" id="w-bubbles"></div>
-      <div class="wbtns">
-        <button class="wbtn" onclick="addWater(-1)">-</button>
-        <button class="wbtn main" onclick="addWater(1)">+ 250ml</button>
-        <button class="wbtn" onclick="toggleCW()">editar</button>
+      <div class="water-bottle">
+        <div class="water-bottle-track"><div class="water-bottle-fill" id="w-bar" style="width:0%"></div></div>
+        <div class="water-bottle-cap"></div>
+        <div class="water-tick" style="left:25%"></div><div class="water-tick-lbl" style="left:25%">1L</div>
+        <div class="water-tick" style="left:50%"></div><div class="water-tick-lbl" style="left:50%">2L</div>
+        <div class="water-tick" style="left:75%"></div><div class="water-tick-lbl" style="left:75%">3L</div>
+        <div class="water-tick-lbl" style="left:calc(100% - 20px)">4L</div>
       </div>
+      <div class="wbtns" style="margin-top:4px">
+        <button class="wbtn" onclick="addWater(-1)">&minus; 250ml</button>
+        <button class="wbtn main" onclick="addWater(1)">+ 250ml</button>
+        <button class="wbtn main" onclick="addWater(4)">+ 1 litro</button>
+      </div>
+      <div style="text-align:center;margin-top:8px"><span style="font-size:.72rem;color:var(--muted);text-decoration:underline;cursor:pointer" onclick="toggleCW()">Ajustar cantidad exacta</span></div>
       <div id="cw-wrap" style="display:none;margin-top:9px">
         <div class="wr"><input type="number" inputmode="numeric" id="cw-ml" placeholder="ml" min="50" step="50"><button class="savebtn" onclick="addWaterMl()">OK</button></div>
       </div>
@@ -278,16 +307,8 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
   </div>
   <div class="sec" data-diagroup="salud"><div class="stitle">Checklist anti-reflujo</div><div class="card"><div id="day-checks"></div></div></div>
   <div class="sec" data-diagroup="salud">
-    <div class="stitle">Suero / Electrolit - 3x semana</div>
-    <div class="card"><div id="day-suero"></div></div>
-  </div>
-  <div class="sec" data-diagroup="salud">
-    <div class="stitle" id="stitle-fibra">Fibra soluble (Optigest) - diario</div>
-    <div class="card"><div id="day-fibra"></div></div>
-  </div>
-  <div class="sec" data-diagroup="salud">
-    <div class="stitle" id="stitle-creatina">Creatina - diario</div>
-    <div class="card"><div id="day-creatina"></div></div>
+    <div class="stitle">Suplementos</div>
+    <div class="card"><div id="day-supps" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px"></div></div>
   </div>
   <div class="sec" data-diagroup="salud">
     <div class="stitle">Reflujo</div>
@@ -1577,6 +1598,13 @@ function renderRestDayHint(){
   if(rec.done){el.innerHTML='\u2705 Ya tomaste tu dia de descanso esta semana.';return;}
   el.innerHTML='\uD83D\uDCA4 Aun no tomas tu dia libre esta semana - te recomendamos descansar el <strong style="color:var(--accent)">'+rec.dow+'</strong>'+(rec.ideal?' (justo despues de tu dia Frontal, para que las piernas se recuperen)':'.');
 }
+function toggleAcc(id){
+  var acc=document.getElementById('acc-'+id);var body=document.getElementById('acc-body-'+id);var arrow=document.getElementById('acc-arrow-'+id);
+  var open=acc.dataset.open==='1';
+  acc.dataset.open=open?'0':'1';
+  body.style.display=open?'none':'';
+  arrow.style.transform=open?'rotate(0deg)':'rotate(180deg)';
+}
 function renderDash(){
   var n=period==='day'?1:period==='week'?7:30;
   var days=getDays(n);var s=ls();var tk=todayKey();
@@ -2083,7 +2111,14 @@ function renderDia(){
 
   var mDone=todayMeds.filter(function(m){return day.mc.indexOf(m.id)>=0;}).length;
   var mh='<div style="font-size:.72rem;font-family:Syne,sans-serif;color:var(--muted);margin-bottom:8px">'+mDone+' / '+todayMeds.length+' completados</div>';
-  todayMeds.forEach(function(m){var ok=day.mc.indexOf(m.id)>=0;var bc=ok?m.c:'var(--border)';var cbg=ok?m.c:'transparent';mh+='<div class="med-card" style="border-color:'+bc+'" onclick="toggleMed(\''+m.id+'\',\''+key+'\')">';mh+='<div class="med-ico">'+m.ico+'</div>';mh+='<div class="med-info"><div class="med-name" style="'+(ok?'text-decoration:line-through;opacity:.5':'')+'">'+m.l+' - '+m.dose+'</div><div class="med-time" style="color:'+m.c+'">'+m.t+'</div><div class="med-sub">'+m.s+'</div></div><div class="med-chk" style="background:'+cbg+';border-color:'+bc+'">'+(ok?'v':'')+'</div></div>';});
+  var omegaMeds=todayMeds.filter(function(m){return m.id==='om2';});
+  var otherMeds=todayMeds.filter(function(m){return m.id!=='om2';});
+  omegaMeds.forEach(function(m){var ok=day.mc.indexOf(m.id)>=0;var bc=ok?m.c:'var(--border)';var cbg=ok?m.c:'transparent';mh+='<div class="med-card" style="border-color:'+bc+'" onclick="toggleMed(\''+m.id+'\',\''+key+'\')">';mh+='<div class="med-ico">'+m.ico+'</div>';mh+='<div class="med-info"><div class="med-name" style="'+(ok?'text-decoration:line-through;opacity:.5':'')+'">'+m.l+' - '+m.dose+'</div><div class="med-time" style="color:'+m.c+'">'+m.t+'</div><div class="med-sub">'+m.s+'</div></div><div class="med-chk" style="background:'+cbg+';border-color:'+bc+'">'+(ok?'v':'')+'</div></div>';});
+  if(otherMeds.length){
+    mh+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">';
+    otherMeds.forEach(function(m){var ok=day.mc.indexOf(m.id)>=0;mh+='<div class="suppbox" style="cursor:pointer" onclick="toggleMed(\''+m.id+'\',\''+key+'\')" title="'+m.t+' - '+m.dose+'"><div class="suppdot" style="background:'+(ok?m.c:'var(--border)')+'"></div><div class="supplbl">'+m.l+'</div><div class="suppst" style="color:'+(ok?m.c:'var(--muted)')+'">'+(ok?'Tomado':'Pendiente')+'</div></div>';});
+    mh+='</div>';
+  }
   document.getElementById('day-meds').innerHTML=mh;
   var h=isToday?new Date().getHours():25;var plan=WP[dow];var tlh='';
   MO.forEach(function(m){var mt=mgForKey(key)[m.k];var mp=(day.mp&&day.mp[m.k])||{};var gks=Object.keys(mt);var done=0;gks.forEach(function(g){if((mp[g]||0)>=mt[g])done++;});var pct=Math.round(done/gks.length*100);var ws=MKW[m.k][0];var we=MKW[m.k][1];var cur=h>=ws&&h<we;var lc=cur?'var(--accent)':h>=we?'var(--muted)':'var(--text)';var bc2=pct>=100?'var(--good)':pct>0?'var(--accent)':'var(--border)';tlh+='<div class="tl-meal" style="'+(cur?'border-color:var(--accent)':'')+(pct>=100?';border-color:var(--good)':'')+'"><div class="tl-head" onclick="toggleMeal(\''+m.k+'\',\''+key+'\')""><div class="tl-lbl" style="color:'+lc+'">'+m.l+'<span class="tl-time">'+m.t+'</span></div><div class="tl-prog"><div class="tl-bar"><div class="tl-fill" id="tfill-'+m.k+'" style="width:'+pct+'%;background:'+bc2+'"></div></div><div class="tl-txt" id="ttxt-'+m.k+'">'+done+'/'+gks.length+'</div></div></div><div class="tl-body" id="tb-'+m.k+'"><div class="tl-hint">'+plan[m.k]+'</div><div class="chips" id="chips-'+m.k+'"></div></div></div>';});
@@ -2093,16 +2128,16 @@ function renderDia(){
   renderWater(key,day);
   if(!day.sc)day.sc=[];
   var todaySuero=SUEROS.find(function(s2){return s2.day===dow;});
-  var sueroDiv=document.getElementById('day-suero');
-  if(todaySuero){var suOk=day.sc.indexOf(todaySuero.id)>=0;var suDiv=document.createElement('div');suDiv.className='ci';suDiv.dataset.sid=todaySuero.id;suDiv.dataset.key=key;suDiv.onclick=function(){toggleSuero(this.dataset.sid,this.dataset.key);};suDiv.innerHTML='<div class="cbox" style="background:'+(suOk?'var(--blue)':'transparent')+';border-color:'+(suOk?'var(--blue)':'var(--border)')+'">'+(suOk?'v':'')+'</div><span class="clbl '+(suOk?'done':'')+'">Suero / Electrolit '+(suOk?'(tomado)':'(pendiente)')+'</span>';sueroDiv.innerHTML='';sueroDiv.appendChild(suDiv);}
-  else{var nextS=SUEROS.filter(function(x){return x.day>dow;});if(!nextS.length)nextS=SUEROS;sueroDiv.innerHTML='<div style="font-size:.82rem;color:var(--muted);padding:8px 0">Hoy no toca - proximo: <strong style="color:var(--blue)">'+nextS[0].l+'</strong></div>';}
   var suppIsOptional=key>=PLAN_CHANGE_DATE;
-  var stFib=document.getElementById('stitle-fibra');if(stFib)stFib.textContent='Fibra soluble (Optigest) - '+(suppIsOptional?'opcional':'diario');
-  var stCrea=document.getElementById('stitle-creatina');if(stCrea)stCrea.textContent='Creatina - '+(suppIsOptional?'opcional':'diario');
-  var fibDiv=document.getElementById('day-fibra');
-  if(fibDiv){var fbOk=day.sc.indexOf('fib')>=0;var fDiv=document.createElement('div');fDiv.className='ci';fDiv.dataset.key=key;fDiv.onclick=function(){toggleSuero('fib',this.dataset.key);};fDiv.innerHTML='<div class="cbox" style="background:'+(fbOk?'var(--good)':'transparent')+';border-color:'+(fbOk?'var(--good)':'var(--border)')+'">'+(fbOk?'v':'')+'</div><span class="clbl '+(fbOk?'done':'')+'">Fibra soluble Optigest '+(fbOk?'(tomada)':(suppIsOptional?'(opcional)':'(pendiente)'))+'</span>';fibDiv.innerHTML='';fibDiv.appendChild(fDiv);}
-  var creaDiv=document.getElementById('day-creatina');
-  if(creaDiv){var crOk=day.sc.indexOf('crea')>=0;var cDiv=document.createElement('div');cDiv.className='ci';cDiv.dataset.key=key;cDiv.onclick=function(){toggleSuero('crea',this.dataset.key);};cDiv.innerHTML='<div class="cbox" style="background:'+(crOk?'var(--good)':'transparent')+';border-color:'+(crOk?'var(--good)':'var(--border)')+'">'+(crOk?'v':'')+'</div><span class="clbl '+(crOk?'done':'')+'">Creatina '+(crOk?'(tomada)':(suppIsOptional?'(opcional)':'(pendiente)'))+'</span>';creaDiv.innerHTML='';creaDiv.appendChild(cDiv);}
+  var suOk=todaySuero&&day.sc.indexOf(todaySuero.id)>=0;
+  var suSt=todaySuero?(suOk?'Tomado':'Pendiente'):'No toca';
+  var suClick=todaySuero?"toggleSuero('"+todaySuero.id+"','"+key+"')":'';
+  var fbOk=day.sc.indexOf('fib')>=0;
+  var crOk=day.sc.indexOf('crea')>=0;
+  var suppsHtml='<div class="suppbox" style="'+(todaySuero?'cursor:pointer':'')+'" '+(todaySuero?'onclick="'+suClick+'"':'')+'><div class="suppdot" style="background:'+(suOk?'var(--blue)':'var(--border)')+'"></div><div class="supplbl">Electrolit</div><div class="suppst" style="color:'+(suOk?'var(--blue)':'var(--muted)')+'">'+suSt+'</div></div>';
+  suppsHtml+='<div class="suppbox" style="cursor:pointer" onclick="toggleSuero(\'fib\',\''+key+'\')"><div class="suppdot" style="background:'+(fbOk?'var(--good)':'var(--border)')+'"></div><div class="supplbl">Fibra</div><div class="suppst" style="color:'+(fbOk?'var(--good)':'var(--muted)')+'">'+(fbOk?'Tomada':(suppIsOptional?'Opcional':'Pendiente'))+'</div></div>';
+  suppsHtml+='<div class="suppbox" style="cursor:pointer" onclick="toggleSuero(\'crea\',\''+key+'\')"><div class="suppdot" style="background:'+(crOk?'var(--good)':'var(--border)')+'"></div><div class="supplbl">Creatina</div><div class="suppst" style="color:'+(crOk?'var(--good)':'var(--muted)')+'">'+(crOk?'Tomada':(suppIsOptional?'Opcional':'Pendiente'))+'</div></div>';
+  var suppsEl=document.getElementById('day-supps');if(suppsEl)suppsEl.innerHTML=suppsHtml;
   var wts=gw();var ew=wts.find(function(w){return w.date===key;});
   document.getElementById('w-input').value=ew?ew.w:'';
   var prevW=wts.filter(function(w){return w.date<key;}).slice(-1)[0];
@@ -2148,7 +2183,7 @@ function syncAutoChecks(key,day){
   if(!tookRefresco){if(idx8<0)day.ch.push(8);}else{if(idx8>=0)day.ch.splice(idx8,1);}
   sd(key,day);
 }
-function renderWater(key,day){var c=day.water||0;var L=(c*0.25).toFixed(1);document.getElementById('w-num').textContent=L+'L';document.getElementById('w-bar').style.width=Math.min(100,c/16*100)+'%';document.getElementById('w-bar').style.background=c>=16?'var(--accent)':'var(--blue)';document.getElementById('w-meta').textContent=c>=16?'Meta superada - '+L+'L':'Meta: 3-4L - faltan '+(Math.max(0,3-c*0.25)).toFixed(1)+'L';var bh='';for(var i=0;i<c;i++){bh+='<div class="bub '+(i>=16?'extra':'on')+'" onclick="removeW('+i+',\''+key+'\')">&#x1F4A7;</div>';}document.getElementById('w-bubbles').innerHTML=bh;}
+function renderWater(key,day){var c=day.water||0;var L=(c*0.25).toFixed(1);document.getElementById('w-num').textContent=L+'L';document.getElementById('w-bar').style.width=Math.min(100,c/16*100)+'%';document.getElementById('w-bar').style.background=c>=16?'linear-gradient(90deg,#3a9fd4,var(--accent))':'linear-gradient(90deg,#3a9fd4,var(--blue))';document.getElementById('w-meta').textContent=c>=16?'Meta superada - '+L+'L':'Meta: 3-4L - faltan '+(Math.max(0,3-c*0.25)).toFixed(1)+'L';}
 function addWater(d){var key=keyOf(viewDate);var day=gd(key);day.water=Math.max(0,(day.water||0)+d);syncAutoChecks(key,day);renderWater(key,day);renderChecklist(key,day);if(d>0)toast((day.water*0.25).toFixed(1)+'L');}
 function addWaterMl(){var ml=parseInt(document.getElementById('cw-ml').value)||0;if(ml<50){toast('Min 50ml');return;}var key=keyOf(viewDate);var day=gd(key);day.water=(day.water||0)+Math.round(ml/250);syncAutoChecks(key,day);renderWater(key,day);renderChecklist(key,day);document.getElementById('cw-wrap').style.display='none';toast('+'+ml+'ml');}
 function removeW(i,key){var day=gd(key);day.water=i;syncAutoChecks(key,day);renderWater(key,day);renderChecklist(key,day);}
@@ -2233,16 +2268,26 @@ function toggleReflux(f,key){var day=gd(key);day[f]=!day[f];sd(key,day);renderRe
 // Alcohol: registro opcional de Whisky/Vino tinto/Tequila. Si hay algo registrado ese dia,
 // el checklist "Sin alcohol" se desmarca solo; si esta en 0, se marca solo (ver syncAutoChecks).
 var ALCOHOL_TYPES=[{k:'whisky',l:'Whisky',u:'caballito (45ml)'},{k:'vino',l:'Vino tinto',u:'copa (150ml)'},{k:'tequila',l:'Tequila',u:'caballito (45ml)'}];
+var _alcExpanded=null;
+function toggleAlcExpand(k){_alcExpanded=(_alcExpanded===k)?null:k;var key=keyOf(viewDate);renderAlcohol(key,gd(key));}
+var ALC_ML={whisky:45,vino:150,tequila:45};
 function renderAlcohol(key,day){
   var el=document.getElementById('day-alcohol');
   if(!el)return;
   if(!day.alcohol)day.alcohol={};
-  var h='';
+  var h='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">';
   ALCOHOL_TYPES.forEach(function(t){
     var c=day.alcohol[t.k]||0;
-    h+='<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)"><div><div style="font-size:.83rem">'+t.l+'</div><div style="font-size:.66rem;color:var(--muted)">1 '+t.u+'</div></div><div style="display:flex;align-items:center;gap:8px"><button style="width:26px;height:26px;padding:0;border-radius:6px" onclick="adjustAlcohol(\''+key+'\',\''+t.k+'\',-1)">-</button><span style="font-family:Syne,sans-serif;font-weight:800;min-width:16px;text-align:center">'+c+'</span><button style="width:26px;height:26px;padding:0;border-radius:6px" onclick="adjustAlcohol(\''+key+'\',\''+t.k+'\',1)">+</button></div></div>';
+    var isExp=_alcExpanded===t.k;
+    h+='<div class="suppbox" style="cursor:pointer" onclick="toggleAlcExpand(\''+t.k+'\')"><div class="suppdot" style="background:'+(c>0?'var(--bad)':'var(--border)')+'"></div><div class="supplbl">'+t.l+'</div>';
+    if(isExp){
+      h+='<div style="display:flex;align-items:center;justify-content:center;gap:5px;margin-top:4px" onclick="event.stopPropagation()"><button style="width:22px;height:22px;padding:0;border-radius:6px;font-size:.75rem" onclick="adjustAlcohol(\''+key+'\',\''+t.k+'\',-1)">-</button><span class="suppst" style="color:var(--bad);min-width:34px">'+(c*ALC_ML[t.k])+'ml</span><button style="width:22px;height:22px;padding:0;border-radius:6px;font-size:.75rem" onclick="adjustAlcohol(\''+key+'\',\''+t.k+'\',1)">+</button></div>';
+    } else {
+      h+='<div class="suppst" style="color:'+(c>0?'var(--bad)':'var(--muted)')+'">'+(c>0?(c*ALC_ML[t.k])+' ml':'Ninguno')+'</div>';
+    }
+    h+='</div>';
   });
-  h+='<div style="font-size:.72rem;color:var(--muted);margin-top:8px">Si no registras nada, el checklist marca "Sin alcohol" solo</div>';
+  h+='</div><div style="font-size:.72rem;color:var(--muted);margin-top:8px">Toca una para registrar cuanto. Si no registras nada, el checklist marca "Sin alcohol" solo</div>';
   el.innerHTML=h;
 }
 function adjustAlcohol(key,tipo,delta){
@@ -2257,17 +2302,26 @@ function adjustAlcohol(key,tipo,delta){
 // BEBIDA_TYPES: agua de sabor, refresco y cafe - se registran aparte del agua natural (no suman
 // a la meta de hidratacion, porque el objetivo del checklist es reducirlas, no fomentarlas) y no
 // tienen equivalencia SMAE oficial (igual que el alcohol), asi que se trackean como conteo simple.
-var BEBIDA_TYPES=[{k:'aguaSabor',l:'Agua de sabor',u:'vaso (250ml)',ch:null},{k:'refresco',l:'Refresco',u:'lata/vaso (355ml)',ch:8},{k:'cafe',l:'Cafe',u:'taza (240ml)',ch:4}];
+var BEBIDA_TYPES=[{k:'aguaSabor',l:'Agua de sabor',u:'250ml',ch:null},{k:'refresco',l:'Refresco',u:'250ml',ch:8},{k:'cafe',l:'Cafe',u:'250ml',ch:4}];
+var _bebExpanded=null;
+function toggleBebExpand(k){_bebExpanded=(_bebExpanded===k)?null:k;var key=keyOf(viewDate);renderBebidas(key,gd(key));}
 function renderBebidas(key,day){
   var el=document.getElementById('day-bebidas');
   if(!el)return;
   if(!day.bebidas)day.bebidas={};
-  var h='';
+  var h='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">';
   BEBIDA_TYPES.forEach(function(t){
     var c=day.bebidas[t.k]||0;
-    h+='<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)"><div><div style="font-size:.83rem">'+t.l+'</div><div style="font-size:.66rem;color:var(--muted)">1 '+t.u+'</div></div><div style="display:flex;align-items:center;gap:8px"><button style="width:26px;height:26px;padding:0;border-radius:6px" onclick="adjustBebida(\''+key+'\',\''+t.k+'\',-1)">-</button><span style="font-family:Syne,sans-serif;font-weight:800;min-width:16px;text-align:center">'+c+'</span><button style="width:26px;height:26px;padding:0;border-radius:6px" onclick="adjustBebida(\''+key+'\',\''+t.k+'\',1)">+</button></div></div>';
+    var isExp=_bebExpanded===t.k;
+    h+='<div class="suppbox" style="cursor:pointer" onclick="toggleBebExpand(\''+t.k+'\')"><div class="suppdot" style="background:'+(c>0?'var(--warn)':'var(--border)')+'"></div><div class="supplbl">'+t.l+'</div>';
+    if(isExp){
+      h+='<div style="display:flex;align-items:center;justify-content:center;gap:5px;margin-top:4px" onclick="event.stopPropagation()"><button style="width:22px;height:22px;padding:0;border-radius:6px;font-size:.75rem" onclick="adjustBebida(\''+key+'\',\''+t.k+'\',-1)">-</button><span class="suppst" style="color:var(--warn);min-width:34px">'+(c*250)+'ml</span><button style="width:22px;height:22px;padding:0;border-radius:6px;font-size:.75rem" onclick="adjustBebida(\''+key+'\',\''+t.k+'\',1)">+</button></div>';
+    } else {
+      h+='<div class="suppst" style="color:'+(c>0?'var(--warn)':'var(--muted)')+'">'+(c>0?(c*250)+'ml':'Ninguna')+'</div>';
+    }
+    h+='</div>';
   });
-  h+='<div style="font-size:.72rem;color:var(--muted);margin-top:8px">No suman a tu meta de agua natural. Refresco y cafe sincronizan solos los checks de "Sin refrescos" y "Sin cafe" del checklist</div>';
+  h+='</div><div style="font-size:.72rem;color:var(--muted);margin-top:8px">Toca una para registrar cuantas de 250ml. No suman a tu meta de agua natural - Refresco y cafe sincronizan solos el checklist</div>';
   el.innerHTML=h;
 }
 function adjustBebida(key,tipo,delta){
@@ -2788,6 +2842,20 @@ function renderValResultado(d){
   document.getElementById('val-resultado').innerHTML=h;
 }
 var CHANGELOG=[
+  {v:'2.29.1',fecha:'2026-10-09',cambios:[
+    'Omegagenics se quedo en su tarjeta completa de antes (con dosis y horario visibles) - el resto de medicamentos sigue en tarjetas compactas',
+    'Alcohol y Otras bebidas ahora muestran ml totales en vez de un conteo simple: whisky/tequila 45ml por shot, vino 150ml por copa, agua de sabor/refresco/cafe 250ml cada uno - sube conforme agregas mas',
+    'Agua: la barra delgada + burbujas se reemplazaron por una botella horizontal que se llena, con marcas en 1L/2L/3L/4L',
+    'Botones de agua ahora son -250ml / +250ml / +1 litro (antes solo tenia -/+250ml/editar) - el ajuste de cantidad exacta sigue disponible como enlace chico debajo'
+  ]},
+  {v:'2.29.0',fecha:'2026-10-09',cambios:[
+    'Dashboard reorganizado: de 11 tarjetas sueltas a 3 secciones plegables (Resumen de hoy, Tendencias, Gimnasio y nutricion) - "Hoy" abierta por default, el resto empieza cerrado. Toca el encabezado para abrir/cerrar',
+    'CORREGIDO: Sueno ya no comparte color morado con Medicamento en las 6 metricas (Sueno ahora naranja)',
+    'Medicamento: de tarjetas completas (una por renglon) a tarjetas compactas estilo Fibra/Electrolit/Creatina, 3 por renglon - mismo toggle, info de dosis/horario disponible al mantener presionado',
+    'Suero/Electrolit, Fibra y Creatina se fusionaron en una sola seccion "Suplementos" con 3 tarjetas en un renglon (antes eran 3 secciones separadas) - Mi Dia ya no tiene 9 secciones en Salud, bajo a 7',
+    'Alcohol: de lista vertical a 3 tarjetas compactas (whisky/vino/tequila) - tocar una expande su contador +/-, muestra "shots" o "copas" segun el tipo',
+    'Otras bebidas: mismo patron de tarjetas con tocar-para-expandir, y las 3 (agua de sabor, refresco, cafe) ahora se cuentan en unidades de 250ml parejo'
+  ]},
   {v:'2.28.4',fecha:'2026-10-09',cambios:[
     'Fibra y Creatina se volvieron opcionales a partir del 1-oct-2026 (antes eran diarias). El titulo y el texto en Mi Dia cambian solos segun la fecha que estes viendo: antes de octubre sigue diciendo "diario"/"(pendiente)" (correcto historicamente), desde octubre dice "opcional" - misma logica de version por fecha que ya usamos en dieta y gym',
     'El Dashboard (que siempre resume hoy) tambien muestra "Opcional" en vez de "Pendiente" para Fibra y Creatina cuando no se han tomado'
