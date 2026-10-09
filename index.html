@@ -204,7 +204,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
 </div>
 
 <div class="page active" id="page-dash">
-  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.29.3</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
+  <div class="ph" style="flex-wrap:wrap;row-gap:8px"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle;white-space:nowrap">v2.29.4</span></div><div style="display:flex;align-items:center;gap:8px;flex-shrink:0;margin-left:auto"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem;white-space:nowrap"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted);white-space:nowrap">sin nube</span></div><div class="pill" id="dashDate" style="white-space:nowrap"></div></div></div>
   <div class="sec">
     <div class="ptabs">
       <div class="pt active" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
@@ -248,13 +248,18 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
         <div class="card" style="margin-bottom:10px"><div class="stitle" style="margin-bottom:10px">Macros del dia (SMAE)</div><div id="macroCard"></div></div>
       </div>
     </div>
-    <button class="expbtn" onclick="exportReport()" style="margin-bottom:8px">Exportar reporte</button>
-    <button class="expbtn" style="margin-bottom:8px;border-color:var(--blue);color:var(--blue)" onclick="cloudSync()">Sincronizar con nube</button>
-    <button class="expbtn" style="margin-bottom:8px;border-color:var(--purple);color:var(--purple)" onclick="showSetup()">Configurar sincronizacion</button>
-    <button class="expbtn" style="margin-bottom:8px;border-color:var(--pink);color:var(--pink)" onclick="backupData()">Backup local (JSON)</button>
-    <div style="margin-bottom:20px">
-      <label style="font-size:.75rem;color:var(--muted);display:block;margin-bottom:6px;font-family:Syne,sans-serif">Restaurar desde backup</label>
-      <input type="file" id="restoreFile" accept=".json" onchange="restoreBackup(this)" style="font-size:.78rem;padding:8px;color:var(--muted)">
+    <div class="acc" id="acc-datos" data-open="0">
+      <div class="acc-head" onclick="toggleAcc('datos')"><span class="acc-ttl">&#9881;&#65039; Datos y respaldo</span><span class="acc-arrow" id="acc-arrow-datos">&#9660;</span></div>
+      <div class="acc-body" id="acc-body-datos" style="display:none">
+        <button class="expbtn" onclick="exportReport()" style="margin-bottom:8px">Exportar reporte</button>
+        <button class="expbtn" style="margin-bottom:8px;border-color:var(--blue);color:var(--blue)" onclick="cloudSync()">Sincronizar con nube</button>
+        <button class="expbtn" style="margin-bottom:8px;border-color:var(--purple);color:var(--purple)" onclick="showSetup()">Configurar sincronizacion</button>
+        <button class="expbtn" style="margin-bottom:8px;border-color:var(--pink);color:var(--pink)" onclick="backupData()">Backup local (JSON)</button>
+        <div style="margin-bottom:6px">
+          <label style="font-size:.75rem;color:var(--muted);display:block;margin-bottom:6px;font-family:Syne,sans-serif">Restaurar desde backup</label>
+          <input type="file" id="restoreFile" accept=".json" onchange="restoreBackup(this)" style="font-size:.78rem;padding:8px;color:var(--muted)">
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -2842,6 +2847,10 @@ function renderValResultado(d){
   document.getElementById('val-resultado').innerHTML=h;
 }
 var CHANGELOG=[
+  {v:'2.29.4',fecha:'2026-10-09',cambios:[
+    'CORREGIDO: "nube OK" y la fecha se partian en 2 lineas cada una por falta de espacio junto al titulo. Ahora nunca se parten - si no caben junto al titulo, bajan juntas a una segunda linea',
+    'Los botones de Exportar reporte, Sincronizar, Configurar sincronizacion, Backup y Restaurar se organizaron en su propia seccion plegable "Datos y respaldo" (antes andaban sueltos al final del Dashboard) - cerrada por default, mismo patron que las otras 3 secciones'
+  ]},
   {v:'2.29.3',fecha:'2026-10-09',cambios:[
     'CORREGIDO: el arreglo anterior partia "kg" en dos lineas (peor que el desborde original). Ahora el texto nunca se parte - el tamano de letra se ajusta proporcional al ancho real de la tarjeta, y como ultimo recurso usa puntos suspensivos en vez de partir la palabra'
   ]},
