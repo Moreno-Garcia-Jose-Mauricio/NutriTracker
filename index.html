@@ -197,7 +197,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
 </div>
 
 <div class="page active" id="page-dash">
-  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.28.2</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
+  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.28.4</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
   <div class="sec">
     <div class="ptabs">
       <div class="pt active" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
@@ -282,11 +282,11 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
     <div class="card"><div id="day-suero"></div></div>
   </div>
   <div class="sec" data-diagroup="salud">
-    <div class="stitle">Fibra soluble (Optigest) - diario</div>
+    <div class="stitle" id="stitle-fibra">Fibra soluble (Optigest) - diario</div>
     <div class="card"><div id="day-fibra"></div></div>
   </div>
   <div class="sec" data-diagroup="salud">
-    <div class="stitle">Creatina - diario</div>
+    <div class="stitle" id="stitle-creatina">Creatina - diario</div>
     <div class="card"><div id="day-creatina"></div></div>
   </div>
   <div class="sec" data-diagroup="salud">
@@ -1641,7 +1641,8 @@ function renderDash(){
   document.getElementById('dashSum').innerHTML='<div class="sum-row"><div class="sdot" style="background:var(--blue)"></div><div class="slbl">Agua</div><div class="sval">'+wAmt+'L</div><span class="sbadge '+(parseFloat(wAmt)>=3?'bg':'bw')+'">'+(parseFloat(wAmt)>=3?'Meta':'Incompleto')+'</span></div><div class="sum-row"><div class="sdot" style="background:var(--accent)"></div><div class="slbl">Peso actual</div><div class="sval">'+(lwVal!==null?lwVal+'kg':'sin datos')+'</div>'+(lwVal!==null&&pwVal!==null?'<span class="sbadge '+(lwVal<pwVal?'bg':'bb')+'">'+(lwVal<pwVal?'-':'+')+(Math.abs(lwVal-pwVal).toFixed(1))+'kg</span>':'')+'</div><div class="sum-row"><div class="sdot" style="background:var(--pink)"></div><div class="slbl">Porciones</div><div class="sval">'+(n===1?todP:avgP)+'%</div><span class="sbadge '+((n===1?todP:avgP)>=80?'bg':(n===1?todP:avgP)>=50?'bw':'bb')+'">'+(( n===1?todP:avgP)>=80?'Bien':(n===1?todP:avgP)>=50?'Regular':'Bajo')+'</span></div><div class="sum-row"><div class="sdot" style="background:var(--purple)"></div><div class="slbl">Medicamento</div><div class="sval">'+(n===1?todM:avgM)+'%</div><span class="sbadge '+((n===1?todM:avgM)>=100?'bg':(n===1?todM:avgM)>0?'bw':'bb')+'">'+(( n===1?todM:avgM)>=100?'Completo':'Incompleto')+'</span></div><div class="sum-row"><div class="sdot" style="background:var(--warn)"></div><div class="slbl">Checklist</div><div class="sval">'+checkAvg+'%</div></div>';
   var suppEl=document.getElementById('suppRow');
   if(suppEl){
-    suppEl.innerHTML='<div class="suppbox"><div class="suppdot" style="background:'+(fibOk?'var(--good)':'var(--border)')+'"></div><div class="supplbl">Fibra</div><div class="suppst" style="color:'+(fibOk?'var(--good)':'var(--muted)')+'">'+(fibOk?'Tomada':'Pendiente')+'</div></div><div class="suppbox"><div class="suppdot" style="background:'+(suToday?(suTomado?'var(--good)':'var(--warn)'):'var(--border)')+'"></div><div class="supplbl">Electrolit</div><div class="suppst" style="color:'+(suToday?(suTomado?'var(--good)':'var(--warn)'):'var(--muted)')+'">'+suLbl+'</div></div><div class="suppbox"><div class="suppdot" style="background:'+(creaOk?'var(--good)':'var(--border)')+'"></div><div class="supplbl">Creatina</div><div class="suppst" style="color:'+(creaOk?'var(--good)':'var(--muted)')+'">'+(creaOk?'Tomada':'Pendiente')+'</div></div>';
+    var suppIsOptToday=todayKey()>=PLAN_CHANGE_DATE;
+    suppEl.innerHTML='<div class="suppbox"><div class="suppdot" style="background:'+(fibOk?'var(--good)':'var(--border)')+'"></div><div class="supplbl">Fibra</div><div class="suppst" style="color:'+(fibOk?'var(--good)':'var(--muted)')+'">'+(fibOk?'Tomada':(suppIsOptToday?'Opcional':'Pendiente'))+'</div></div><div class="suppbox"><div class="suppdot" style="background:'+(suToday?(suTomado?'var(--good)':'var(--warn)'):'var(--border)')+'"></div><div class="supplbl">Electrolit</div><div class="suppst" style="color:'+(suToday?(suTomado?'var(--good)':'var(--warn)'):'var(--muted)')+'">'+suLbl+'</div></div><div class="suppbox"><div class="suppdot" style="background:'+(creaOk?'var(--good)':'var(--border)')+'"></div><div class="supplbl">Creatina</div><div class="suppst" style="color:'+(creaOk?'var(--good)':'var(--muted)')+'">'+(creaOk?'Tomada':(suppIsOptToday?'Opcional':'Pendiente'))+'</div></div>';
   }
   var opts={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#8888aa',maxRotation:45},grid:{color:'#2a2a38'}},y:{ticks:{color:'#8888aa'},grid:{color:'#2a2a38'}}}};
   var chartDays=getDays(n<7?7:n);
@@ -2095,10 +2096,13 @@ function renderDia(){
   var sueroDiv=document.getElementById('day-suero');
   if(todaySuero){var suOk=day.sc.indexOf(todaySuero.id)>=0;var suDiv=document.createElement('div');suDiv.className='ci';suDiv.dataset.sid=todaySuero.id;suDiv.dataset.key=key;suDiv.onclick=function(){toggleSuero(this.dataset.sid,this.dataset.key);};suDiv.innerHTML='<div class="cbox" style="background:'+(suOk?'var(--blue)':'transparent')+';border-color:'+(suOk?'var(--blue)':'var(--border)')+'">'+(suOk?'v':'')+'</div><span class="clbl '+(suOk?'done':'')+'">Suero / Electrolit '+(suOk?'(tomado)':'(pendiente)')+'</span>';sueroDiv.innerHTML='';sueroDiv.appendChild(suDiv);}
   else{var nextS=SUEROS.filter(function(x){return x.day>dow;});if(!nextS.length)nextS=SUEROS;sueroDiv.innerHTML='<div style="font-size:.82rem;color:var(--muted);padding:8px 0">Hoy no toca - proximo: <strong style="color:var(--blue)">'+nextS[0].l+'</strong></div>';}
+  var suppIsOptional=key>=PLAN_CHANGE_DATE;
+  var stFib=document.getElementById('stitle-fibra');if(stFib)stFib.textContent='Fibra soluble (Optigest) - '+(suppIsOptional?'opcional':'diario');
+  var stCrea=document.getElementById('stitle-creatina');if(stCrea)stCrea.textContent='Creatina - '+(suppIsOptional?'opcional':'diario');
   var fibDiv=document.getElementById('day-fibra');
-  if(fibDiv){var fbOk=day.sc.indexOf('fib')>=0;var fDiv=document.createElement('div');fDiv.className='ci';fDiv.dataset.key=key;fDiv.onclick=function(){toggleSuero('fib',this.dataset.key);};fDiv.innerHTML='<div class="cbox" style="background:'+(fbOk?'var(--good)':'transparent')+';border-color:'+(fbOk?'var(--good)':'var(--border)')+'">'+(fbOk?'v':'')+'</div><span class="clbl '+(fbOk?'done':'')+'">Fibra soluble Optigest '+(fbOk?'(tomada)':'(pendiente)')+'</span>';fibDiv.innerHTML='';fibDiv.appendChild(fDiv);}
+  if(fibDiv){var fbOk=day.sc.indexOf('fib')>=0;var fDiv=document.createElement('div');fDiv.className='ci';fDiv.dataset.key=key;fDiv.onclick=function(){toggleSuero('fib',this.dataset.key);};fDiv.innerHTML='<div class="cbox" style="background:'+(fbOk?'var(--good)':'transparent')+';border-color:'+(fbOk?'var(--good)':'var(--border)')+'">'+(fbOk?'v':'')+'</div><span class="clbl '+(fbOk?'done':'')+'">Fibra soluble Optigest '+(fbOk?'(tomada)':(suppIsOptional?'(opcional)':'(pendiente)'))+'</span>';fibDiv.innerHTML='';fibDiv.appendChild(fDiv);}
   var creaDiv=document.getElementById('day-creatina');
-  if(creaDiv){var crOk=day.sc.indexOf('crea')>=0;var cDiv=document.createElement('div');cDiv.className='ci';cDiv.dataset.key=key;cDiv.onclick=function(){toggleSuero('crea',this.dataset.key);};cDiv.innerHTML='<div class="cbox" style="background:'+(crOk?'var(--good)':'transparent')+';border-color:'+(crOk?'var(--good)':'var(--border)')+'">'+(crOk?'v':'')+'</div><span class="clbl '+(crOk?'done':'')+'">Creatina '+(crOk?'(tomada)':'(pendiente)')+'</span>';creaDiv.innerHTML='';creaDiv.appendChild(cDiv);}
+  if(creaDiv){var crOk=day.sc.indexOf('crea')>=0;var cDiv=document.createElement('div');cDiv.className='ci';cDiv.dataset.key=key;cDiv.onclick=function(){toggleSuero('crea',this.dataset.key);};cDiv.innerHTML='<div class="cbox" style="background:'+(crOk?'var(--good)':'transparent')+';border-color:'+(crOk?'var(--good)':'var(--border)')+'">'+(crOk?'v':'')+'</div><span class="clbl '+(crOk?'done':'')+'">Creatina '+(crOk?'(tomada)':(suppIsOptional?'(opcional)':'(pendiente)'))+'</span>';creaDiv.innerHTML='';creaDiv.appendChild(cDiv);}
   var wts=gw();var ew=wts.find(function(w){return w.date===key;});
   document.getElementById('w-input').value=ew?ew.w:'';
   var prevW=wts.filter(function(w){return w.date<key;}).slice(-1)[0];
@@ -2199,8 +2203,11 @@ function renderExercise(day,key){
   if(btnsEl&&key){
     var fmtHM=function(iso){var d=new Date(iso);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');};
     var h='';
+    var isLibreDay=key?gymTypeFor(key)==='libre':false;
     if(day.gymStart){
       h+='<div style="font-size:.78rem;color:var(--good);margin-bottom:6px">Entrenando desde las '+fmtHM(day.gymStart)+'</div><button class="wbtn main" style="width:100%;background:var(--bad);border-color:var(--bad);color:#fff" onclick="endGymSession(\''+key+'\')">\u23f9 Terminar rutina</button>';
+    } else if(isLibreDay){
+      h+='';
     } else if(min>0){
       h+=(day.gymEnd?'<div style="font-size:.74rem;color:var(--muted);margin-bottom:6px">Ultima sesion termino a las '+fmtHM(day.gymEnd)+'</div>':'');
       h+='<button class="wbtn main" style="width:100%;background:var(--good);border-color:var(--good);color:#000;margin-bottom:6px" onclick="startGymSession(\''+key+'\')">\u25b6 Continuar / nueva sesion</button><button class="wbtn" style="width:100%" onclick="resetGymSession(\''+key+'\')">\u21ba Reiniciar registro</button>';
@@ -2781,6 +2788,13 @@ function renderValResultado(d){
   document.getElementById('val-resultado').innerHTML=h;
 }
 var CHANGELOG=[
+  {v:'2.28.4',fecha:'2026-10-09',cambios:[
+    'Fibra y Creatina se volvieron opcionales a partir del 1-oct-2026 (antes eran diarias). El titulo y el texto en Mi Dia cambian solos segun la fecha que estes viendo: antes de octubre sigue diciendo "diario"/"(pendiente)" (correcto historicamente), desde octubre dice "opcional" - misma logica de version por fecha que ya usamos en dieta y gym',
+    'El Dashboard (que siempre resume hoy) tambien muestra "Opcional" en vez de "Pendiente" para Fibra y Creatina cuando no se han tomado'
+  ]},
+  {v:'2.28.3',fecha:'2026-10-09',cambios:[
+    'CORREGIDO: en un dia libre aparecia el boton "Iniciar rutina" (no deberia, no hay rutina que iniciar). La funcion nunca revisaba si el dia era de descanso. Si por alguna razon ya hay una sesion corriendo, se puede terminar igual - solo se quito la opcion de EMPEZAR una nueva en un dia libre'
+  ]},
   {v:'2.28.2',fecha:'2026-10-05',cambios:[
     'El numero Nx (arriba de cada peso) ahora se ve atenuado mientras esa serie no este confirmada con el check verde - mismo color (sigue indicando en que zona quedarias), pero visualmente distinto de un uso que ya cuenta. En cuanto confirmas, se pone solido'
   ]},
