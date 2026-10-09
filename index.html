@@ -197,7 +197,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
 </div>
 
 <div class="page active" id="page-dash">
-  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.28.0</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
+  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.28.1</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
   <div class="sec">
     <div class="ptabs">
       <div class="pt active" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
@@ -2383,6 +2383,7 @@ function seriesWeightStreak(muscle,i,w){
     if(type==='libre')return;
     var g=day.gym&&day.gymType===type?day.gym:null;
     if(!g||!g.weights||!Array.isArray(g.weights[muscle]))return;
+    if(!g.muscles||!Array.isArray(g.muscles[muscle])||!g.muscles[muscle][i])return;
     if(g.weights[muscle][i]===w)count++;
   });
   return count;
@@ -2780,6 +2781,10 @@ function renderValResultado(d){
   document.getElementById('val-resultado').innerHTML=h;
 }
 var CHANGELOG=[
+  {v:'2.28.1',fecha:'2026-10-05',cambios:[
+    'CORREGIDO bug real en el contador Nx de peso por serie: un dia donde NO marcaste el ejercicio como hecho (0/3) pero el campo de peso seguia poblado con el valor por defecto contaba como "usado" igual que un dia real. Ahora solo cuenta series marcadas con el check verde',
+    'Se corrige solo automaticamente en todo tu historial (el contador se calcula al vuelo, no hay nada guardado que migrar)'
+  ]},
   {v:'2.28.0',fecha:'2026-10-05',cambios:[
     'Revision completa antes de publicar: 47 fechas distintas de ambos planes de gym, los 3 periodos del Dashboard, las 4 pestanas de Mi Plan y el reporte exportable, todo sin errores. Rendimiento confirmado igual de rapido que antes',
     'Nueva seccion "Otras bebidas" en Mi Dia - Salud: contador para Agua de sabor, Refresco y Cafe (igual patron que el de Alcohol)',
