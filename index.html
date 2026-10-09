@@ -52,8 +52,7 @@ button{font-family:inherit;}
 .supplbl{font-size:.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
 .suppst{font-size:.75rem;font-weight:700;margin-top:3px;font-family:'Syne',sans-serif;}
 .metric::before{content:'';position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.10),transparent);}
-.mval{font-family:'Syne',sans-serif;font-size:1.65rem;font-weight:800;line-height:1.05;font-variant-numeric:tabular-nums;letter-spacing:-.02em;max-width:100%;overflow-wrap:break-word;}
-@media (max-width:380px){.mval{font-size:1.4rem;}}
+.mval{font-family:'Syne',sans-serif;font-size:clamp(1.15rem,6.4vw,1.65rem);font-weight:800;line-height:1.05;font-variant-numeric:tabular-nums;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;}
 .mlbl{font-size:.7rem;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.08em;}
 .msub{font-size:.73rem;font-weight:700;margin-top:3px;}
 .ch{position:relative;height:130px;}
@@ -205,7 +204,7 @@ input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(20
 </div>
 
 <div class="page active" id="page-dash">
-  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.29.2</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
+  <div class="ph"><div class="ptitle">Nutri<span style="color:var(--accent)">Track</span> <span onclick="showChangelog()" style="font-size:.58rem;background:var(--card2);border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;font-weight:400;vertical-align:middle">v2.29.3</span></div><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;align-items:center;gap:5px;font-size:.72rem"><div id="cloudDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0"></div><span id="cloudTxt" style="color:var(--muted)">sin nube</span></div><div class="pill" id="dashDate"></div></div></div>
   <div class="sec">
     <div class="ptabs">
       <div class="pt active" id="pt-day" onclick="setPeriod('day',this)">Hoy</div>
@@ -2843,6 +2842,9 @@ function renderValResultado(d){
   document.getElementById('val-resultado').innerHTML=h;
 }
 var CHANGELOG=[
+  {v:'2.29.3',fecha:'2026-10-09',cambios:[
+    'CORREGIDO: el arreglo anterior partia "kg" en dos lineas (peor que el desborde original). Ahora el texto nunca se parte - el tamano de letra se ajusta proporcional al ancho real de la tarjeta, y como ultimo recurso usa puntos suspensivos en vez de partir la palabra'
+  ]},
   {v:'2.29.2',fecha:'2026-10-09',cambios:[
     'CORREGIDO: en las vistas de 7 y 30 dias, el peso promedio se mostraba con 2 decimales ("73.05kg") y se salia de su tarjeta - ahora siempre 1 decimal ("73.5kg")',
     'Las 6 tarjetas de metricas ya no pueden desbordarse si algun valor sale largo (limite de ancho + reduce tamano de letra en pantallas angostas)'
